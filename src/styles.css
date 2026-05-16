@@ -89,12 +89,22 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
+    font-size: 17px;
+    font-weight: 500;
+    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "ss01", "cv11";
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: -0.02em;
+    font-weight: 700;
+  }
+  p, li, span, a, label, button, input, textarea, select {
+    font-weight: 500;
+  }
+  .text-muted-foreground {
+    font-weight: 500;
   }
 }
 
