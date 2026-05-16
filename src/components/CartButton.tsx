@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { useCart, formatGHS } from "@/lib/cart";
 
 // Update this to your real number, in international format without "+"
-const WHATSAPP_NUMBER = "233000000000";
+const WHATSAPP_NUMBER = "233548363844";
 
 function buildWhatsAppUrl(message: string) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
