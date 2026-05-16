@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Copy, CheckCircle2, Upload, Loader2, Smartphone } from "lucide-react";
 import {
   Dialog,
