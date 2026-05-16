@@ -29,11 +29,11 @@ export function CheckoutDialog({
   const { items, totalPrice, totalCrates, pickup, clear, close } = useCart();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [reference, setReference] = useState("");
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const copyNumber = async () => {
     try {
