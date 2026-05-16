@@ -1,4 +1,4 @@
-import { Minus, Plus, ShoppingCart, Trash2, MessageCircle } from "lucide-react";
+import { MapPin, Minus, MessageCircle, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -7,8 +7,16 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS } from "@/lib/cart";
+import { PICKUP_STATIONS } from "@/lib/pickup";
 
 // Update this to your real number, in international format without "+"
 const WHATSAPP_NUMBER = "233548363844";
@@ -18,8 +26,20 @@ function buildWhatsAppUrl(message: string) {
 }
 
 export function CartButton() {
-  const { items, totalItems, totalCrates, totalPrice, isOpen, open, close, setQty, remove, clear } =
-    useCart();
+  const {
+    items,
+    totalItems,
+    totalCrates,
+    totalPrice,
+    pickup,
+    setPickup,
+    isOpen,
+    open,
+    close,
+    setQty,
+    remove,
+    clear,
+  } = useCart();
 
   const message = (() => {
     if (items.length === 0) return "";
@@ -37,12 +57,13 @@ export function CartButton() {
       `Total crates: ${totalCrates}`,
       `Total: ${formatGHS(totalPrice)}`,
       "",
+      `Pickup station: ${pickup || "(not selected)"}`,
       "Name:",
-      "Pickup location / gym:",
     ].join("\n");
   })();
 
-  const whatsappUrl = message ? buildWhatsAppUrl(message) : "#";
+  const canSubmit = items.length > 0 && pickup.length > 0;
+  const whatsappUrl = canSubmit ? buildWhatsAppUrl(message) : "#";
 
   return (
     <>
@@ -142,6 +163,23 @@ export function CartButton() {
           {items.length > 0 && (
             <SheetFooter className="border-t border-border bg-secondary/30 p-6">
               <div className="w-full space-y-4">
+                <div>
+                  <label className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5 text-primary" /> Pickup station / gym
+                  </label>
+                  <Select value={pickup} onValueChange={setPickup}>
+                    <SelectTrigger className="h-11 rounded-xl bg-background">
+                      <SelectValue placeholder="Choose your pickup location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PICKUP_STATIONS.map((p) => (
+                        <SelectItem key={p} value={p}>
+                          {p}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">
                     {totalCrates} crate{totalCrates !== 1 ? "s" : ""} total
@@ -151,17 +189,21 @@ export function CartButton() {
                   </span>
                 </div>
                 <Button
-                  asChild
+                  asChild={canSubmit}
                   size="lg"
+                  disabled={!canSubmit}
                   className="h-12 w-full rounded-full text-base shadow-elevated"
                 >
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
-                  </a>
+                  {canSubmit ? (
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
+                    </a>
+                  ) : (
+                    <span>
+                      <MessageCircle className="h-4 w-4" />
+                      {pickup ? "Reserve via WhatsApp" : "Pick a station to continue"}
+                    </span>
+                  )}
                 </Button>
                 <button
                   type="button"

@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
+import { OrderBuilder } from "@/components/OrderBuilder";
 import {
   ArrowRight,
   Check,
@@ -17,8 +19,6 @@ import {
   Sparkles,
   Flame,
   Leaf,
-  Plus,
-  Minus,
 } from "lucide-react";
 import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
@@ -330,13 +330,8 @@ const stacks: Stack[] = [
   },
 ];
 
-function StackCard({ s }: { s: Stack }) {
+function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) {
   const featured = !!s.featured;
-  const { add, items, setQty } = useCart();
-  const singleId = `${s.id}-single`;
-  const packId = `${s.id}-pack4`;
-  const singleInCart = items.find((i) => i.id === singleId);
-  const packInCart = items.find((i) => i.id === packId);
   const savings = s.cratePrice * 4 - s.stackPrice;
 
   return (
@@ -402,124 +397,26 @@ function StackCard({ s }: { s: Stack }) {
 
       <div className="mt-8 flex-1" />
 
-      {/* Add buttons */}
-      <div className="grid gap-2.5">
-        {/* 4-crate monthly stack — primary */}
-        {packInCart ? (
-          <QtyRow
-            featured={featured}
-            label={`4-Crate Stack · ${formatGHS(s.stackPrice)}`}
-            qty={packInCart.qty}
-            onMinus={() => setQty(packId, packInCart.qty - 1)}
-            onPlus={() => setQty(packId, packInCart.qty + 1)}
-          />
-        ) : (
-          <Button
-            size="lg"
-            onClick={() =>
-              add({
-                id: packId,
-                stack: s.name,
-                variant: "4-Crate Monthly Stack",
-                unitPrice: s.stackPrice,
-              })
-            }
-            className={[
-              "h-12 rounded-full text-base",
-              featured
-                ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90"
-                : "",
-            ].join(" ")}
-          >
-            <ShoppingBag className="h-4 w-4" /> Add 4-Crate Stack
-          </Button>
-        )}
-
-        {/* Single crate — secondary */}
-        {singleInCart ? (
-          <QtyRow
-            featured={featured}
-            label={`Single Crate · ${formatGHS(s.cratePrice)}`}
-            qty={singleInCart.qty}
-            onMinus={() => setQty(singleId, singleInCart.qty - 1)}
-            onPlus={() => setQty(singleId, singleInCart.qty + 1)}
-          />
-        ) : (
-          <Button
-            size="lg"
-            variant="outline"
-            onClick={() =>
-              add({
-                id: singleId,
-                stack: s.name,
-                variant: "Single Crate",
-                unitPrice: s.cratePrice,
-              })
-            }
-            className={[
-              "h-11 rounded-full text-sm",
-              featured
-                ? "border-primary-foreground/30 bg-transparent text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
-                : "",
-            ].join(" ")}
-          >
-            <Plus className="h-4 w-4" /> Add Single Crate
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function QtyRow({
-  featured,
-  label,
-  qty,
-  onMinus,
-  onPlus,
-}: {
-  featured: boolean;
-  label: string;
-  qty: number;
-  onMinus: () => void;
-  onPlus: () => void;
-}) {
-  const base = featured
-    ? "border-primary-foreground/25 bg-primary-foreground/10 text-primary-foreground"
-    : "border-border bg-background text-foreground";
-  return (
-    <div className={["flex items-center justify-between gap-3 rounded-full border px-2 py-1.5", base].join(" ")}>
-      <span className="pl-2 text-xs font-semibold">{label}</span>
-      <div className="inline-flex items-center gap-2">
-        <button
-          type="button"
-          aria-label="Decrease"
-          onClick={onMinus}
-          className={[
-            "grid h-8 w-8 place-items-center rounded-full transition-colors",
-            featured ? "bg-primary-foreground/15 hover:bg-primary-foreground/25" : "bg-secondary hover:bg-secondary/70",
-          ].join(" ")}
-        >
-          <Minus className="h-3.5 w-3.5" />
-        </button>
-        <span className="min-w-6 text-center text-sm font-bold">{qty} in cart</span>
-        <button
-          type="button"
-          aria-label="Increase"
-          onClick={onPlus}
-          className={[
-            "grid h-8 w-8 place-items-center rounded-full transition-colors",
-            featured ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90" : "bg-primary text-primary-foreground hover:bg-primary/90",
-          ].join(" ")}
-        >
-          <Plus className="h-3.5 w-3.5" />
-        </button>
-      </div>
+      <Button
+        size="lg"
+        onClick={() => onOrder(s.id)}
+        className={[
+          "h-12 rounded-full text-base",
+          featured ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90" : "",
+        ].join(" ")}
+      >
+        <ShoppingBag className="h-4 w-4" /> Order this stack
+      </Button>
+      <p className={["mt-2 text-center text-[11px]", featured ? "text-primary-foreground/70" : "text-muted-foreground"].join(" ")}>
+        Mix other stacks & crates on the next step
+      </p>
     </div>
   );
 }
 
 function Stacks() {
+  const [open, setOpen] = useState(false);
+  const [initial, setInitial] = useState<string | undefined>(undefined);
   return (
     <section id="stacks" className="border-t border-border">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
@@ -535,9 +432,28 @@ function Stacks() {
 
         <div className="mt-14 grid items-stretch gap-6 lg:grid-cols-3 lg:gap-8">
           {stacks.map((s) => (
-            <StackCard key={s.name} s={s} />
+            <StackCard
+              key={s.name}
+              s={s}
+              onOrder={(id) => {
+                setInitial(id);
+                setOpen(true);
+              }}
+            />
           ))}
         </div>
+
+        <OrderBuilder
+          open={open}
+          onOpenChange={setOpen}
+          stacks={stacks.map((s) => ({
+            id: s.id,
+            name: s.name,
+            cratePrice: s.cratePrice,
+            stackPrice: s.stackPrice,
+          }))}
+          initialStackId={initial}
+        />
       </div>
     </section>
   );
