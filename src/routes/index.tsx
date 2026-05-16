@@ -36,6 +36,7 @@ import stepPickup from "@/assets/step-pickup.jpg";
 import stackStarter from "@/assets/stack-starter.jpg";
 import stackPerformance from "@/assets/stack-performance.jpg";
 import stackElite from "@/assets/stack-elite.jpg";
+import eggsPan from "@/assets/eggs-pan.jpg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -247,12 +248,22 @@ function Problem() {
   return (
     <section className="border-t border-border bg-secondary/40">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
-        <div className="max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-widest text-primary">The real gap</p>
-          <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight md:text-5xl">
-            Most people don&apos;t struggle with training.
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">They struggle with everything around it.</p>
+        <div className="grid items-center gap-10 md:grid-cols-2">
+          <div className="max-w-2xl">
+            <p className="text-sm font-medium uppercase tracking-widest text-primary">The real gap</p>
+            <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight md:text-5xl">
+              Most people don&apos;t struggle with training.
+            </h2>
+            <p className="mt-4 text-lg text-muted-foreground">They struggle with everything around it.</p>
+          </div>
+          <div className="overflow-hidden rounded-2xl border border-border shadow-card">
+            <img
+              src={eggsPan}
+              alt="Four sunny-side-up eggs frying in a pan"
+              className="aspect-[4/3] w-full object-cover"
+              loading="lazy"
+            />
+          </div>
         </div>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
