@@ -33,6 +33,9 @@ import foodFresh from "@/assets/food-fresh.jpg";
 import stepChoose from "@/assets/step-choose.jpg";
 import stepReserve from "@/assets/step-reserve.jpg";
 import stepPickup from "@/assets/step-pickup.jpg";
+import stackStarter from "@/assets/stack-starter.jpg";
+import stackPerformance from "@/assets/stack-performance.jpg";
+import stackElite from "@/assets/stack-elite.jpg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -303,8 +306,8 @@ const stacks: Stack[] = [
       "Simple meal prep support",
       "Affordable daily protein",
     ],
-    img: foodFresh,
-    imgAlt: "Fresh brown eggs in a basket — natural protein",
+    img: stackStarter,
+    imgAlt: "Kraft crate of small fresh brown eggs — Starter Stack",
   },
   {
     id: "performance",
@@ -324,8 +327,8 @@ const stacks: Stack[] = [
     ],
     featured: true,
     highlight: "One simple habit. One month of protein covered.",
-    img: foodSunny,
-    imgAlt: "Sunny side up eggs with golden yolks",
+    img: stackPerformance,
+    imgAlt: "Kraft crate of medium fresh brown eggs — Performance Stack",
   },
   {
     id: "elite",
@@ -341,8 +344,8 @@ const stacks: Stack[] = [
       "Priority reservation access",
       "Exclusive nutrition content",
     ],
-    img: foodOmelet,
-    imgAlt: "Fluffy omelet plated with herbs",
+    img: stackElite,
+    imgAlt: "Kraft crate of jumbo brown eggs — Elite Stack",
   },
 ];
 
