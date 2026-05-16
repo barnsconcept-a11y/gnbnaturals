@@ -79,6 +79,7 @@ function Nav() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
         <Logo />
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
+          <a href="#product" className="hover:text-foreground transition-colors">Product</a>
           <a href="#stacks" className="hover:text-foreground transition-colors">Stacks</a>
           <a href="#why" className="hover:text-foreground transition-colors">Why eggs</a>
           <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
