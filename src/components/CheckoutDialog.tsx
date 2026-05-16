@@ -52,6 +52,7 @@ export function CheckoutDialog({
     setNotes("");
     setFile(null);
     setDone(false);
+    setSummary(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
