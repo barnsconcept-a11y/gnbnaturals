@@ -139,13 +139,13 @@ function Hero() {
 
         <div className="relative">
           <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl" />
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-cream shadow-elevated">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
             <img
-              src={productTray}
-              alt="G&B Naturals kraft paper egg tray — 30 fresh eggs with high protein, natural, fuel your performance icons"
-              width={1240}
-              height={940}
-              className="aspect-[4/3] w-full object-cover"
+              src={heroImg}
+              alt="Kraft paper egg packaging with healthy breakfast meal prep, water bottle and dumbbell"
+              width={1536}
+              height={1536}
+              className="aspect-square w-full object-cover"
             />
           </div>
           <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block">
