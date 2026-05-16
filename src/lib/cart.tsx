@@ -36,9 +36,11 @@ type CartContextValue = {
 const CartContext = createContext<CartContextValue | null>(null);
 
 const STORAGE_KEY = "gb-naturals-cart-v1";
+const PICKUP_KEY = "gb-naturals-pickup-v1";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const [pickup, setPickup] = useState<string>("");
   const [isOpen, setIsOpen] = useState(false);
 
   // hydrate
@@ -47,6 +49,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       if (raw) setItems(JSON.parse(raw));
+      const p = localStorage.getItem(PICKUP_KEY);
+      if (p) setPickup(p);
     } catch {}
   }, []);
 
@@ -57,6 +61,13 @@ export function CartProvider({ children }: { children: ReactNode }) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
     } catch {}
   }, [items]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      localStorage.setItem(PICKUP_KEY, pickup);
+    } catch {}
+  }, [pickup]);
 
   const add = useCallback<CartContextValue["add"]>((item, qty = 1) => {
     setItems((prev) => {
