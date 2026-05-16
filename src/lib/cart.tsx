@@ -25,6 +25,8 @@ type CartContextValue = {
   totalItems: number;
   totalCrates: number;
   totalPrice: number;
+  pickup: string;
+  setPickup: (v: string) => void;
   isOpen: boolean;
   open: () => void;
   close: () => void;
