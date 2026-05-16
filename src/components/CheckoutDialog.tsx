@@ -47,7 +47,6 @@ export function CheckoutDialog({
   const reset = () => {
     setName("");
     setPhone("");
-    setReference("");
     setNotes("");
     setFile(null);
     setDone(false);
