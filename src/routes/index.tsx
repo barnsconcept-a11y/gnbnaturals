@@ -105,14 +105,18 @@ function Hero() {
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:grid-cols-2 md:gap-10 md:pb-24 md:pt-20">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card animate-hero-rise">
             <Leaf className="h-3 w-3 text-primary" />
             Natural Protein · Real Results
           </div>
-          <h1 className="mt-5 text-balance text-5xl font-bold leading-[1.02] tracking-tight md:text-6xl lg:text-7xl">
-            Affordable daily protein <span className="text-primary">made simple.</span>
+          <h1 className="mt-5 text-balance text-5xl font-bold leading-[1.02] tracking-tight md:text-6xl lg:text-7xl animate-hero-rise" style={{ animationDelay: "0.1s" }}>
+            Affordable daily protein{" "}
+            <span className="relative inline-block text-primary">
+              <span className="relative z-10">made simple.</span>
+              <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 rounded-full bg-accent/60 animate-hero-rise" style={{ animationDelay: "0.6s" }} />
+            </span>
           </h1>
-          <p className="mt-6 max-w-xl text-balance text-lg text-muted-foreground">
+          <p className="mt-6 max-w-xl text-balance text-lg text-muted-foreground animate-hero-rise" style={{ animationDelay: "0.2s" }}>
             Fresh <BrandMark className="text-primary text-[1.05em]" /> Naturals eggs reserved weekly
             and ready for pickup through your local fitness community. Clean fuel for real training.
           </p>
@@ -124,8 +128,8 @@ function Hero() {
               "Less dependence on expensive supplements",
               "Weekly pickup ready for you",
               "Built for consistent nutrition habits",
-            ].map((b) => (
-              <li key={b} className="flex items-center gap-3">
+            ].map((b, i) => (
+              <li key={b} className="flex items-center gap-3 animate-hero-rise" style={{ animationDelay: `${300 + i * 80}ms` }}>
                 <span className="grid h-5 w-5 place-items-center rounded-full bg-primary/10 text-primary">
                   <Check className="h-3 w-3" strokeWidth={3} />
                 </span>
@@ -134,8 +138,8 @@ function Hero() {
             ))}
           </ul>
 
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button asChild size="lg" className="h-12 rounded-full px-6 text-base shadow-elevated">
+          <div className="mt-9 flex flex-wrap items-center gap-3 animate-hero-rise" style={{ animationDelay: "0.7s" }}>
+            <Button asChild size="lg" className="h-12 rounded-full px-6 text-base shadow-elevated transition-transform hover:scale-[1.03]">
               <a href="#stacks">Start My Performance Stack <ArrowRight className="h-4 w-4" /></a>
             </Button>
             <Button asChild size="lg" variant="outline" className="h-12 rounded-full px-6 text-base">
@@ -144,18 +148,19 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative">
-          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl" />
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
+        <div className="relative animate-hero-rise" style={{ animationDelay: "0.3s" }}>
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl animate-hero-blob" />
+          <div className="absolute -inset-10 -z-10 rounded-full bg-primary/10 blur-3xl animate-hero-blob" style={{ animationDelay: "1.5s" }} />
+          <div className="hero-shine relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
             <img
               src={heroImg}
               alt="Kraft paper egg packaging with healthy breakfast meal prep, water bottle and dumbbell"
               width={1536}
               height={1536}
-              className="aspect-square w-full object-cover"
+              className="aspect-square w-full object-cover animate-hero-zoom"
             />
           </div>
-          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block">
+          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block animate-hero-float">
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
                 <Flame className="h-5 w-5" />
@@ -166,7 +171,7 @@ function Hero() {
               </div>
             </div>
           </div>
-          <div className="absolute -right-4 -top-4 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block">
+          <div className="absolute -right-4 -top-4 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block animate-hero-float" style={{ animationDelay: "1.2s" }}>
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-xl bg-kraft text-kraft-foreground">
                 <Leaf className="h-5 w-5" />

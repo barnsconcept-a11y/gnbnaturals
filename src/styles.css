@@ -121,4 +121,60 @@
   .shadow-soft { box-shadow: var(--shadow-soft); }
   .shadow-elevated { box-shadow: var(--shadow-elevated); }
   .shadow-card { box-shadow: var(--shadow-card); }
+
+  @keyframes hero-rise {
+    from { opacity: 0; transform: translateY(24px); filter: blur(6px); }
+    to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+  }
+  @keyframes hero-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%      { transform: translateY(-10px) rotate(-1deg); }
+  }
+  @keyframes hero-blob {
+    0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.7; }
+    50%      { transform: translate(10px, -16px) scale(1.08); opacity: 0.9; }
+  }
+  @keyframes hero-zoom {
+    from { transform: scale(1.08); }
+    to   { transform: scale(1); }
+  }
+  @keyframes hero-shine {
+    0%   { transform: translateX(-120%) skewX(-12deg); }
+    60%  { transform: translateX(160%)  skewX(-12deg); }
+    100% { transform: translateX(160%)  skewX(-12deg); }
+  }
+  @keyframes hero-spin-slow { to { transform: rotate(360deg); } }
+
+  .animate-hero-rise      { animation: hero-rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .animate-hero-float     { animation: hero-float 6s ease-in-out infinite; }
+  .animate-hero-blob      { animation: hero-blob 9s ease-in-out infinite; }
+  .animate-hero-zoom      { animation: hero-zoom 1.6s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+  .animate-hero-spin-slow { animation: hero-spin-slow 24s linear infinite; }
+
+  .hero-shine { position: relative; overflow: hidden; isolation: isolate; }
+  .hero-shine::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(100deg, transparent 30%, oklch(1 0 0 / 0.35) 50%, transparent 70%);
+    animation: hero-shine 3.5s ease-in-out 1.2s infinite;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .anim-delay-100 { animation-delay: 0.1s; }
+  .anim-delay-200 { animation-delay: 0.2s; }
+  .anim-delay-300 { animation-delay: 0.3s; }
+  .anim-delay-400 { animation-delay: 0.4s; }
+  .anim-delay-500 { animation-delay: 0.5s; }
+  .anim-delay-700 { animation-delay: 0.7s; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .animate-hero-rise,
+    .animate-hero-float,
+    .animate-hero-blob,
+    .animate-hero-zoom,
+    .animate-hero-spin-slow,
+    .hero-shine::after { animation: none !important; }
+  }
 }
