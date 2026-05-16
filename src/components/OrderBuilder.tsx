@@ -77,38 +77,8 @@ export function OrderBuilder({
     return { totalCrates: crates, totalPrice: price, hasItems: count > 0 };
   }, [lines, stacks]);
 
-  const summaryMessage = useMemo(() => {
-    if (!hasItems) return "";
-    const orderLines: string[] = [];
-    for (const s of stacks) {
-      const single = lines[`${s.id}-single`] ?? 0;
-      const pack = lines[`${s.id}-pack4`] ?? 0;
-      if (pack > 0) {
-        orderLines.push(
-          `• ${pack}× ${s.name} — 4-Crate Monthly Stack (${formatGHS(s.stackPrice)} ea) = ${formatGHS(pack * s.stackPrice)}`,
-        );
-      }
-      if (single > 0) {
-        orderLines.push(
-          `• ${single}× ${s.name} — Single Crate (${formatGHS(s.cratePrice)} ea) = ${formatGHS(single * s.cratePrice)}`,
-        );
-      }
-    }
-    return [
-      "Hi G&B Naturals! I'd like to reserve the following:",
-      "",
-      ...orderLines,
-      "",
-      `Total crates: ${totalCrates}`,
-      `Total: ${formatGHS(totalPrice)}`,
-      "",
-      `Pickup station: ${pickup || "(not selected)"}`,
-      "Name:",
-    ].join("\n");
-  }, [hasItems, lines, stacks, totalCrates, totalPrice, pickup]);
-
   const canSubmit = hasItems && pickup.length > 0;
-  const whatsappUrl = canSubmit ? buildWhatsAppUrl(summaryMessage) : "#";
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const commitToCart = () => {
     for (const s of stacks) {
