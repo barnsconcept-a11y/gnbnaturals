@@ -117,6 +117,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     totalItems,
     totalCrates,
     totalPrice,
+    pickup,
+    setPickup,
     isOpen,
     open: () => setIsOpen(true),
     close: () => setIsOpen(false),
