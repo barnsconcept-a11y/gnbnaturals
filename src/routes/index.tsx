@@ -21,6 +21,11 @@ import {
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
 import productOpen from "@/assets/product-open.png";
+import foodSunny from "@/assets/food-sunny.jpg";
+import foodOmelet from "@/assets/food-omelet.jpg";
+import foodEggs from "@/assets/food-eggs.jpg";
+import foodBowl from "@/assets/food-bowl.jpg";
+import foodFresh from "@/assets/food-fresh.jpg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -496,10 +501,10 @@ function HowItWorks() {
 }
 
 const recipes = [
-  { tag: "Breakfast", title: "High Protein Egg Recipes", body: "10-minute power breakfasts that hit 30g+ of protein.", tone: "bg-primary text-primary-foreground" },
-  { tag: "Prep", title: "Breakfast Meal Prep", body: "Sunday-night batch cooks that cover your whole week.", tone: "bg-kraft text-kraft-foreground" },
-  { tag: "Budget", title: "Affordable Protein Meals", body: "Hit your macros without burning your monthly budget.", tone: "bg-accent text-accent-foreground" },
-  { tag: "Performance", title: "Fitness Nutrition Tips", body: "Simple frameworks for staying consistent year-round.", tone: "bg-primary text-primary-foreground" },
+  { tag: "Breakfast", title: "High Protein Egg Recipes", body: "10-minute power breakfasts that hit 30g+ of protein.", img: foodSunny },
+  { tag: "Prep", title: "Breakfast Meal Prep", body: "Sunday-night batch cooks that cover your whole week.", img: foodOmelet },
+  { tag: "Budget", title: "Affordable Protein Meals", body: "Hit your macros without burning your monthly budget.", img: foodEggs },
+  { tag: "Performance", title: "Fitness Nutrition Tips", body: "Simple frameworks for staying consistent year-round.", img: foodBowl },
 ];
 
 function Recipes() {
@@ -527,12 +532,19 @@ function Recipes() {
               key={r.title}
               className="group overflow-hidden rounded-3xl border border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated"
             >
-              <div className={`aspect-[4/3] ${r.tone} relative p-6`}>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,oklch(1_0_0/0.15),transparent_60%)]" />
-                <span className="relative inline-flex rounded-full bg-background/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider backdrop-blur">
+              <div className="relative aspect-[4/3] overflow-hidden">
+                <img
+                  src={r.img}
+                  alt={r.title}
+                  loading="lazy"
+                  width={1024}
+                  height={768}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
                   {r.tag}
                 </span>
-                <Egg className="absolute bottom-4 right-4 h-20 w-20 opacity-20" />
               </div>
               <div className="p-5">
                 <h3 className="text-base font-semibold">{r.title}</h3>
