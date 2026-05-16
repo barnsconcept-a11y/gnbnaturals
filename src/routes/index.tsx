@@ -105,14 +105,18 @@ function Hero() {
     <section className="relative overflow-hidden">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:grid-cols-2 md:gap-10 md:pb-24 md:pt-20">
         <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card animate-hero-rise">
             <Leaf className="h-3 w-3 text-primary" />
             Natural Protein · Real Results
           </div>
-          <h1 className="mt-5 text-balance text-5xl font-bold leading-[1.02] tracking-tight md:text-6xl lg:text-7xl">
-            Affordable daily protein <span className="text-primary">made simple.</span>
+          <h1 className="mt-5 text-balance text-5xl font-bold leading-[1.02] tracking-tight md:text-6xl lg:text-7xl animate-hero-rise" style={{ animationDelay: "0.1s" }}>
+            Affordable daily protein{" "}
+            <span className="relative inline-block text-primary">
+              <span className="relative z-10">made simple.</span>
+              <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 rounded-full bg-accent/60 animate-hero-rise" style={{ animationDelay: "0.6s" }} />
+            </span>
           </h1>
-          <p className="mt-6 max-w-xl text-balance text-lg text-muted-foreground">
+          <p className="mt-6 max-w-xl text-balance text-lg text-muted-foreground animate-hero-rise" style={{ animationDelay: "0.2s" }}>
             Fresh <BrandMark className="text-primary text-[1.05em]" /> Naturals eggs reserved weekly
             and ready for pickup through your local fitness community. Clean fuel for real training.
           </p>
