@@ -1,4 +1,5 @@
-import { MapPin, Minus, MessageCircle, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { MapPin, Minus, Plus, ShoppingCart, Smartphone, Trash2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -17,19 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS } from "@/lib/cart";
 import { PICKUP_STATIONS } from "@/lib/pickup";
-
-// Update this to your real number, in international format without "+"
-const WHATSAPP_NUMBER = "233548363844";
-
-function buildWhatsAppUrl(message: string) {
-  const text = encodeURIComponent(message);
-  const isMobile =
-    typeof navigator !== "undefined" &&
-    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  return isMobile
-    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
-    : `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${text}`;
-}
+import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export function CartButton() {
   const {
