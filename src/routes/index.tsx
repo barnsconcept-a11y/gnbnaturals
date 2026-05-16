@@ -177,22 +177,6 @@ function Hero() {
 }
 
 function Packaging() {
-  const items = [
-    {
-      img: productBox,
-      tag: "Elite Pack",
-      title: "Kraft Paper Egg Carton",
-      body: "Premium look and feel. Stronger, stackable and perfect for performance athletes who want consistency.",
-      features: ["100% Recyclable", "Durable Carton", "Stackable Design", "Premium Presentation"],
-    },
-    {
-      img: productTray,
-      tag: "Daily Pack",
-      title: "Paper Pulp Tray with Sleeve",
-      body: "Sustainable, minimal and practical. Affordable and perfect for everyday gym goers.",
-      features: ["100% Recyclable", "Strong Protection", "Eco Friendly", "Built for Performance"],
-    },
-  ];
   return (
     <section id="product" className="border-t border-border bg-cream/60">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
@@ -206,43 +190,11 @@ function Packaging() {
           </p>
         </div>
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-2 lg:gap-8">
-          {items.map((p) => (
-            <article
-              key={p.title}
-              className="group overflow-hidden rounded-3xl border border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated"
-            >
-              <div className="relative bg-cream">
-                <img
-                  src={p.img}
-                  alt={`G&B Naturals ${p.title}`}
-                  className="aspect-[5/4] w-full object-cover"
-                  loading="lazy"
-                />
-                <span className="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary-foreground shadow-soft">
-                  {p.tag}
-                </span>
-              </div>
-              <div className="p-6 md:p-7">
-                <h3 className="text-xl font-bold tracking-tight">{p.title}</h3>
-                <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
-                <ul className="mt-5 grid grid-cols-2 gap-2 text-xs">
-                  {p.features.map((f) => (
-                    <li key={f} className="flex items-center gap-2 rounded-lg border border-border bg-secondary/40 px-3 py-2 font-medium">
-                      <span className="h-1.5 w-1.5 rounded-full bg-primary" /> {f}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-8 overflow-hidden rounded-3xl border border-border bg-primary text-primary-foreground shadow-elevated md:grid md:grid-cols-5">
+        <div className="mt-14 overflow-hidden rounded-3xl border border-border bg-primary text-primary-foreground shadow-elevated md:grid md:grid-cols-5">
           <div className="md:col-span-3">
             <img
               src={productOpen}
-              alt="G&B Naturals open kraft carton with 30 fresh eggs — Good nutrition builds stronger you"
+              alt="G&B Naturals open kraft carton with 30 fresh eggs — Good nutrition builds a stronger you"
               className="aspect-[16/10] w-full object-cover md:aspect-auto md:h-full"
               loading="lazy"
             />
