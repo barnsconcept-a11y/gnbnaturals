@@ -435,29 +435,44 @@ function WhyEggs() {
   return (
     <section id="why" className="border-t border-border bg-cream/60">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
-        <div className="grid items-end gap-6 md:grid-cols-2">
-          <div>
+        <div className="grid items-center gap-10 md:grid-cols-12">
+          <div className="md:col-span-5">
+            <div className="relative">
+              <div className="absolute -inset-4 -z-10 rounded-[2rem] bg-kraft-paper opacity-60 blur-2xl" />
+              <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
+                <img
+                  src={foodFresh}
+                  alt="Fresh brown eggs on soft cream linen, natural daylight"
+                  loading="lazy"
+                  width={1024}
+                  height={1280}
+                  className="aspect-[4/5] w-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="md:col-span-7">
             <p className="text-sm font-medium uppercase tracking-widest text-primary">Why eggs</p>
             <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight md:text-5xl">
               The original performance food.
             </h2>
-          </div>
-          <p className="text-muted-foreground md:text-lg">
-            Before powders, bars and shakes — there were eggs. Simple, affordable, and built for
-            people who care about staying consistent.
-          </p>
-        </div>
+            <p className="mt-4 max-w-xl text-muted-foreground md:text-lg">
+              Before powders, bars and shakes — there were eggs. Simple, affordable, and built for
+              people who care about staying consistent.
+            </p>
 
-        <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-          {whyItems.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-2xl border border-border bg-card p-5 shadow-card">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-kraft text-kraft-foreground">
-                <Icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 text-base font-semibold">{title}</h3>
-              <p className="mt-1.5 text-sm text-muted-foreground">{body}</p>
+            <div className="mt-8 grid gap-4 sm:grid-cols-2">
+              {whyItems.map(({ icon: Icon, title, body }) => (
+                <div key={title} className="rounded-2xl border border-border bg-card p-5 shadow-card">
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-kraft text-kraft-foreground">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <h3 className="mt-4 text-base font-semibold">{title}</h3>
+                  <p className="mt-1.5 text-sm text-muted-foreground">{body}</p>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
