@@ -85,7 +85,7 @@ export function CheckoutDialog({
         })),
         total_amount: totalPrice,
         currency: "GHS",
-        momo_reference: reference.trim() || null,
+        momo_reference: null,
         proof_path: path,
         notes: notes.trim() || null,
       });
