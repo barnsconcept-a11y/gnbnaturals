@@ -300,6 +300,8 @@ const stacks: Stack[] = [
       "Simple meal prep support",
       "Affordable daily protein",
     ],
+    img: foodFresh,
+    imgAlt: "Fresh brown eggs in a basket — natural protein",
   },
   {
     id: "performance",
