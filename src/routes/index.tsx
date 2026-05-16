@@ -321,6 +321,8 @@ const stacks: Stack[] = [
     ],
     featured: true,
     highlight: "One simple habit. One month of protein covered.",
+    img: foodSunny,
+    imgAlt: "Sunny side up eggs with golden yolks",
   },
   {
     id: "elite",
@@ -336,6 +338,8 @@ const stacks: Stack[] = [
       "Priority reservation access",
       "Exclusive nutrition content",
     ],
+    img: foodOmelet,
+    imgAlt: "Fluffy omelet plated with herbs",
   },
 ];
 
