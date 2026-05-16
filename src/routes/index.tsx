@@ -741,6 +741,7 @@ function Landing() {
       <main>
         <Hero />
         <Problem />
+        <Packaging />
         <Stacks />
         <WhyEggs />
         <HowItWorks />
