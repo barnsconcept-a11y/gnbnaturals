@@ -1,4 +1,4 @@
-import { Minus, Plus, ShoppingCart, Trash2, MessageCircle } from "lucide-react";
+import { MapPin, Minus, MessageCircle, Plus, ShoppingCart, Trash2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -7,8 +7,16 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS } from "@/lib/cart";
+import { PICKUP_STATIONS } from "@/lib/pickup";
 
 // Update this to your real number, in international format without "+"
 const WHATSAPP_NUMBER = "233548363844";
@@ -18,8 +26,20 @@ function buildWhatsAppUrl(message: string) {
 }
 
 export function CartButton() {
-  const { items, totalItems, totalCrates, totalPrice, isOpen, open, close, setQty, remove, clear } =
-    useCart();
+  const {
+    items,
+    totalItems,
+    totalCrates,
+    totalPrice,
+    pickup,
+    setPickup,
+    isOpen,
+    open,
+    close,
+    setQty,
+    remove,
+    clear,
+  } = useCart();
 
   const message = (() => {
     if (items.length === 0) return "";
@@ -37,12 +57,13 @@ export function CartButton() {
       `Total crates: ${totalCrates}`,
       `Total: ${formatGHS(totalPrice)}`,
       "",
+      `Pickup station: ${pickup || "(not selected)"}`,
       "Name:",
-      "Pickup location / gym:",
     ].join("\n");
   })();
 
-  const whatsappUrl = message ? buildWhatsAppUrl(message) : "#";
+  const canSubmit = items.length > 0 && pickup.length > 0;
+  const whatsappUrl = canSubmit ? buildWhatsAppUrl(message) : "#";
 
   return (
     <>
