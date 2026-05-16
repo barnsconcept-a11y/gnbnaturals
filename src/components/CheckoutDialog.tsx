@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Copy, CheckCircle2, Upload, Loader2, Smartphone } from "lucide-react";
 import {
   Dialog,
@@ -29,11 +29,11 @@ export function CheckoutDialog({
   const { items, totalPrice, totalCrates, pickup, clear, close } = useCart();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [reference, setReference] = useState("");
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const copyNumber = async () => {
     try {
@@ -47,7 +47,6 @@ export function CheckoutDialog({
   const reset = () => {
     setName("");
     setPhone("");
-    setReference("");
     setNotes("");
     setFile(null);
     setDone(false);
@@ -86,7 +85,7 @@ export function CheckoutDialog({
         })),
         total_amount: totalPrice,
         currency: "GHS",
-        momo_reference: reference.trim() || null,
+        momo_reference: null,
         proof_path: path,
         notes: notes.trim() || null,
       });
@@ -201,20 +200,11 @@ export function CheckoutDialog({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="co-ref">MoMo transaction ID (optional)</Label>
-                <Input
-                  id="co-ref"
-                  value={reference}
-                  onChange={(e) => setReference(e.target.value)}
-                  placeholder="e.g. 1234567890"
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="co-proof">Step 2 · Upload payment screenshot</Label>
-                <label
-                  htmlFor="co-proof"
-                  className="flex cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-background px-4 py-3 text-sm transition-colors hover:bg-secondary/50"
+                <Label>Step 2 · Upload payment screenshot</Label>
+                <button
+                  type="button"
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-background px-4 py-3 text-left text-sm transition-colors hover:bg-secondary/50"
                 >
                   <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-muted-foreground">
                     <Upload className="h-4 w-4" />
@@ -236,12 +226,12 @@ export function CheckoutDialog({
                       </>
                     )}
                   </div>
-                </label>
+                </button>
                 <input
-                  id="co-proof"
+                  ref={fileInputRef}
                   type="file"
                   accept="image/*"
-                  className="hidden"
+                  className="sr-only"
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
                 />
               </div>
