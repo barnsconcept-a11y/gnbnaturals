@@ -163,6 +163,23 @@ export function CartButton() {
           {items.length > 0 && (
             <SheetFooter className="border-t border-border bg-secondary/30 p-6">
               <div className="w-full space-y-4">
+                <div>
+                  <label className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                    <MapPin className="h-3.5 w-3.5 text-primary" /> Pickup station / gym
+                  </label>
+                  <Select value={pickup} onValueChange={setPickup}>
+                    <SelectTrigger className="h-11 rounded-xl bg-background">
+                      <SelectValue placeholder="Choose your pickup location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {PICKUP_STATIONS.map((p) => (
+                        <SelectItem key={p} value={p}>
+                          {p}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">
                     {totalCrates} crate{totalCrates !== 1 ? "s" : ""} total
@@ -172,17 +189,21 @@ export function CartButton() {
                   </span>
                 </div>
                 <Button
-                  asChild
+                  asChild={canSubmit}
                   size="lg"
+                  disabled={!canSubmit}
                   className="h-12 w-full rounded-full text-base shadow-elevated"
                 >
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
-                  </a>
+                  {canSubmit ? (
+                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
+                    </a>
+                  ) : (
+                    <span>
+                      <MessageCircle className="h-4 w-4" />
+                      {pickup ? "Reserve via WhatsApp" : "Pick a station to continue"}
+                    </span>
+                  )}
                 </Button>
                 <button
                   type="button"
