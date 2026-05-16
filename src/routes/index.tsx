@@ -29,7 +29,7 @@ import foodSunny from "@/assets/food-sunny.jpg";
 import foodOmelet from "@/assets/food-omelet.jpg";
 import foodEggs from "@/assets/food-eggs.jpg";
 import foodBowl from "@/assets/food-bowl.jpg";
-import foodFresh from "@/assets/food-fresh.jpg";
+import foodFresh from "@/assets/why-eggs.png";
 import stepChoose from "@/assets/step-choose.jpg";
 import stepReserve from "@/assets/step-reserve.jpg";
 import stepPickup from "@/assets/step-pickup.jpg";
