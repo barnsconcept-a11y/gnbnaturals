@@ -22,7 +22,13 @@ import { PICKUP_STATIONS } from "@/lib/pickup";
 const WHATSAPP_NUMBER = "233548363844";
 
 function buildWhatsAppUrl(message: string) {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+  const text = encodeURIComponent(message);
+  const isMobile =
+    typeof navigator !== "undefined" &&
+    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  return isMobile
+    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
+    : `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${text}`;
 }
 
 export function CartButton() {
