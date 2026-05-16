@@ -151,11 +151,17 @@ export function CartButton() {
                   </span>
                 </div>
                 <Button
-                  onClick={checkout}
+                  asChild
                   size="lg"
                   className="h-12 w-full rounded-full text-base shadow-elevated"
                 >
-                  <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
+                  </a>
                 </Button>
                 <button
                   type="button"
