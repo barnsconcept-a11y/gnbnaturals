@@ -94,7 +94,10 @@ export function CheckoutDialog({
       });
       if (insErr) throw insErr;
 
+      setSummary({ crates: totalCrates, price: totalPrice });
       setDone(true);
+      clear();
+      close();
       toast.success("Order received — we'll confirm shortly");
     } catch (err) {
       console.error(err);
@@ -107,8 +110,6 @@ export function CheckoutDialog({
   const handleClose = (v: boolean) => {
     if (submitting) return;
     if (!v && done) {
-      clear();
-      close();
       reset();
     }
     onOpenChange(v);
