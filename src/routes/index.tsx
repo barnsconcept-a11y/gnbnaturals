@@ -538,9 +538,9 @@ function WhyEggs() {
 }
 
 const steps = [
-  { icon: ShoppingBag, title: "Choose Your Protein Stack", body: "Starter, Performance or Elite — built for your routine." },
-  { icon: CalendarCheck, title: "Reserve Weekly Supply", body: "We hold your eggs each week so you never run out." },
-  { icon: MapPin, title: "Pick Up Through Your Fitness Community", body: "Grab them at your gym, hub or partner location." },
+  { icon: ShoppingBag, title: "Choose Your Protein Stack", body: "Starter, Performance or Elite — built for your routine.", img: foodEggs, imgAlt: "Crate of fresh eggs ready to choose" },
+  { icon: CalendarCheck, title: "Reserve Weekly Supply", body: "We hold your eggs each week so you never run out.", img: foodBowl, imgAlt: "Bowl of fresh eggs reserved for the week" },
+  { icon: MapPin, title: "Pick Up Through Your Fitness Community", body: "Grab them at your gym, hub or partner location.", img: foodFresh, imgAlt: "Fresh eggs packaged for gym pickup" },
 ];
 
 function HowItWorks() {
@@ -556,14 +556,23 @@ function HowItWorks() {
 
         <div className="relative mt-14 grid gap-6 md:grid-cols-3">
           {steps.map((s, i) => (
-            <div key={s.title} className="relative rounded-3xl border border-border bg-card p-7 shadow-card">
-              <div className="flex items-center justify-between">
-                <div className="grid h-12 w-12 place-items-center rounded-2xl bg-primary text-primary-foreground">
-                  <s.icon className="h-5 w-5" />
-                </div>
-                <span className="text-sm font-semibold text-muted-foreground">0{i + 1}</span>
+            <div key={s.title} className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-card">
+              <div className="overflow-hidden">
+                <img
+                  src={s.img}
+                  alt={s.imgAlt}
+                  loading="lazy"
+                  className="h-44 w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
               </div>
-              <h3 className="mt-6 text-lg font-semibold">{s.title}</h3>
+              <div className="p-7">
+                <div className="flex items-center justify-between">
+                  <div className="grid h-12 w-12 place-items-center rounded-2xl bg-primary text-primary-foreground">
+                    <s.icon className="h-5 w-5" />
+                  </div>
+                  <span className="text-sm font-semibold text-muted-foreground">0{i + 1}</span>
+                </div>
+                <h3 className="mt-6 text-lg font-semibold">{s.title}</h3>
               <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
             </div>
           ))}
