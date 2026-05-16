@@ -350,7 +350,7 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
   return (
     <div
       className={[
-        "relative flex flex-col rounded-3xl border p-7 transition-all",
+        "relative flex flex-col overflow-hidden rounded-3xl border p-7 transition-all",
         featured
           ? "border-primary/20 bg-primary text-primary-foreground shadow-elevated lg:-my-6 lg:scale-[1.04]"
           : "border-border bg-card shadow-card hover:-translate-y-1 hover:shadow-elevated",
