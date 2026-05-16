@@ -36,29 +36,8 @@ export function CartButton() {
     clear,
   } = useCart();
 
-  const message = (() => {
-    if (items.length === 0) return "";
-    const lines = items.map(
-      (i) =>
-        `• ${i.qty}× ${i.stack} — ${i.variant} (${formatGHS(i.unitPrice)} ea) = ${formatGHS(
-          i.unitPrice * i.qty,
-        )}`,
-    );
-    return [
-      "Hi G&B Naturals! I'd like to reserve the following:",
-      "",
-      ...lines,
-      "",
-      `Total crates: ${totalCrates}`,
-      `Total: ${formatGHS(totalPrice)}`,
-      "",
-      `Pickup station: ${pickup || "(not selected)"}`,
-      "Name:",
-    ].join("\n");
-  })();
-
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const canSubmit = items.length > 0 && pickup.length > 0;
-  const whatsappUrl = canSubmit ? buildWhatsAppUrl(message) : "#";
 
   return (
     <>
