@@ -508,9 +508,9 @@ function WhyEggs() {
                   src={foodFresh}
                   alt="Fresh brown eggs on soft cream linen, natural daylight"
                   loading="lazy"
-                  width={1024}
-                  height={1280}
-                  className="aspect-[4/5] w-full object-cover"
+                  width={1536}
+                  height={864}
+                  className="aspect-[16/9] w-full object-contain bg-cream"
                 />
               </div>
             </div>
