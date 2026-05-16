@@ -1,4 +1,5 @@
-import { MapPin, Minus, MessageCircle, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { MapPin, Minus, Plus, ShoppingCart, Smartphone, Trash2 } from "lucide-react";
 import {
   Sheet,
   SheetContent,
@@ -17,19 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS } from "@/lib/cart";
 import { PICKUP_STATIONS } from "@/lib/pickup";
-
-// Update this to your real number, in international format without "+"
-const WHATSAPP_NUMBER = "233548363844";
-
-function buildWhatsAppUrl(message: string) {
-  const text = encodeURIComponent(message);
-  const isMobile =
-    typeof navigator !== "undefined" &&
-    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  return isMobile
-    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
-    : `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${text}`;
-}
+import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export function CartButton() {
   const {
@@ -47,29 +36,8 @@ export function CartButton() {
     clear,
   } = useCart();
 
-  const message = (() => {
-    if (items.length === 0) return "";
-    const lines = items.map(
-      (i) =>
-        `• ${i.qty}× ${i.stack} — ${i.variant} (${formatGHS(i.unitPrice)} ea) = ${formatGHS(
-          i.unitPrice * i.qty,
-        )}`,
-    );
-    return [
-      "Hi G&B Naturals! I'd like to reserve the following:",
-      "",
-      ...lines,
-      "",
-      `Total crates: ${totalCrates}`,
-      `Total: ${formatGHS(totalPrice)}`,
-      "",
-      `Pickup station: ${pickup || "(not selected)"}`,
-      "Name:",
-    ].join("\n");
-  })();
-
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const canSubmit = items.length > 0 && pickup.length > 0;
-  const whatsappUrl = canSubmit ? buildWhatsAppUrl(message) : "#";
 
   return (
     <>
@@ -195,21 +163,18 @@ export function CartButton() {
                   </span>
                 </div>
                 <Button
-                  asChild={canSubmit}
+                  type="button"
                   size="lg"
                   disabled={!canSubmit}
+                  onClick={() => setCheckoutOpen(true)}
                   className="h-12 w-full rounded-full text-base shadow-elevated"
                 >
-                  {canSubmit ? (
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
-                    </a>
-                  ) : (
-                    <span>
-                      <MessageCircle className="h-4 w-4" />
-                      {pickup ? "Reserve via WhatsApp" : "Pick a station to continue"}
-                    </span>
-                  )}
+                  <Smartphone className="h-4 w-4" />
+                  {canSubmit
+                    ? `Pay ${formatGHS(totalPrice)} with MoMo`
+                    : pickup
+                      ? "Add items to continue"
+                      : "Pick a station to continue"}
                 </Button>
                 <button
                   type="button"
@@ -223,6 +188,7 @@ export function CartButton() {
           )}
         </SheetContent>
       </Sheet>
+      <CheckoutDialog open={checkoutOpen} onOpenChange={setCheckoutOpen} />
     </>
   );
 }

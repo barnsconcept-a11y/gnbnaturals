@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { MapPin, Minus, MessageCircle, Plus, ShoppingBag, Sparkles } from "lucide-react";
+import { MapPin, Minus, Plus, ShoppingBag, Smartphone, Sparkles } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -18,6 +18,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS, type CartItem } from "@/lib/cart";
 import { PICKUP_STATIONS } from "@/lib/pickup";
+import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export type BuilderStack = {
   id: string;
@@ -25,18 +26,6 @@ export type BuilderStack = {
   cratePrice: number;
   stackPrice: number;
 };
-
-const WHATSAPP_NUMBER = "233548363844";
-
-function buildWhatsAppUrl(message: string) {
-  const text = encodeURIComponent(message);
-  const isMobile =
-    typeof navigator !== "undefined" &&
-    /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  return isMobile
-    ? `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`
-    : `https://web.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${text}`;
-}
 
 type LineKey = `${string}-single` | `${string}-pack4`;
 type Lines = Record<string, number>;
@@ -88,38 +77,8 @@ export function OrderBuilder({
     return { totalCrates: crates, totalPrice: price, hasItems: count > 0 };
   }, [lines, stacks]);
 
-  const summaryMessage = useMemo(() => {
-    if (!hasItems) return "";
-    const orderLines: string[] = [];
-    for (const s of stacks) {
-      const single = lines[`${s.id}-single`] ?? 0;
-      const pack = lines[`${s.id}-pack4`] ?? 0;
-      if (pack > 0) {
-        orderLines.push(
-          `• ${pack}× ${s.name} — 4-Crate Monthly Stack (${formatGHS(s.stackPrice)} ea) = ${formatGHS(pack * s.stackPrice)}`,
-        );
-      }
-      if (single > 0) {
-        orderLines.push(
-          `• ${single}× ${s.name} — Single Crate (${formatGHS(s.cratePrice)} ea) = ${formatGHS(single * s.cratePrice)}`,
-        );
-      }
-    }
-    return [
-      "Hi G&B Naturals! I'd like to reserve the following:",
-      "",
-      ...orderLines,
-      "",
-      `Total crates: ${totalCrates}`,
-      `Total: ${formatGHS(totalPrice)}`,
-      "",
-      `Pickup station: ${pickup || "(not selected)"}`,
-      "Name:",
-    ].join("\n");
-  }, [hasItems, lines, stacks, totalCrates, totalPrice, pickup]);
-
   const canSubmit = hasItems && pickup.length > 0;
-  const whatsappUrl = canSubmit ? buildWhatsAppUrl(summaryMessage) : "#";
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
 
   const commitToCart = () => {
     for (const s of stacks) {
@@ -254,24 +213,28 @@ export function OrderBuilder({
               <ShoppingBag className="h-4 w-4" /> Save to cart
             </Button>
             <Button
-              asChild={canSubmit}
+              type="button"
               size="lg"
               className="h-12 rounded-full shadow-elevated"
               disabled={!canSubmit}
+              onClick={() => {
+                commitToCart();
+                setCheckoutOpen(true);
+              }}
             >
-              {canSubmit ? (
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
-                </a>
-              ) : (
-                <span>
-                  <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
-                </span>
-              )}
+              <Smartphone className="h-4 w-4" />
+              {canSubmit ? "Pay with MoMo" : "Pick a station"}
             </Button>
           </div>
         </DialogFooter>
       </DialogContent>
+      <CheckoutDialog
+        open={checkoutOpen}
+        onOpenChange={(v) => {
+          setCheckoutOpen(v);
+          if (!v) onOpenChange(false);
+        }}
+      />
     </Dialog>
   );
 }
