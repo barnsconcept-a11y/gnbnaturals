@@ -27,6 +27,8 @@ export function CheckoutDialog({
   onOpenChange: (v: boolean) => void;
 }) {
   const { items, totalPrice, totalCrates, pickup, clear, close } = useCart();
+  // Snapshot totals so the success screen stays populated after we clear the cart
+  const [summary, setSummary] = useState<{ crates: number; price: number } | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
