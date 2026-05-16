@@ -30,6 +30,9 @@ import foodOmelet from "@/assets/food-omelet.jpg";
 import foodEggs from "@/assets/food-eggs.jpg";
 import foodBowl from "@/assets/food-bowl.jpg";
 import foodFresh from "@/assets/food-fresh.jpg";
+import stepChoose from "@/assets/step-choose.jpg";
+import stepReserve from "@/assets/step-reserve.jpg";
+import stepPickup from "@/assets/step-pickup.jpg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
@@ -538,9 +541,9 @@ function WhyEggs() {
 }
 
 const steps = [
-  { icon: ShoppingBag, title: "Choose Your Protein Stack", body: "Starter, Performance or Elite — built for your routine.", img: foodEggs, imgAlt: "Crate of fresh eggs ready to choose" },
-  { icon: CalendarCheck, title: "Reserve Weekly Supply", body: "We hold your eggs each week so you never run out.", img: foodBowl, imgAlt: "Bowl of fresh eggs reserved for the week" },
-  { icon: MapPin, title: "Pick Up Through Your Fitness Community", body: "Grab them at your gym, hub or partner location.", img: foodFresh, imgAlt: "Fresh eggs packaged for gym pickup" },
+  { icon: ShoppingBag, title: "Choose Your Protein Stack", body: "Starter, Performance or Elite — built for your routine.", img: stepChoose, imgAlt: "Three protein stack boxes lined up to choose from" },
+  { icon: CalendarCheck, title: "Reserve Weekly Supply", body: "We hold your eggs each week so you never run out.", img: stepReserve, imgAlt: "Weekly calendar beside stacked egg crates reserved each week" },
+  { icon: MapPin, title: "Pick Up Through Your Fitness Community", body: "Grab them at your gym, hub or partner location.", img: stepPickup, imgAlt: "Athlete picking up a kraft bag of eggs at the gym" },
 ];
 
 function HowItWorks() {
