@@ -21,14 +21,15 @@ export function CartButton() {
   const { items, totalItems, totalCrates, totalPrice, isOpen, open, close, setQty, remove, clear } =
     useCart();
 
-  const checkout = () => {
+  const message = (() => {
+    if (items.length === 0) return "";
     const lines = items.map(
       (i) =>
         `• ${i.qty}× ${i.stack} — ${i.variant} (${formatGHS(i.unitPrice)} ea) = ${formatGHS(
           i.unitPrice * i.qty,
         )}`,
     );
-    const msg = [
+    return [
       "Hi G&B Naturals! I'd like to reserve the following:",
       "",
       ...lines,
@@ -39,8 +40,9 @@ export function CartButton() {
       "Name:",
       "Pickup location / gym:",
     ].join("\n");
-    window.open(buildWhatsAppUrl(msg), "_blank", "noopener,noreferrer");
-  };
+  })();
+
+  const whatsappUrl = message ? buildWhatsAppUrl(message) : "#";
 
   return (
     <>
@@ -149,11 +151,17 @@ export function CartButton() {
                   </span>
                 </div>
                 <Button
-                  onClick={checkout}
+                  asChild
                   size="lg"
                   className="h-12 w-full rounded-full text-base shadow-elevated"
                 >
-                  <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
+                  </a>
                 </Button>
                 <button
                   type="button"
