@@ -282,6 +282,8 @@ type Stack = {
   features: string[];
   featured?: boolean;
   highlight?: string;
+  img: string;
+  imgAlt: string;
 };
 
 const stacks: Stack[] = [
