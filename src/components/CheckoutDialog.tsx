@@ -27,6 +27,8 @@ export function CheckoutDialog({
   onOpenChange: (v: boolean) => void;
 }) {
   const { items, totalPrice, totalCrates, pickup, clear, close } = useCart();
+  // Snapshot totals so the success screen stays populated after we clear the cart
+  const [summary, setSummary] = useState<{ crates: number; price: number } | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
@@ -50,6 +52,7 @@ export function CheckoutDialog({
     setNotes("");
     setFile(null);
     setDone(false);
+    setSummary(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -91,7 +94,10 @@ export function CheckoutDialog({
       });
       if (insErr) throw insErr;
 
+      setSummary({ crates: totalCrates, price: totalPrice });
       setDone(true);
+      clear();
+      close();
       toast.success("Order received — we'll confirm shortly");
     } catch (err) {
       console.error(err);
@@ -104,8 +110,6 @@ export function CheckoutDialog({
   const handleClose = (v: boolean) => {
     if (submitting) return;
     if (!v && done) {
-      clear();
-      close();
       reset();
     }
     onOpenChange(v);
@@ -133,7 +137,7 @@ export function CheckoutDialog({
             <div>
               <p className="text-base font-semibold">Thanks, {name || "champ"}!</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Your order for {totalCrates} crate{totalCrates !== 1 ? "s" : ""} ({formatGHS(totalPrice)})
+                Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)})
                 is being reviewed. We'll text you at {phone || "your number"} once confirmed.
               </p>
             </div>
