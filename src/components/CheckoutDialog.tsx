@@ -137,7 +137,7 @@ export function CheckoutDialog({
             <div>
               <p className="text-base font-semibold">Thanks, {name || "champ"}!</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Your order for {totalCrates} crate{totalCrates !== 1 ? "s" : ""} ({formatGHS(totalPrice)})
+                Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)})
                 is being reviewed. We'll text you at {phone || "your number"} once confirmed.
               </p>
             </div>
