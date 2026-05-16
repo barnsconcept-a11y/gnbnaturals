@@ -213,24 +213,28 @@ export function OrderBuilder({
               <ShoppingBag className="h-4 w-4" /> Save to cart
             </Button>
             <Button
-              asChild={canSubmit}
+              type="button"
               size="lg"
               className="h-12 rounded-full shadow-elevated"
               disabled={!canSubmit}
+              onClick={() => {
+                commitToCart();
+                setCheckoutOpen(true);
+              }}
             >
-              {canSubmit ? (
-                <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                  <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
-                </a>
-              ) : (
-                <span>
-                  <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
-                </span>
-              )}
+              <Smartphone className="h-4 w-4" />
+              {canSubmit ? "Pay with MoMo" : "Pick a station"}
             </Button>
           </div>
         </DialogFooter>
       </DialogContent>
+      <CheckoutDialog
+        open={checkoutOpen}
+        onOpenChange={(v) => {
+          setCheckoutOpen(v);
+          if (!v) onOpenChange(false);
+        }}
+      />
     </Dialog>
   );
 }
