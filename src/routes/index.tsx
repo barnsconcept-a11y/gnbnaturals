@@ -364,6 +364,15 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
         </div>
       )}
 
+      <div className="-mx-7 -mt-7 mb-6 overflow-hidden">
+        <img
+          src={s.img}
+          alt={s.imgAlt}
+          loading="lazy"
+          className="h-40 w-full object-cover transition-transform duration-700 hover:scale-105"
+        />
+      </div>
+
       <h3 className="text-xl font-bold tracking-tight">{s.name}</h3>
       <p className={["mt-1.5 text-sm", featured ? "text-primary-foreground/75" : "text-muted-foreground"].join(" ")}>
         {s.desc}
