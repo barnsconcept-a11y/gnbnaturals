@@ -128,8 +128,8 @@ function Hero() {
               "Less dependence on expensive supplements",
               "Weekly pickup ready for you",
               "Built for consistent nutrition habits",
-            ].map((b) => (
-              <li key={b} className="flex items-center gap-3">
+            ].map((b, i) => (
+              <li key={b} className="flex items-center gap-3 animate-hero-rise" style={{ animationDelay: `${300 + i * 80}ms` }}>
                 <span className="grid h-5 w-5 place-items-center rounded-full bg-primary/10 text-primary">
                   <Check className="h-3 w-3" strokeWidth={3} />
                 </span>
@@ -138,8 +138,8 @@ function Hero() {
             ))}
           </ul>
 
-          <div className="mt-9 flex flex-wrap items-center gap-3">
-            <Button asChild size="lg" className="h-12 rounded-full px-6 text-base shadow-elevated">
+          <div className="mt-9 flex flex-wrap items-center gap-3 animate-hero-rise" style={{ animationDelay: "0.7s" }}>
+            <Button asChild size="lg" className="h-12 rounded-full px-6 text-base shadow-elevated transition-transform hover:scale-[1.03]">
               <a href="#stacks">Start My Performance Stack <ArrowRight className="h-4 w-4" /></a>
             </Button>
             <Button asChild size="lg" variant="outline" className="h-12 rounded-full px-6 text-base">
@@ -148,18 +148,19 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative">
-          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl" />
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
+        <div className="relative animate-hero-rise" style={{ animationDelay: "0.3s" }}>
+          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl animate-hero-blob" />
+          <div className="absolute -inset-10 -z-10 rounded-full bg-primary/10 blur-3xl animate-hero-blob" style={{ animationDelay: "1.5s" }} />
+          <div className="hero-shine relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
             <img
               src={heroImg}
               alt="Kraft paper egg packaging with healthy breakfast meal prep, water bottle and dumbbell"
               width={1536}
               height={1536}
-              className="aspect-square w-full object-cover"
+              className="aspect-square w-full object-cover animate-hero-zoom"
             />
           </div>
-          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block">
+          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block animate-hero-float">
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
                 <Flame className="h-5 w-5" />
@@ -170,7 +171,7 @@ function Hero() {
               </div>
             </div>
           </div>
-          <div className="absolute -right-4 -top-4 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block">
+          <div className="absolute -right-4 -top-4 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block animate-hero-float" style={{ animationDelay: "1.2s" }}>
             <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-xl bg-kraft text-kraft-foreground">
                 <Leaf className="h-5 w-5" />
