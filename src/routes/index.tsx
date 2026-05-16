@@ -20,8 +20,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
-import productTray from "@/assets/product-tray.png";
-import productBox from "@/assets/product-box.png";
 import productOpen from "@/assets/product-open.png";
 
 export const Route = createFileRoute("/")({
