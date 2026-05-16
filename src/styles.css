@@ -37,6 +37,7 @@
 
   --font-display: "Hanken Grotesk", "Inter", system-ui, sans-serif;
   --font-sans: "Hanken Grotesk", "Inter", system-ui, sans-serif;
+  --font-brand: "Cormorant Garamond", "Playfair Display", Georgia, serif;
 
   --shadow-soft: 0 2px 8px -2px oklch(0.3 0.04 150 / 0.06), 0 8px 24px -8px oklch(0.3 0.04 150 / 0.08);
   --shadow-elevated: 0 8px 24px -6px oklch(0.3 0.06 150 / 0.12), 0 24px 48px -12px oklch(0.3 0.06 150 / 0.18);
