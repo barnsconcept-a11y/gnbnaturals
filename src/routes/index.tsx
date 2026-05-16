@@ -834,20 +834,23 @@ function Footer() {
 
 function Landing() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Nav />
-      <main>
-        <Hero />
-        <Problem />
-        <Packaging />
-        <Stacks />
-        <WhyEggs />
-        <HowItWorks />
-        <Recipes />
-        <Testimonials />
-        <FinalCTA />
-      </main>
-      <Footer />
-    </div>
+    <CartProvider>
+      <div className="min-h-screen bg-background text-foreground">
+        <Nav />
+        <main>
+          <Hero />
+          <Problem />
+          <Packaging />
+          <Stacks />
+          <WhyEggs />
+          <HowItWorks />
+          <Recipes />
+          <Testimonials />
+          <FinalCTA />
+        </main>
+        <Footer />
+        <CartButton />
+      </div>
+    </CartProvider>
   );
 }
