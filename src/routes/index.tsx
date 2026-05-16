@@ -573,7 +573,8 @@ function HowItWorks() {
                   <span className="text-sm font-semibold text-muted-foreground">0{i + 1}</span>
                 </div>
                 <h3 className="mt-6 text-lg font-semibold">{s.title}</h3>
-              <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+                <p className="mt-2 text-sm text-muted-foreground">{s.body}</p>
+              </div>
             </div>
           ))}
         </div>
