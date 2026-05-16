@@ -9,7 +9,6 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-import { Toaster } from "@/components/ui/sonner";
 
 function NotFoundComponent() {
   return (
@@ -77,10 +76,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Fresh eggs reserved weekly through your local fitness community. Affordable daily protein, easier meal prep, consistent nutrition habits." },
       { name: "author", content: "G&B Naturals" },
       { property: "og:title", content: "G&B Naturals — Affordable Daily Protein Made Simple" },
-      { property: "og:description", content: "Modern protein convenience for fitness communities." },
+      { property: "og:description", content: "Fresh eggs reserved weekly through your local fitness community. Affordable daily protein, easier meal prep, consistent nutrition habits." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "G&B Naturals — Affordable Daily Protein Made Simple" },
+      { name: "twitter:description", content: "Fresh eggs reserved weekly through your local fitness community. Affordable daily protein, easier meal prep, consistent nutrition habits." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/7cc521c9-0abf-42b1-9b56-f0c122b4498d" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/7cc521c9-0abf-42b1-9b56-f0c122b4498d" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -115,7 +118,6 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
-      <Toaster richColors position="top-center" />
     </QueryClientProvider>
   );
 }
