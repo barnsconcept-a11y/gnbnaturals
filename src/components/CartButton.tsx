@@ -163,21 +163,18 @@ export function CartButton() {
                   </span>
                 </div>
                 <Button
-                  asChild={canSubmit}
+                  type="button"
                   size="lg"
                   disabled={!canSubmit}
+                  onClick={() => setCheckoutOpen(true)}
                   className="h-12 w-full rounded-full text-base shadow-elevated"
                 >
-                  {canSubmit ? (
-                    <a href={whatsappUrl} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-4 w-4" /> Reserve via WhatsApp
-                    </a>
-                  ) : (
-                    <span>
-                      <MessageCircle className="h-4 w-4" />
-                      {pickup ? "Reserve via WhatsApp" : "Pick a station to continue"}
-                    </span>
-                  )}
+                  <Smartphone className="h-4 w-4" />
+                  {canSubmit
+                    ? `Pay ${formatGHS(totalPrice)} with MoMo`
+                    : pickup
+                      ? "Add items to continue"
+                      : "Pick a station to continue"}
                 </Button>
                 <button
                   type="button"
@@ -191,6 +188,7 @@ export function CartButton() {
           )}
         </SheetContent>
       </Sheet>
+      <CheckoutDialog open={checkoutOpen} onOpenChange={setCheckoutOpen} />
     </>
   );
 }
