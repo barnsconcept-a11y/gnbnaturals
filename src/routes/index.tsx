@@ -98,15 +98,15 @@ function Hero() {
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:grid-cols-2 md:gap-10 md:pb-24 md:pt-20">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card">
-            <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-            Daily protein, simplified
+            <Leaf className="h-3 w-3 text-primary" />
+            Natural Protein · Real Results
           </div>
           <h1 className="mt-5 text-balance text-5xl font-bold leading-[1.02] tracking-tight md:text-6xl lg:text-7xl">
             Affordable daily protein <span className="text-primary">made simple.</span>
           </h1>
           <p className="mt-6 max-w-xl text-balance text-lg text-muted-foreground">
-            Stop struggling to stay consistent with your nutrition. Get fresh eggs reserved weekly
-            and ready for pickup through your local fitness community.
+            Fresh <BrandMark className="text-primary text-[1.05em]" /> Naturals eggs reserved weekly
+            and ready for pickup through your local fitness community. Clean fuel for real training.
           </p>
 
           <ul className="mt-7 grid gap-2.5 text-sm">
@@ -138,13 +138,13 @@ function Hero() {
 
         <div className="relative">
           <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl" />
-          <div className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
+          <div className="relative overflow-hidden rounded-3xl border border-border bg-cream shadow-elevated">
             <img
-              src={heroImg}
-              alt="Kraft paper egg packaging with healthy breakfast meal prep, water bottle and dumbbell"
-              width={1536}
-              height={1536}
-              className="aspect-square w-full object-cover"
+              src={productTray}
+              alt="G&B Naturals kraft paper egg tray — 30 fresh eggs with high protein, natural, fuel your performance icons"
+              width={1240}
+              height={940}
+              className="aspect-[4/3] w-full object-cover"
             />
           </div>
           <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block">
@@ -167,6 +167,95 @@ function Hero() {
                 <div className="text-xs text-muted-foreground">From</div>
                 <div className="text-sm font-semibold">GHS 60 / crate</div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Packaging() {
+  const items = [
+    {
+      img: productBox,
+      tag: "Elite Pack",
+      title: "Kraft Paper Egg Carton",
+      body: "Premium look and feel. Stronger, stackable and perfect for performance athletes who want consistency.",
+      features: ["100% Recyclable", "Durable Carton", "Stackable Design", "Premium Presentation"],
+    },
+    {
+      img: productTray,
+      tag: "Daily Pack",
+      title: "Paper Pulp Tray with Sleeve",
+      body: "Sustainable, minimal and practical. Affordable and perfect for everyday gym goers.",
+      features: ["100% Recyclable", "Strong Protection", "Eco Friendly", "Built for Performance"],
+    },
+  ];
+  return (
+    <section id="product" className="border-t border-border bg-cream/60">
+      <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
+        <div className="mx-auto max-w-2xl text-center">
+          <p className="text-sm font-medium uppercase tracking-widest text-primary">The Product</p>
+          <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight md:text-5xl">
+            Clean packaging. Cleaner nutrition.
+          </h2>
+          <p className="mt-4 text-muted-foreground">
+            Designed in kraft and deep green — recyclable, stackable, and built for the way you train.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-6 lg:grid-cols-2 lg:gap-8">
+          {items.map((p) => (
+            <article
+              key={p.title}
+              className="group overflow-hidden rounded-3xl border border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated"
+            >
+              <div className="relative bg-cream">
+                <img
+                  src={p.img}
+                  alt={`G&B Naturals ${p.title}`}
+                  className="aspect-[5/4] w-full object-cover"
+                  loading="lazy"
+                />
+                <span className="absolute left-4 top-4 rounded-full bg-primary px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary-foreground shadow-soft">
+                  {p.tag}
+                </span>
+              </div>
+              <div className="p-6 md:p-7">
+                <h3 className="text-xl font-bold tracking-tight">{p.title}</h3>
+                <p className="mt-2 text-sm text-muted-foreground">{p.body}</p>
+                <ul className="mt-5 grid grid-cols-2 gap-2 text-xs">
+                  {p.features.map((f) => (
+                    <li key={f} className="flex items-center gap-2 rounded-lg border border-border bg-secondary/40 px-3 py-2 font-medium">
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary" /> {f}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-8 overflow-hidden rounded-3xl border border-border bg-primary text-primary-foreground shadow-elevated md:grid md:grid-cols-5">
+          <div className="md:col-span-3">
+            <img
+              src={productOpen}
+              alt="G&B Naturals open kraft carton with 30 fresh eggs — Good nutrition builds stronger you"
+              className="aspect-[16/10] w-full object-cover md:aspect-auto md:h-full"
+              loading="lazy"
+            />
+          </div>
+          <div className="flex flex-col justify-center gap-4 p-8 md:col-span-2 md:p-10">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary-foreground/70">Inside every pack</p>
+            <h3 className="font-brand text-4xl leading-tight md:text-5xl" style={{ fontFamily: "var(--font-brand)" }}>
+              Good nutrition builds a stronger you.
+            </h3>
+            <div className="mt-2 grid grid-cols-2 gap-3 text-xs font-semibold uppercase tracking-wider text-primary-foreground/85">
+              <div className="flex items-center gap-2"><Egg className="h-4 w-4" /> High in Protein</div>
+              <div className="flex items-center gap-2"><Leaf className="h-4 w-4" /> 100% Natural</div>
+              <div className="flex items-center gap-2"><Sparkles className="h-4 w-4" /> Fresh & Nutritious</div>
+              <div className="flex items-center gap-2"><Dumbbell className="h-4 w-4" /> Fuel Your Performance</div>
             </div>
           </div>
         </div>
