@@ -20,18 +20,21 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
+import productTray from "@/assets/product-tray.png";
+import productBox from "@/assets/product-box.png";
+import productOpen from "@/assets/product-open.png";
 
 export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "G&B Naturals — Affordable Daily Protein Made Simple" },
+      { title: "G&B Naturals — Natural Protein. Real Results." },
       {
         name: "description",
         content:
           "Fresh eggs reserved weekly through your local fitness community. Affordable daily protein, easier meal prep, consistent nutrition habits.",
       },
-      { property: "og:title", content: "G&B Naturals — Affordable Daily Protein Made Simple" },
+      { property: "og:title", content: "G&B Naturals — Natural Protein. Real Results." },
       {
         property: "og:description",
         content:
@@ -41,15 +44,31 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-function Logo() {
+function BrandMark({ className = "" }: { className?: string }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-primary-foreground">
-        <Egg className="h-5 w-5" />
+    <span className={["font-brand leading-none tracking-tight", className].join(" ")} style={{ fontFamily: "var(--font-brand)" }}>
+      G<span className="italic font-medium opacity-90">&amp;</span>B
+    </span>
+  );
+}
+
+function Logo({ compact = false }: { compact?: boolean }) {
+  return (
+    <div className="flex items-center gap-2.5">
+      <div className="relative grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground shadow-soft">
+        <BrandMark className="text-lg" />
+        <Leaf className="absolute -top-1 right-0.5 h-3 w-3 -rotate-12 text-accent-foreground/80" fill="currentColor" />
       </div>
-      <span className="text-lg font-semibold tracking-tight">
-        G&amp;B <span className="text-muted-foreground font-medium">Naturals</span>
-      </span>
+      <div className="leading-tight">
+        <div className="text-[15px] font-semibold tracking-tight text-foreground">
+          <BrandMark className="text-[17px] mr-0.5 text-primary" /> NATURALS
+        </div>
+        {!compact && (
+          <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            Natural Protein · Real Results
+          </div>
+        )}
+      </div>
     </div>
   );
 }
