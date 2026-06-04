@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS } from "@/lib/cart";
-import { PICKUP_STATIONS } from "@/lib/pickup";
+import { usePickupLocations } from "@/lib/pickup";
 import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export function CartButton() {
@@ -35,6 +35,7 @@ export function CartButton() {
     remove,
     clear,
   } = useCart();
+  const pickupLocations = usePickupLocations();
 
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const canSubmit = items.length > 0 && pickup.length > 0;
@@ -146,7 +147,7 @@ export function CartButton() {
                       <SelectValue placeholder="Choose your pickup location" />
                     </SelectTrigger>
                     <SelectContent>
-                      {PICKUP_STATIONS.map((p) => (
+                      {pickupLocations.map((p: string) => (
                         <SelectItem key={p} value={p}>
                           {p}
                         </SelectItem>

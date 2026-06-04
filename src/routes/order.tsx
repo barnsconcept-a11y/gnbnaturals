@@ -7,7 +7,7 @@ import { CartProvider, formatGHS, useCart } from "@/lib/cart";
 import { OrderBuilder, type BuilderStack } from "@/components/OrderBuilder";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
-import { stationFromSlug } from "@/lib/pickup";
+import { gymSlug, usePickupLocations } from "@/lib/pickup";
 
 const searchSchema = z.object({
   gym: fallback(z.string().optional(), undefined),
@@ -50,7 +50,10 @@ function OrderPage() {
 function OrderPageInner() {
   const { gym } = Route.useSearch();
   const { setPickup, pickup } = useCart();
-  const prefilledStation = stationFromSlug(gym);
+  const pickupLocations = usePickupLocations();
+  const prefilledStation = gym
+    ? pickupLocations.find((p) => gymSlug(p) === gym.toLowerCase())
+    : undefined;
 
   const [open, setOpen] = useState(false);
   const [initial, setInitial] = useState<string | undefined>("performance");

@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS, type CartItem } from "@/lib/cart";
-import { PICKUP_STATIONS } from "@/lib/pickup";
+import { usePickupLocations } from "@/lib/pickup";
 import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export type BuilderStack = {
@@ -40,6 +40,7 @@ export function OrderBuilder({
   stationPrefilled?: boolean;
 }) {
   const { add, pickup, setPickup, open: openCart } = useCart();
+  const pickupLocations = usePickupLocations();
   const [step, setStep] = useState(0);
   const [choice, setChoice] = useState<Choice>({
     stackId: initialStackId ?? stacks[0].id,
@@ -257,7 +258,7 @@ export function OrderBuilder({
                 <MapPin className="h-3.5 w-3.5 text-primary" /> Choose where to collect
               </p>
               <ul className="flex max-h-[44vh] flex-col gap-1.5 overflow-y-auto pr-1">
-                {PICKUP_STATIONS.map((p) => {
+                {pickupLocations.map((p: string) => {
                   const active = pickup === p;
                   return (
                     <li key={p}>
