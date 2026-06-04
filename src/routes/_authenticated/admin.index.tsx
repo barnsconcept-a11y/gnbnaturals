@@ -335,7 +335,11 @@ function AdminDashboard() {
                   </SelectTrigger>
                   <SelectContent>
                     {ORDER_STATUSES.map((s) => (
-                      <SelectItem key={s} value={s}>
+                      <SelectItem
+                        key={s}
+                        value={s}
+                        disabled={!isAdmin && s !== "picked_up" && s !== o.status}
+                      >
                         {statusLabel(s)}
                       </SelectItem>
                     ))}
