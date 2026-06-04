@@ -375,13 +375,25 @@ function AdminDashboard() {
                     {formatGhs(Number(o.total_amount))}
                   </td>
                   <td className="px-4 py-3">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => viewProof(o.proof_path)}
-                    >
-                      View
-                    </Button>
+                    <div className="flex flex-col gap-1.5">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => viewProof(o.proof_path)}
+                      >
+                        View
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        asChild
+                        className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
+                      >
+                        <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
+                          <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+                        </a>
+                      </Button>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <div
