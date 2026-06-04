@@ -23,7 +23,7 @@ import {
   statusLabel,
 } from "@/lib/admin-utils";
 
-export const Route = createFileRoute("/_authenticated/admin")({
+export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({ meta: [{ title: "Orders — G&B Naturals Admin" }] }),
   component: AdminDashboard,
 });
