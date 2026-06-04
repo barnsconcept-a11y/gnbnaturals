@@ -305,6 +305,11 @@ function GymsPage() {
                   >
                     {assignFor === g.id ? (
                       <X className="h-4 w-4" />
+                    ) : (ownerCounts[g.id] ?? 0) > 0 ? (
+                      <>
+                        <UserPlus className="mr-1 h-4 w-4" />
+                        Add another login ({ownerCounts[g.id]})
+                      </>
                     ) : (
                       <>
                         <UserPlus className="mr-1 h-4 w-4" />
