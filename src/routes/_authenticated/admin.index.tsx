@@ -148,7 +148,7 @@ function AdminDashboard() {
     }
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
     const updated = orders.find((o) => o.id === id);
-    if (updated && (status === "confirmed" || status === "ready")) {
+    if (isAdmin && updated && (status === "confirmed" || status === "ready")) {
       const link = customerWhatsappForStatus({ ...updated, status });
       toast.success("Status updated", {
         description: "Notify the customer on WhatsApp",
@@ -313,20 +313,22 @@ function AdminDashboard() {
                 <span className="text-muted-foreground">{o.total_crates} crates</span>
                 <span className="font-semibold text-foreground">{formatGhs(Number(o.total_amount))}</span>
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2">
+              <div className={`mt-3 grid gap-2 ${isAdmin ? "grid-cols-2" : "grid-cols-1"}`}>
                 <Button size="sm" variant="outline" onClick={() => viewProof(o.proof_path)}>
                   View proof
                 </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  asChild
-                  className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
-                >
-                  <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="h-4 w-4" /> WhatsApp
-                  </a>
-                </Button>
+                {isAdmin && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    asChild
+                    className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
+                  >
+                    <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-4 w-4" /> WhatsApp
+                    </a>
+                  </Button>
+                )}
               </div>
               <div className="mt-2">
                 <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
@@ -408,16 +410,18 @@ function AdminDashboard() {
                       >
                         View
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        asChild
-                        className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
-                      >
-                        <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
-                          <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
-                        </a>
-                      </Button>
+                      {isAdmin && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          asChild
+                          className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
+                        >
+                          <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
+                            <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+                          </a>
+                        </Button>
+                      )}
                     </div>
                   </td>
                   <td className="px-4 py-3">
