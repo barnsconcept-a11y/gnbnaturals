@@ -91,11 +91,7 @@ function GymsPage() {
             gym_ids: [gym.id],
           },
         });
-        setCreds({
-          email: res.email,
-          password: res.temp_password,
-          gymName: gym.name,
-        });
+        setInvited({ email: res.email, gymName: gym.name });
       } else {
         toast.success("Gym added");
       }
