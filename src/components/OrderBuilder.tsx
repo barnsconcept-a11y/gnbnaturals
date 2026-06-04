@@ -258,7 +258,7 @@ export function OrderBuilder({
                 <MapPin className="h-3.5 w-3.5 text-primary" /> Choose where to collect
               </p>
               <ul className="flex max-h-[44vh] flex-col gap-1.5 overflow-y-auto pr-1">
-                {PICKUP_STATIONS.map((p) => {
+                {pickupLocations.map((p: string) => {
                   const active = pickup === p;
                   return (
                     <li key={p}>
