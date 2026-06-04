@@ -134,17 +134,8 @@ function UsersPage() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div>
-              <Label htmlFor="u-pass">Temporary password (min 8 chars)</Label>
-              <Input
-                id="u-pass"
-                type="text"
-                required
-                minLength={8}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </div>
+            <div className="hidden sm:block" />
+
             <div>
               <Label>Role</Label>
               <Select value={role} onValueChange={(v: any) => setRole(v)}>
