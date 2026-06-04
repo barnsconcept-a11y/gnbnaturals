@@ -66,6 +66,7 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState<string>("");
+  const [ownerGymNames, setOwnerGymNames] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,17 +85,26 @@ function AdminDashboard() {
       const admin = (roles ?? []).some((r) => r.role === "admin");
       setIsAdmin(admin);
 
-      const [{ data: ordersData, error: oErr }, { data: gymsData }] =
+      const [{ data: ordersData, error: oErr }, { data: gymsData }, { data: ownerGyms }] =
         await Promise.all([
           supabase
             .from("orders")
             .select("*")
             .order("created_at", { ascending: false }),
           supabase.from("gyms").select("*").order("name"),
+          supabase
+            .from("gym_owners")
+            .select("gyms(name)")
+            .eq("user_id", userData.user!.id),
         ]);
       if (oErr) toast.error(oErr.message);
       setOrders(((ordersData ?? []) as unknown) as Order[]);
       setGyms((gymsData as Gym[]) ?? []);
+      setOwnerGymNames(
+        ((ownerGyms ?? []) as any[])
+          .map((r) => r.gyms?.name)
+          .filter(Boolean) as string[],
+      );
       setLoading(false);
     };
     load();
@@ -184,10 +194,16 @@ function AdminDashboard() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:px-6 md:py-4">
           <div>
             <h1 className="text-base font-semibold text-foreground md:text-lg">
-              G&B Naturals — Orders
+              {isAdmin
+                ? "G&B Naturals — Orders"
+                : `Welcome back, ${email}`}
             </h1>
             <p className="text-xs text-muted-foreground">
-              {email} {isAdmin ? "· Admin" : "· Gym owner"}
+              {isAdmin
+                ? `${email} · Admin`
+                : ownerGymNames.length > 0
+                  ? `Gym owner · ${ownerGymNames.join(", ")}`
+                  : "Gym owner"}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
