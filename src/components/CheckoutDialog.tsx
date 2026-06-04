@@ -29,13 +29,15 @@ export function CheckoutDialog({
 }) {
   const { items, totalPrice, totalCrates, pickup, clear, close } = useCart();
   // Snapshot totals so the success screen stays populated after we clear the cart
-  const [summary, setSummary] = useState<{ crates: number; price: number } | null>(null);
+  const [summary, setSummary] = useState<{ crates: number; price: number; orderId: string } | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const copyNumber = async () => {
@@ -50,10 +52,12 @@ export function CheckoutDialog({
   const reset = () => {
     setName("");
     setPhone("");
+    setEmail("");
     setNotes("");
     setFile(null);
     setDone(false);
     setSummary(null);
+    setLinkCopied(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
