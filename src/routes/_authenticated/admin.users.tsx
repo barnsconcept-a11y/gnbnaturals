@@ -169,9 +169,8 @@ function UsersPage() {
             {submitting ? "Creating…" : "Create account"}
           </Button>
           <p className="text-xs text-muted-foreground">
-            A secure temporary password is generated automatically — you'll see
-            it once after creating the account. The user must change it on
-            first sign-in.
+            We'll email the new user a sign-in link. They'll set their own
+            password on first sign-in.
           </p>
         </form>
 
