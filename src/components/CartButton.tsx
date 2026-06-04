@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS } from "@/lib/cart";
-import { PICKUP_STATIONS } from "@/lib/pickup";
+import { usePickupLocations } from "@/lib/pickup";
 import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export function CartButton() {
