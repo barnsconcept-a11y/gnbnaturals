@@ -87,6 +87,7 @@ export function CheckoutDialog({
           qty: i.qty,
         })),
         total_amount: totalPrice,
+        total_crates: totalCrates,
         currency: "GHS",
         momo_reference: null,
         proof_path: path,
