@@ -24,6 +24,7 @@ import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import heroImg from "@/assets/hero.jpg";
+import gnbLogo from "@/assets/gnb-logo.png.asset.json";
 import productOpen from "@/assets/product-open.png";
 import foodSunny from "@/assets/food-sunny.jpg";
 import foodOmelet from "@/assets/food-omelet.jpg";
@@ -68,24 +69,14 @@ function BrandMark({ className = "" }: { className?: string }) {
 
 function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <div className="flex items-center gap-2.5">
-      <div className="relative grid h-10 w-10 place-items-center rounded-xl bg-primary text-primary-foreground shadow-soft">
-        <BrandMark className="text-lg" />
-        <Leaf className="absolute -top-1 right-0.5 h-3 w-3 -rotate-12 text-accent-foreground/80" fill="currentColor" />
-      </div>
-      <div className="leading-tight">
-        <div className="text-[15px] font-semibold tracking-tight text-foreground">
-          <BrandMark className="text-[17px] mr-0.5 text-primary" /> NATURALS
-        </div>
-        {!compact && (
-          <div className="text-[9.5px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            Natural Protein · Real Results
-          </div>
-        )}
-      </div>
-    </div>
+    <img
+      src={gnbLogo.url}
+      alt="G&B Naturals — Affordable Daily Protein"
+      className={compact ? "h-9 w-auto" : "h-11 w-auto"}
+    />
   );
 }
+
 
 function Nav() {
   const [open, setOpen] = useState(false);
