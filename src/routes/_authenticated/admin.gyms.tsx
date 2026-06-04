@@ -161,11 +161,7 @@ function GymsPage() {
       });
       setAssignFor(null);
       setAssignEmail("");
-      setCreds({
-        email: res.email,
-        password: res.temp_password,
-        gymName: gym.name,
-      });
+      setInvited({ email: res.email, gymName: gym.name });
     } catch (err: any) {
       toast.error(err.message ?? "Failed to create owner");
     } finally {
