@@ -194,10 +194,16 @@ function AdminDashboard() {
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:px-6 md:py-4">
           <div>
             <h1 className="text-base font-semibold text-foreground md:text-lg">
-              G&B Naturals — Orders
+              {isAdmin
+                ? "G&B Naturals — Orders"
+                : `Welcome back, ${email}`}
             </h1>
             <p className="text-xs text-muted-foreground">
-              {email} {isAdmin ? "· Admin" : "· Gym owner"}
+              {isAdmin
+                ? `${email} · Admin`
+                : ownerGymNames.length > 0
+                  ? `Gym owner · ${ownerGymNames.join(", ")}`
+                  : "Gym owner"}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
