@@ -189,8 +189,8 @@ function GymsPage() {
           <div>
             <h2 className="font-semibold">Add a gym</h2>
             <p className="text-xs text-muted-foreground">
-              Optionally enter the owner's email — we'll auto-generate a
-              temporary password and show it to you to share.
+              Optionally enter the owner's email — we'll email them a sign-in
+              link automatically.
             </p>
           </div>
 
