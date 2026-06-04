@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrackOrderIdRouteImport } from './routes/track.$orderId'
+import { Route as AuthenticatedChangePasswordRouteImport } from './routes/_authenticated/change-password'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminGymsRouteImport } from './routes/_authenticated/admin.gyms'
@@ -42,6 +43,12 @@ const TrackOrderIdRoute = TrackOrderIdRouteImport.update({
   path: '/track/$orderId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedChangePasswordRoute =
+  AuthenticatedChangePasswordRouteImport.update({
+    id: '/change-password',
+    path: '/change-password',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -62,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
+  '/change-password': typeof AuthenticatedChangePasswordRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -71,6 +79,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
+  '/change-password': typeof AuthenticatedChangePasswordRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -82,6 +91,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
+  '/_authenticated/change-password': typeof AuthenticatedChangePasswordRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/_authenticated/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -93,6 +103,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/order'
+    | '/change-password'
     | '/track/$orderId'
     | '/admin/gyms'
     | '/admin/users'
@@ -102,6 +113,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/order'
+    | '/change-password'
     | '/track/$orderId'
     | '/admin/gyms'
     | '/admin/users'
@@ -112,6 +124,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/order'
+    | '/_authenticated/change-password'
     | '/track/$orderId'
     | '/_authenticated/admin/gyms'
     | '/_authenticated/admin/users'
@@ -163,6 +176,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrackOrderIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/change-password': {
+      id: '/_authenticated/change-password'
+      path: '/change-password'
+      fullPath: '/change-password'
+      preLoaderRoute: typeof AuthenticatedChangePasswordRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
       path: '/admin'
@@ -188,12 +208,14 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedChangePasswordRoute: typeof AuthenticatedChangePasswordRoute
   AuthenticatedAdminGymsRoute: typeof AuthenticatedAdminGymsRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedChangePasswordRoute: AuthenticatedChangePasswordRoute,
   AuthenticatedAdminGymsRoute: AuthenticatedAdminGymsRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
