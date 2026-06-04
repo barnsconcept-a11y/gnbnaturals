@@ -40,6 +40,7 @@ export function OrderBuilder({
   stationPrefilled?: boolean;
 }) {
   const { add, pickup, setPickup, open: openCart } = useCart();
+  const pickupLocations = usePickupLocations();
   const [step, setStep] = useState(0);
   const [choice, setChoice] = useState<Choice>({
     stackId: initialStackId ?? stacks[0].id,
