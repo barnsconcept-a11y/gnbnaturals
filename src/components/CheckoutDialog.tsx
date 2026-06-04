@@ -273,7 +273,22 @@ export function CheckoutDialog({
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="02XX XXX XXXX"
                   />
-                </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="co-email">Email (optional)</Label>
+                <Input
+                  id="co-email"
+                  type="email"
+                  inputMode="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  We'll send confirmations here once email is enabled.
+                </p>
+              </div>
               </div>
 
               <div className="space-y-1.5">
