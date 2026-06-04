@@ -410,16 +410,18 @@ function AdminDashboard() {
                       >
                         View
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        asChild
-                        className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
-                      >
-                        <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
-                          <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
-                        </a>
-                      </Button>
+                      {isAdmin && (
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          asChild
+                          className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
+                        >
+                          <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
+                            <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+                          </a>
+                        </Button>
+                      )}
                     </div>
                   </td>
                   <td className="px-4 py-3">
