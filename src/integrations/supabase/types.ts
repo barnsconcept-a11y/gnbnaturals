@@ -14,6 +14,62 @@ export type Database = {
   }
   public: {
     Tables: {
+      gym_owners: {
+        Row: {
+          created_at: string
+          gym_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          gym_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          gym_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gym_owners_gym_id_fkey"
+            columns: ["gym_id"]
+            isOneToOne: false
+            referencedRelation: "gyms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gyms: {
+        Row: {
+          active: boolean
+          commission_per_crate: number
+          created_at: string
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          commission_per_crate?: number
+          created_at?: string
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          commission_per_crate?: number
+          created_at?: string
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       orders: {
         Row: {
           created_at: string
@@ -28,6 +84,7 @@ export type Database = {
           proof_path: string
           status: string
           total_amount: number
+          total_crates: number
         }
         Insert: {
           created_at?: string
@@ -42,6 +99,7 @@ export type Database = {
           proof_path: string
           status?: string
           total_amount: number
+          total_crates?: number
         }
         Update: {
           created_at?: string
@@ -56,6 +114,28 @@ export type Database = {
           proof_path?: string
           status?: string
           total_amount?: number
+          total_crates?: number
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
         }
         Relationships: []
       }
@@ -64,10 +144,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_gym_owner_of: { Args: { _station: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "gym_owner"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -194,6 +281,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "gym_owner"],
+    },
   },
 } as const
