@@ -35,6 +35,7 @@ export function CartButton() {
     remove,
     clear,
   } = useCart();
+  const pickupLocations = usePickupLocations();
 
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const canSubmit = items.length > 0 && pickup.length > 0;
