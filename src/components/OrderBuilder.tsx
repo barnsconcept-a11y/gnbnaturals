@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useCart, formatGHS, type CartItem } from "@/lib/cart";
-import { PICKUP_STATIONS } from "@/lib/pickup";
+import { usePickupLocations } from "@/lib/pickup";
 import { CheckoutDialog } from "@/components/CheckoutDialog";
 
 export type BuilderStack = {
