@@ -88,10 +88,12 @@ function Logo({ compact = false }: { compact?: boolean }) {
 }
 
 function Nav() {
+  const [open, setOpen] = useState(false);
+  const close = () => setOpen(false);
   return (
-    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
-        <Logo />
+    <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 md:px-5 md:py-3.5">
+        <Logo compact />
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
           <a href="#product" className="hover:text-foreground transition-colors">Product</a>
           <a href="#stacks" className="hover:text-foreground transition-colors">Stacks</a>
@@ -99,10 +101,46 @@ function Nav() {
           <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
           <a href="#recipes" className="hover:text-foreground transition-colors">Recipes</a>
         </nav>
-        <Button asChild size="sm" className="rounded-full px-4">
-          <a href="#stacks">Start now <ArrowRight className="h-4 w-4" /></a>
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button asChild size="sm" className="rounded-full px-3 md:px-4">
+            <a href="#stacks">Start <ArrowRight className="h-4 w-4" /></a>
+          </Button>
+          <button
+            type="button"
+            aria-label="Open menu"
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
+            className="grid h-10 w-10 place-items-center rounded-lg border border-border bg-card text-foreground md:hidden"
+          >
+            <span className="relative block h-3 w-5">
+              <span className={`absolute left-0 top-0 h-0.5 w-5 bg-current transition-transform ${open ? "translate-y-1.5 rotate-45" : ""}`} />
+              <span className={`absolute left-0 top-2.5 h-0.5 w-5 bg-current transition-transform ${open ? "-translate-y-1 -rotate-45" : ""}`} />
+            </span>
+          </button>
+        </div>
       </div>
+      {open && (
+        <nav className="border-t border-border/60 bg-background md:hidden">
+          <div className="mx-auto flex max-w-6xl flex-col px-4 py-2 text-base">
+            {[
+              ["Product", "#product"],
+              ["Stacks", "#stacks"],
+              ["Why eggs", "#why"],
+              ["How it works", "#how"],
+              ["Recipes", "#recipes"],
+            ].map(([label, href]) => (
+              <a
+                key={href}
+                href={href}
+                onClick={close}
+                className="border-b border-border/40 py-3 text-foreground/90 last:border-0"
+              >
+                {label}
+              </a>
+            ))}
+          </div>
+        </nav>
+      )}
     </header>
   );
 }
