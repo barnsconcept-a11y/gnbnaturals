@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCart, formatGHS } from "@/lib/cart";
 import { supabase } from "@/integrations/supabase/client";
 import { whatsappLink } from "@/lib/whatsapp";
+import { expectedPickupLabel } from "@/lib/delivery";
 import { toast } from "sonner";
 
 export const MOMO_NUMBER = "0548363844";
@@ -150,6 +151,12 @@ export function CheckoutDialog({
               <p className="text-sm text-muted-foreground">
                 Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)}) is being reviewed.
               </p>
+              <div className="mt-1 rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-foreground">
+                Expected pickup day: <span className="font-semibold">{expectedPickupLabel()}</span>
+                <div className="mt-0.5 text-[11px] text-muted-foreground">
+                  We deliver Thu & Mon. Orders by Tue 11:59pm → Thu; later → Mon.
+                </div>
+              </div>
             </div>
 
             {summary?.orderId && (() => {
@@ -344,6 +351,9 @@ export function CheckoutDialog({
                 {" · "}
                 {totalCrates} crate{totalCrates !== 1 ? "s" : ""} ·{" "}
                 <span className="font-semibold text-foreground">{formatGHS(totalPrice)}</span>
+                <div className="mt-1">
+                  Expected pickup: <span className="font-semibold text-foreground">{expectedPickupLabel()}</span> — order by Tue 11:59pm for Thu, later for Mon.
+                </div>
               </div>
             </div>
 

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { whatsappLink } from "@/lib/whatsapp";
 import { formatGHS } from "@/lib/cart";
+import { expectedPickupLabel } from "@/lib/delivery";
 
 export const Route = createFileRoute("/track/$orderId")({
   head: () => ({ meta: [{ title: "Track your order — G&B Naturals" }] }),
@@ -135,6 +136,9 @@ function TrackPage() {
         </div>
         <div className="mt-3 flex items-center gap-1.5 text-xs text-muted-foreground">
           <MapPin className="h-3.5 w-3.5 text-primary" /> Pickup: {order.pickup_station}
+        </div>
+        <div className="mt-2 rounded-lg border border-primary/20 bg-primary/5 px-3 py-2 text-xs">
+          Expected pickup day: <span className="font-semibold">{expectedPickupLabel(order.created_at)}</span>
         </div>
       </div>
 

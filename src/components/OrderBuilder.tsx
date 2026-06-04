@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Check, MapPin, Smartphone, Sparkles } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, CalendarClock, MapPin, Smartphone, Sparkles } from "lucide-react";
+import { expectedPickupLabel } from "@/lib/delivery";
 import {
   Dialog,
   DialogContent,
@@ -257,6 +258,15 @@ export function OrderBuilder({
               <p className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 <MapPin className="h-3.5 w-3.5 text-primary" /> Choose where to collect
               </p>
+              <div className="mb-1 flex items-start gap-2 rounded-xl border border-primary/20 bg-primary/5 px-3 py-2.5 text-xs text-foreground">
+                <CalendarClock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" />
+                <div className="leading-relaxed">
+                  We deliver twice a week. Order by <strong>Tue 11:59pm</strong> → pickup Thursday. After Tuesday → pickup the following Monday.
+                  <div className="mt-1 text-muted-foreground">
+                    Your expected pickup: <span className="font-semibold text-foreground">{expectedPickupLabel()}</span>
+                  </div>
+                </div>
+              </div>
               <ul className="flex max-h-[44vh] flex-col gap-1.5 overflow-y-auto pr-1">
                 {pickupLocations.map((p: string) => {
                   const active = pickup === p;
