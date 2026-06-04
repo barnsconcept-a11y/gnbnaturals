@@ -50,7 +50,10 @@ function OrderPage() {
 function OrderPageInner() {
   const { gym } = Route.useSearch();
   const { setPickup, pickup } = useCart();
-  const prefilledStation = stationFromSlug(gym);
+  const pickupLocations = usePickupLocations();
+  const prefilledStation = gym
+    ? pickupLocations.find((p) => gymSlug(p) === gym.toLowerCase())
+    : undefined;
 
   const [open, setOpen] = useState(false);
   const [initial, setInitial] = useState<string | undefined>("performance");
