@@ -81,26 +81,31 @@ export function CheckoutDialog({
         .upload(path, file, { contentType: file.type, upsert: false });
       if (upErr) throw upErr;
 
-      const { error: insErr } = await supabase.from("orders").insert({
-        customer_name: name.trim(),
-        customer_phone: phone.trim(),
-        pickup_station: pickup,
-        items: items.map((i) => ({
-          stack: i.stack,
-          variant: i.variant,
-          unit_price: i.unitPrice,
-          qty: i.qty,
-        })),
-        total_amount: totalPrice,
-        total_crates: totalCrates,
-        currency: "GHS",
-        momo_reference: null,
-        proof_path: path,
-        notes: notes.trim() || null,
-      });
+      const { data: inserted, error: insErr } = await supabase
+        .from("orders")
+        .insert({
+          customer_name: name.trim(),
+          customer_phone: phone.trim(),
+          customer_email: email.trim() || null,
+          pickup_station: pickup,
+          items: items.map((i) => ({
+            stack: i.stack,
+            variant: i.variant,
+            unit_price: i.unitPrice,
+            qty: i.qty,
+          })),
+          total_amount: totalPrice,
+          total_crates: totalCrates,
+          currency: "GHS",
+          momo_reference: null,
+          proof_path: path,
+          notes: notes.trim() || null,
+        })
+        .select("id")
+        .single();
       if (insErr) throw insErr;
 
-      setSummary({ crates: totalCrates, price: totalPrice });
+      setSummary({ crates: totalCrates, price: totalPrice, orderId: inserted!.id });
       setDone(true);
       clear();
       close();
