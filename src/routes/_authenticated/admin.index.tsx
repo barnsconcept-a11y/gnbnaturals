@@ -16,12 +16,28 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { MessageCircle } from "lucide-react";
 import {
   ORDER_STATUSES,
   formatGhs,
   statusClass,
   statusLabel,
 } from "@/lib/admin-utils";
+import { toE164Ghana, whatsappLink } from "@/lib/whatsapp";
+
+function customerWhatsappForStatus(o: { id: string; customer_name: string; customer_phone: string; pickup_station: string; status: string }) {
+  const shortId = o.id.slice(0, 8).toUpperCase();
+  const trackUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/track/${o.id}`;
+  let msg = `Hi ${o.customer_name.split(" ")[0]}, this is G&B Naturals about your order #${shortId}. Track: ${trackUrl}`;
+  if (o.status === "confirmed") {
+    msg = `Hi ${o.customer_name.split(" ")[0]}! ✅ Payment confirmed for order #${shortId}. We're preparing your crates — we'll let you know once they're ready for pickup at ${o.pickup_station}. Track: ${trackUrl}`;
+  } else if (o.status === "ready") {
+    msg = `Hi ${o.customer_name.split(" ")[0]}! 📦 Your order #${shortId} is ready for pickup at ${o.pickup_station}. See you soon! Track: ${trackUrl}`;
+  } else if (o.status === "pending_review") {
+    msg = `Hi ${o.customer_name.split(" ")[0]}, we received your order #${shortId} and are verifying payment. We'll confirm shortly. Track: ${trackUrl}`;
+  }
+  return whatsappLink(msg, toE164Ghana(o.customer_phone));
+}
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({ meta: [{ title: "Orders — G&B Naturals Admin" }] }),
