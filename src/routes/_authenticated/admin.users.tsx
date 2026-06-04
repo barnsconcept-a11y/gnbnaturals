@@ -81,7 +81,8 @@ function UsersPage() {
           gym_ids: role === "gym_owner" ? [gymId] : [],
         },
       });
-      setCreds({ email: res.email, password: res.temp_password });
+      setInvitedEmail(res.email);
+      toast.success(`Invite sent to ${res.email}`);
       setEmail("");
       setGymId("");
       load();
