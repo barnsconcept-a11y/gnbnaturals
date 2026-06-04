@@ -44,10 +44,7 @@ function GymsPage() {
   const [assignFor, setAssignFor] = useState<string | null>(null);
   const [assignEmail, setAssignEmail] = useState("");
   const [assignSubmitting, setAssignSubmitting] = useState(false);
-  const [creds, setCreds] = useState<Creds | null>(null);
-  const [copied, setCopied] = useState<"email" | "password" | "all" | null>(
-    null,
-  );
+  const [invited, setInvited] = useState<Invited | null>(null);
 
   const load = async () => {
     const [{ data, error }, { data: owners, error: ownersErr }] =
