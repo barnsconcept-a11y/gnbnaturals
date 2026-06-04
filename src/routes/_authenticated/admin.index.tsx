@@ -101,18 +101,20 @@ function AdminDashboard() {
       const admin = (roles ?? []).some((r) => r.role === "admin");
       setIsAdmin(admin);
 
-      const [{ data: ordersData, error: oErr }, { data: gymsData }] =
+      const [{ data: ordersData, error: oErr }, { data: gymsData }, { data: payoutsData }] =
         await Promise.all([
           supabase
             .from("orders")
             .select("*")
             .order("created_at", { ascending: false }),
           supabase.from("gyms").select("*").order("name"),
+          supabase.from("commission_payouts").select("*"),
         ]);
       if (oErr) toast.error(oErr.message);
       const gymRows = (gymsData as Gym[]) ?? [];
       setOrders(((ordersData ?? []) as unknown) as Order[]);
       setGyms(gymRows);
+      setPayouts(((payoutsData ?? []) as unknown) as Payout[]);
       setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
       setLoading(false);
     };
