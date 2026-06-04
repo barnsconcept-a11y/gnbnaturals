@@ -375,30 +375,78 @@ function AdminDashboard() {
           </Select>
         </section>
 
-        {isAdmin && stats.byGym.size > 0 && (
+        {monthly.length > 0 && (
           <section className="rounded-xl border border-border bg-card p-4">
             <h2 className="mb-3 text-sm font-semibold text-foreground">
-              Commission owed by gym
+              Monthly commissions
             </h2>
-            <div className="space-y-2 text-sm">
-              {Array.from(stats.byGym.entries()).map(([name, crates]) => {
-                const g = gyms.find((g) => g.name === name);
-                const rate = g ? Number(g.commission_per_crate) : 0;
-                return (
-                  <div
-                    key={name}
-                    className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 py-1 last:border-0"
-                  >
-                    <span className="text-foreground">{name}</span>
-                    <span className="text-muted-foreground">
-                      {crates} crates × {formatGhs(rate)} ={" "}
-                      <span className="font-semibold text-foreground">
-                        {formatGhs(crates * rate)}
-                      </span>
-                    </span>
-                  </div>
-                );
-              })}
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="py-2 pr-3">Month</th>
+                    {isAdmin && <th className="py-2 pr-3">Gym</th>}
+                    <th className="py-2 pr-3">Crates</th>
+                    <th className="py-2 pr-3">Amount</th>
+                    <th className="py-2 pr-3">Status</th>
+                    {isAdmin && <th className="py-2">Action</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {monthly.map((row) => {
+                    const paid = !!row.payout;
+                    return (
+                      <tr key={row.key} className="border-t border-border/60">
+                        <td className="py-2 pr-3 text-foreground">
+                          {MONTH_NAMES[row.month - 1]} {row.year}
+                        </td>
+                        {isAdmin && (
+                          <td className="py-2 pr-3 text-foreground">{row.gymName}</td>
+                        )}
+                        <td className="py-2 pr-3 text-muted-foreground">{row.crates}</td>
+                        <td className="py-2 pr-3 font-semibold text-foreground">
+                          {formatGhs(paid ? Number(row.payout!.amount_paid) : row.amountOwed)}
+                        </td>
+                        <td className="py-2 pr-3">
+                          {paid ? (
+                            <span className="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-900">
+                              Paid · {new Date(row.payout!.paid_at).toLocaleDateString()}
+                              {row.payout!.reference ? ` · ${row.payout!.reference}` : ""}
+                            </span>
+                          ) : (
+                            <span className="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">
+                              Unpaid
+                            </span>
+                          )}
+                        </td>
+                        {isAdmin && (
+                          <td className="py-2">
+                            {paid ? (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => unmarkPaid(row.payout!.id)}
+                              >
+                                Undo
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                  markPaid(row.gymId, row.year, row.month, row.amountOwed)
+                                }
+                              >
+                                Mark paid
+                              </Button>
+                            )}
+                          </td>
+                        )}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </section>
         )}
