@@ -16,12 +16,28 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
+import { MessageCircle } from "lucide-react";
 import {
   ORDER_STATUSES,
   formatGhs,
   statusClass,
   statusLabel,
 } from "@/lib/admin-utils";
+import { toE164Ghana, whatsappLink } from "@/lib/whatsapp";
+
+function customerWhatsappForStatus(o: { id: string; customer_name: string; customer_phone: string; pickup_station: string; status: string }) {
+  const shortId = o.id.slice(0, 8).toUpperCase();
+  const trackUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/track/${o.id}`;
+  let msg = `Hi ${o.customer_name.split(" ")[0]}, this is G&B Naturals about your order #${shortId}. Track: ${trackUrl}`;
+  if (o.status === "confirmed") {
+    msg = `Hi ${o.customer_name.split(" ")[0]}! ✅ Payment confirmed for order #${shortId}. We're preparing your crates — we'll let you know once they're ready for pickup at ${o.pickup_station}. Track: ${trackUrl}`;
+  } else if (o.status === "ready") {
+    msg = `Hi ${o.customer_name.split(" ")[0]}! 📦 Your order #${shortId} is ready for pickup at ${o.pickup_station}. See you soon! Track: ${trackUrl}`;
+  } else if (o.status === "pending_review") {
+    msg = `Hi ${o.customer_name.split(" ")[0]}, we received your order #${shortId} and are verifying payment. We'll confirm shortly. Track: ${trackUrl}`;
+  }
+  return whatsappLink(msg, toE164Ghana(o.customer_phone));
+}
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   head: () => ({ meta: [{ title: "Orders — G&B Naturals Admin" }] }),
@@ -77,7 +93,7 @@ function AdminDashboard() {
           supabase.from("gyms").select("*").order("name"),
         ]);
       if (oErr) toast.error(oErr.message);
-      setOrders((ordersData as Order[]) ?? []);
+      setOrders(((ordersData ?? []) as unknown) as Order[]);
       setGyms((gymsData as Gym[]) ?? []);
       setLoading(false);
     };
@@ -128,7 +144,19 @@ function AdminDashboard() {
       return;
     }
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
-    toast.success("Status updated");
+    const updated = orders.find((o) => o.id === id);
+    if (updated && (status === "confirmed" || status === "ready")) {
+      const link = customerWhatsappForStatus({ ...updated, status });
+      toast.success("Status updated", {
+        description: "Notify the customer on WhatsApp",
+        action: {
+          label: "Send",
+          onClick: () => window.open(link, "_blank", "noopener,noreferrer"),
+        },
+      });
+    } else {
+      toast.success("Status updated");
+    }
   };
 
   const viewProof = async (path: string) => {
@@ -280,6 +308,18 @@ function AdminDashboard() {
                 <Button size="sm" variant="outline" onClick={() => viewProof(o.proof_path)}>
                   View proof
                 </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  asChild
+                  className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
+                >
+                  <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
+                  </a>
+                </Button>
+              </div>
+              <div className="mt-2">
                 <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
                   <SelectTrigger className="h-9">
                     <SelectValue />
@@ -347,13 +387,25 @@ function AdminDashboard() {
                     {formatGhs(Number(o.total_amount))}
                   </td>
                   <td className="px-4 py-3">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => viewProof(o.proof_path)}
-                    >
-                      View
-                    </Button>
+                    <div className="flex flex-col gap-1.5">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => viewProof(o.proof_path)}
+                      >
+                        View
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        asChild
+                        className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
+                      >
+                        <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
+                          <MessageCircle className="h-3.5 w-3.5" /> WhatsApp
+                        </a>
+                      </Button>
+                    </div>
                   </td>
                   <td className="px-4 py-3">
                     <div

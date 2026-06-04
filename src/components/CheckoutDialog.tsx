@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Copy, CheckCircle2, Upload, Loader2, Smartphone } from "lucide-react";
+import { Copy, CheckCircle2, Upload, Loader2, Smartphone, MessageCircle, Link as LinkIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCart, formatGHS } from "@/lib/cart";
 import { supabase } from "@/integrations/supabase/client";
+import { whatsappLink } from "@/lib/whatsapp";
 import { toast } from "sonner";
 
 export const MOMO_NUMBER = "0548363844";
@@ -28,13 +29,15 @@ export function CheckoutDialog({
 }) {
   const { items, totalPrice, totalCrates, pickup, clear, close } = useCart();
   // Snapshot totals so the success screen stays populated after we clear the cart
-  const [summary, setSummary] = useState<{ crates: number; price: number } | null>(null);
+  const [summary, setSummary] = useState<{ crates: number; price: number; orderId: string } | null>(null);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const copyNumber = async () => {
@@ -49,10 +52,12 @@ export function CheckoutDialog({
   const reset = () => {
     setName("");
     setPhone("");
+    setEmail("");
     setNotes("");
     setFile(null);
     setDone(false);
     setSummary(null);
+    setLinkCopied(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -76,26 +81,31 @@ export function CheckoutDialog({
         .upload(path, file, { contentType: file.type, upsert: false });
       if (upErr) throw upErr;
 
-      const { error: insErr } = await supabase.from("orders").insert({
-        customer_name: name.trim(),
-        customer_phone: phone.trim(),
-        pickup_station: pickup,
-        items: items.map((i) => ({
-          stack: i.stack,
-          variant: i.variant,
-          unit_price: i.unitPrice,
-          qty: i.qty,
-        })),
-        total_amount: totalPrice,
-        total_crates: totalCrates,
-        currency: "GHS",
-        momo_reference: null,
-        proof_path: path,
-        notes: notes.trim() || null,
-      });
+      const { data: inserted, error: insErr } = await supabase
+        .from("orders")
+        .insert({
+          customer_name: name.trim(),
+          customer_phone: phone.trim(),
+          customer_email: email.trim() || null,
+          pickup_station: pickup,
+          items: items.map((i) => ({
+            stack: i.stack,
+            variant: i.variant,
+            unit_price: i.unitPrice,
+            qty: i.qty,
+          })),
+          total_amount: totalPrice,
+          total_crates: totalCrates,
+          currency: "GHS",
+          momo_reference: null,
+          proof_path: path,
+          notes: notes.trim() || null,
+        })
+        .select("id")
+        .single();
       if (insErr) throw insErr;
 
-      setSummary({ crates: totalCrates, price: totalPrice });
+      setSummary({ crates: totalCrates, price: totalPrice, orderId: inserted!.id });
       setDone(true);
       clear();
       close();
@@ -131,20 +141,82 @@ export function CheckoutDialog({
         </DialogHeader>
 
         {done ? (
-          <div className="flex flex-col items-center gap-4 px-6 py-10 text-center">
-            <div className="grid h-16 w-16 place-items-center rounded-full bg-primary/10 text-primary">
-              <CheckCircle2 className="h-8 w-8" />
-            </div>
-            <div>
+          <div className="flex flex-col gap-4 px-6 py-8">
+            <div className="flex flex-col items-center gap-3 text-center">
+              <div className="grid h-16 w-16 place-items-center rounded-full bg-primary/10 text-primary">
+                <CheckCircle2 className="h-8 w-8" />
+              </div>
               <p className="text-base font-semibold">Thanks, {name || "champ"}!</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)})
-                is being reviewed. We'll text you at {phone || "your number"} once confirmed.
+              <p className="text-sm text-muted-foreground">
+                Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)}) is being reviewed.
               </p>
             </div>
+
+            {summary?.orderId && (() => {
+              const trackUrl = `${window.location.origin}/track/${summary.orderId}`;
+              const shortId = summary.orderId.slice(0, 8).toUpperCase();
+              const waMsg = `Hi! I just placed order #${shortId} (${name}). Here's my tracking link: ${trackUrl}`;
+              return (
+                <>
+                  <div className="rounded-xl border border-border bg-secondary/30 p-3">
+                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                      Your tracking link
+                    </div>
+                    <div className="mt-1 flex items-center gap-2">
+                      <code className="min-w-0 flex-1 truncate rounded-md bg-background px-2 py-1.5 text-xs">
+                        /track/{shortId}…
+                      </code>
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="outline"
+                        onClick={async () => {
+                          try {
+                            await navigator.clipboard.writeText(trackUrl);
+                            setLinkCopied(true);
+                            toast.success("Link copied");
+                          } catch {
+                            toast.error("Copy failed");
+                          }
+                        }}
+                      >
+                        {linkCopied ? <CheckCircle2 className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
+                        {linkCopied ? "Copied" : "Copy"}
+                      </Button>
+                    </div>
+                    <p className="mt-2 text-[11px] text-muted-foreground">
+                      Bookmark this page — it updates as your order progresses.
+                    </p>
+                  </div>
+
+                  <Button
+                    asChild
+                    size="lg"
+                    className="h-12 w-full rounded-full bg-[#25D366] text-white shadow-elevated hover:bg-[#1ebe57]"
+                  >
+                    <a href={whatsappLink(waMsg)} target="_blank" rel="noopener noreferrer">
+                      <MessageCircle className="h-5 w-5" /> Message us on WhatsApp
+                    </a>
+                  </Button>
+
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="lg"
+                    className="h-12 w-full rounded-full"
+                  >
+                    <a href={`/track/${summary.orderId}`} target="_blank" rel="noopener noreferrer">
+                      Open tracking page
+                    </a>
+                  </Button>
+                </>
+              );
+            })()}
+
             <Button
+              variant="ghost"
               size="lg"
-              className="mt-2 h-12 rounded-full px-8"
+              className="h-10 rounded-full"
               onClick={() => handleClose(false)}
             >
               Done
@@ -202,6 +274,21 @@ export function CheckoutDialog({
                     placeholder="02XX XXX XXXX"
                   />
                 </div>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="co-email">Email (optional)</Label>
+                <Input
+                  id="co-email"
+                  type="email"
+                  inputMode="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                />
+                <p className="text-[11px] text-muted-foreground">
+                  We'll send order updates here once email is enabled.
+                </p>
               </div>
 
               <div className="space-y-1.5">
