@@ -4,6 +4,8 @@ export function statusLabel(s: string) {
       return "Pending review";
     case "confirmed":
       return "Confirmed";
+    case "ready":
+      return "Ready for pickup";
     case "picked_up":
       return "Picked up";
     case "cancelled":
@@ -21,6 +23,8 @@ export function statusClass(s: string) {
       return "bg-amber-100 text-amber-900";
     case "confirmed":
       return "bg-blue-100 text-blue-900";
+    case "ready":
+      return "bg-violet-100 text-violet-900";
     case "picked_up":
       return "bg-emerald-100 text-emerald-900";
     case "cancelled":
@@ -35,6 +39,7 @@ export function statusClass(s: string) {
 export const ORDER_STATUSES = [
   "pending_review",
   "confirmed",
+  "ready",
   "picked_up",
   "cancelled",
   "refunded",

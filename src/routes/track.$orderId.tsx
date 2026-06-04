@@ -34,7 +34,7 @@ const STEPS = [
   { key: "pending_review", label: "Order received", desc: "We're verifying your payment" },
   { key: "confirmed", label: "Payment confirmed", desc: "We're preparing your crates" },
   { key: "ready", label: "Ready for pickup", desc: "Come collect at your station" },
-  { key: "completed", label: "Picked up", desc: "Enjoy! See you next time" },
+  { key: "picked_up", label: "Picked up", desc: "Enjoy! See you next time" },
 ] as const;
 
 function statusIndex(status: string) {
