@@ -296,6 +296,18 @@ function AdminDashboard() {
                 <Button size="sm" variant="outline" onClick={() => viewProof(o.proof_path)}>
                   View proof
                 </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  asChild
+                  className="border-[#25D366]/40 text-[#1ebe57] hover:bg-[#25D366]/10"
+                >
+                  <a href={customerWhatsappForStatus(o)} target="_blank" rel="noopener noreferrer">
+                    <MessageCircle className="h-4 w-4" /> WhatsApp
+                  </a>
+                </Button>
+              </div>
+              <div className="mt-2">
                 <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
                   <SelectTrigger className="h-9">
                     <SelectValue />
