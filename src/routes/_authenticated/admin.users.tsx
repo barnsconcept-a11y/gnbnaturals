@@ -41,11 +41,13 @@ function UsersPage() {
   const [users, setUsers] = useState<ListedUser[]>([]);
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [role, setRole] = useState<"admin" | "gym_owner">("gym_owner");
   const [gymId, setGymId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [creds, setCreds] = useState<{ email: string; password: string } | null>(
+    null,
+  );
 
   const load = async () => {
     try {
@@ -74,17 +76,15 @@ function UsersPage() {
     }
     setSubmitting(true);
     try {
-      await create({
+      const res = await create({
         data: {
           email: email.trim(),
-          password,
           role,
           gym_ids: role === "gym_owner" ? [gymId] : [],
         },
       });
-      toast.success(`Account created. Share these credentials with the user.`);
+      setCreds({ email: res.email, password: res.temp_password });
       setEmail("");
-      setPassword("");
       setGymId("");
       load();
     } catch (e: any) {
