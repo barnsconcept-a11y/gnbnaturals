@@ -77,7 +77,7 @@ function AdminDashboard() {
           supabase.from("gyms").select("*").order("name"),
         ]);
       if (oErr) toast.error(oErr.message);
-      setOrders((ordersData as Order[]) ?? []);
+      setOrders(((ordersData ?? []) as unknown) as Order[]);
       setGyms((gymsData as Gym[]) ?? []);
       setLoading(false);
     };
