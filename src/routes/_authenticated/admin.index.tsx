@@ -144,7 +144,19 @@ function AdminDashboard() {
       return;
     }
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
-    toast.success("Status updated");
+    const updated = orders.find((o) => o.id === id);
+    if (updated && (status === "confirmed" || status === "ready")) {
+      const link = customerWhatsappForStatus({ ...updated, status });
+      toast.success("Status updated", {
+        description: "Notify the customer on WhatsApp",
+        action: {
+          label: "Send",
+          onClick: () => window.open(link, "_blank", "noopener,noreferrer"),
+        },
+      });
+    } else {
+      toast.success("Status updated");
+    }
   };
 
   const viewProof = async (path: string) => {
