@@ -82,6 +82,10 @@
   * {
     border-color: var(--color-border);
   }
+  html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+  }
   html {
     scroll-behavior: smooth;
   }
@@ -89,11 +93,18 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-size: 19px;
+    font-size: 17px;
     font-weight: 500;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     font-feature-settings: "ss01", "cv11";
+  }
+  @media (min-width: 768px) {
+    body { font-size: 19px; }
+  }
+  /* Larger tap targets on touch devices */
+  @media (hover: none) and (pointer: coarse) {
+    button, a, [role="button"] { min-height: 44px; }
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
