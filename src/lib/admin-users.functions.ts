@@ -1,28 +1,13 @@
 import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { z } from "zod";
+import { getRequestHeader } from "@tanstack/react-start/server";
 
 const CreateUserInput = z.object({
   email: z.string().email().max(255),
   role: z.enum(["admin", "gym_owner"]),
   gym_ids: z.array(z.string().uuid()).max(50).default([]),
 });
-
-function generateTempPassword(): string {
-  // 14 chars, mixed case + digits + symbol — easy to share, strong enough
-  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
-  const lower = "abcdefghijkmnpqrstuvwxyz";
-  const digits = "23456789";
-  const symbols = "!@#$%&*";
-  const all = upper + lower + digits + symbols;
-  const pick = (s: string) => s[Math.floor(Math.random() * s.length)];
-  let pwd = pick(upper) + pick(lower) + pick(digits) + pick(symbols);
-  for (let i = 0; i < 10; i++) pwd += pick(all);
-  return pwd
-    .split("")
-    .sort(() => Math.random() - 0.5)
-    .join("");
-}
 
 export const createGymUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -44,20 +29,28 @@ export const createGymUser = createServerFn({ method: "POST" })
       "@/integrations/supabase/client.server"
     );
 
-    const tempPassword = generateTempPassword();
+    // Build the redirect URL the invite link will land on
+    const origin =
+      getRequestHeader("origin") ||
+      (() => {
+        const host = getRequestHeader("host");
+        const proto = getRequestHeader("x-forwarded-proto") || "https";
+        return host ? `${proto}://${host}` : "";
+      })();
+    const redirectTo = origin
+      ? `${origin}/change-password`
+      : undefined;
 
-    const { data: created, error: createErr } =
-      await supabaseAdmin.auth.admin.createUser({
-        email: data.email,
-        password: tempPassword,
-        email_confirm: true,
-        user_metadata: { must_change_password: true },
+    const { data: invited, error: inviteErr } =
+      await supabaseAdmin.auth.admin.inviteUserByEmail(data.email, {
+        data: { must_change_password: true },
+        redirectTo,
       });
-    if (createErr || !created.user) {
-      throw new Error(createErr?.message ?? "Failed to create user");
+    if (inviteErr || !invited.user) {
+      throw new Error(inviteErr?.message ?? "Failed to invite user");
     }
 
-    const newUserId = created.user.id;
+    const newUserId = invited.user.id;
 
     const { error: roleErr } = await supabaseAdmin
       .from("user_roles")
@@ -79,7 +72,7 @@ export const createGymUser = createServerFn({ method: "POST" })
       ok: true,
       user_id: newUserId,
       email: data.email,
-      temp_password: tempPassword,
+      invited: true,
     };
   });
 
