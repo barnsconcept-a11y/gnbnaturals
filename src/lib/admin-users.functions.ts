@@ -4,10 +4,25 @@ import { z } from "zod";
 
 const CreateUserInput = z.object({
   email: z.string().email().max(255),
-  password: z.string().min(8).max(72),
   role: z.enum(["admin", "gym_owner"]),
   gym_ids: z.array(z.string().uuid()).max(50).default([]),
 });
+
+function generateTempPassword(): string {
+  // 14 chars, mixed case + digits + symbol — easy to share, strong enough
+  const upper = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+  const lower = "abcdefghijkmnpqrstuvwxyz";
+  const digits = "23456789";
+  const symbols = "!@#$%&*";
+  const all = upper + lower + digits + symbols;
+  const pick = (s: string) => s[Math.floor(Math.random() * s.length)];
+  let pwd = pick(upper) + pick(lower) + pick(digits) + pick(symbols);
+  for (let i = 0; i < 10; i++) pwd += pick(all);
+  return pwd
+    .split("")
+    .sort(() => Math.random() - 0.5)
+    .join("");
+}
 
 export const createGymUser = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -29,11 +44,14 @@ export const createGymUser = createServerFn({ method: "POST" })
       "@/integrations/supabase/client.server"
     );
 
+    const tempPassword = generateTempPassword();
+
     const { data: created, error: createErr } =
       await supabaseAdmin.auth.admin.createUser({
         email: data.email,
-        password: data.password,
+        password: tempPassword,
         email_confirm: true,
+        user_metadata: { must_change_password: true },
       });
     if (createErr || !created.user) {
       throw new Error(createErr?.message ?? "Failed to create user");
@@ -57,7 +75,26 @@ export const createGymUser = createServerFn({ method: "POST" })
       if (gymErr) throw new Error(gymErr.message);
     }
 
-    return { ok: true, user_id: newUserId };
+    return {
+      ok: true,
+      user_id: newUserId,
+      email: data.email,
+      temp_password: tempPassword,
+    };
+  });
+
+export const clearMustChangePassword = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { userId } = context;
+    const { supabaseAdmin } = await import(
+      "@/integrations/supabase/client.server"
+    );
+    const { error } = await supabaseAdmin.auth.admin.updateUserById(userId, {
+      user_metadata: { must_change_password: false },
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });
 
 export const listGymUsers = createServerFn({ method: "GET" })
