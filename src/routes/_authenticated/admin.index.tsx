@@ -62,6 +62,21 @@ type Order = {
 
 type Gym = { id: string; name: string; commission_per_crate: number };
 
+type Payout = {
+  id: string;
+  gym_id: string;
+  period_year: number;
+  period_month: number;
+  amount_paid: number;
+  paid_at: string;
+  reference: string | null;
+};
+
+const MONTH_NAMES = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
 function AdminDashboard() {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
@@ -69,6 +84,7 @@ function AdminDashboard() {
   const [ownerGymNames, setOwnerGymNames] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [gyms, setGyms] = useState<Gym[]>([]);
+  const [payouts, setPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState(true);
   const [gymFilter, setGymFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -85,18 +101,20 @@ function AdminDashboard() {
       const admin = (roles ?? []).some((r) => r.role === "admin");
       setIsAdmin(admin);
 
-      const [{ data: ordersData, error: oErr }, { data: gymsData }] =
+      const [{ data: ordersData, error: oErr }, { data: gymsData }, { data: payoutsData }] =
         await Promise.all([
           supabase
             .from("orders")
             .select("*")
             .order("created_at", { ascending: false }),
           supabase.from("gyms").select("*").order("name"),
+          supabase.from("commission_payouts").select("*"),
         ]);
       if (oErr) toast.error(oErr.message);
       const gymRows = (gymsData as Gym[]) ?? [];
       setOrders(((ordersData ?? []) as unknown) as Order[]);
       setGyms(gymRows);
+      setPayouts(((payoutsData ?? []) as unknown) as Payout[]);
       setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
       setLoading(false);
     };
@@ -136,6 +154,107 @@ function AdminDashboard() {
     }
     return { revenue, crates, commission, count: filtered.length, byGym };
   }, [filtered, gyms]);
+
+  // Monthly commission breakdown per gym, derived from all non-cancelled orders.
+  // Honours gym + status filters except: cancelled/refunded never count.
+  const monthly = useMemo(() => {
+    type Row = {
+      key: string;
+      gymId: string;
+      gymName: string;
+      year: number;
+      month: number;
+      crates: number;
+      amountOwed: number;
+      payout: Payout | undefined;
+    };
+    const rows = new Map<string, Row>();
+    for (const o of orders) {
+      if (o.status === "cancelled" || o.status === "refunded") continue;
+      if (gymFilter !== "all" && o.pickup_station !== gymFilter) continue;
+      const g = gyms.find((g) => g.name === o.pickup_station);
+      if (!g) continue;
+      const d = new Date(o.created_at);
+      const year = d.getFullYear();
+      const month = d.getMonth() + 1;
+      const key = `${g.id}-${year}-${month}`;
+      const existing = rows.get(key);
+      const addCrates = o.total_crates;
+      const addAmount = addCrates * Number(g.commission_per_crate);
+      if (existing) {
+        existing.crates += addCrates;
+        existing.amountOwed += addAmount;
+      } else {
+        rows.set(key, {
+          key,
+          gymId: g.id,
+          gymName: g.name,
+          year,
+          month,
+          crates: addCrates,
+          amountOwed: addAmount,
+          payout: payouts.find(
+            (p) => p.gym_id === g.id && p.period_year === year && p.period_month === month,
+          ),
+        });
+      }
+    }
+    return Array.from(rows.values()).sort((a, b) => {
+      if (a.year !== b.year) return b.year - a.year;
+      if (a.month !== b.month) return b.month - a.month;
+      return a.gymName.localeCompare(b.gymName);
+    });
+  }, [orders, gyms, payouts, gymFilter]);
+
+  const markPaid = async (
+    gymId: string,
+    year: number,
+    month: number,
+    amount: number,
+  ) => {
+    const reference = window.prompt("Optional payment reference (MoMo ID, note)") ?? "";
+    const { data, error } = await supabase
+      .from("commission_payouts")
+      .upsert(
+        {
+          gym_id: gymId,
+          period_year: year,
+          period_month: month,
+          amount_paid: amount,
+          paid_at: new Date().toISOString(),
+          reference: reference || null,
+        },
+        { onConflict: "gym_id,period_year,period_month" },
+      )
+      .select()
+      .single();
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setPayouts((prev) => {
+      const others = prev.filter(
+        (p) => !(p.gym_id === gymId && p.period_year === year && p.period_month === month),
+      );
+      return [...others, data as unknown as Payout];
+    });
+    toast.success("Marked as paid");
+  };
+
+  const unmarkPaid = async (payoutId: string) => {
+    if (!window.confirm("Mark this commission as unpaid?")) return;
+    const { error } = await supabase
+      .from("commission_payouts")
+      .delete()
+      .eq("id", payoutId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setPayouts((prev) => prev.filter((p) => p.id !== payoutId));
+    toast.success("Marked as unpaid");
+  };
+
 
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase
@@ -256,30 +375,78 @@ function AdminDashboard() {
           </Select>
         </section>
 
-        {isAdmin && stats.byGym.size > 0 && (
+        {monthly.length > 0 && (
           <section className="rounded-xl border border-border bg-card p-4">
             <h2 className="mb-3 text-sm font-semibold text-foreground">
-              Commission owed by gym
+              Monthly commissions
             </h2>
-            <div className="space-y-2 text-sm">
-              {Array.from(stats.byGym.entries()).map(([name, crates]) => {
-                const g = gyms.find((g) => g.name === name);
-                const rate = g ? Number(g.commission_per_crate) : 0;
-                return (
-                  <div
-                    key={name}
-                    className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 py-1 last:border-0"
-                  >
-                    <span className="text-foreground">{name}</span>
-                    <span className="text-muted-foreground">
-                      {crates} crates × {formatGhs(rate)} ={" "}
-                      <span className="font-semibold text-foreground">
-                        {formatGhs(crates * rate)}
-                      </span>
-                    </span>
-                  </div>
-                );
-              })}
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead className="text-left text-xs uppercase tracking-wider text-muted-foreground">
+                  <tr>
+                    <th className="py-2 pr-3">Month</th>
+                    {isAdmin && <th className="py-2 pr-3">Gym</th>}
+                    <th className="py-2 pr-3">Crates</th>
+                    <th className="py-2 pr-3">Amount</th>
+                    <th className="py-2 pr-3">Status</th>
+                    {isAdmin && <th className="py-2">Action</th>}
+                  </tr>
+                </thead>
+                <tbody>
+                  {monthly.map((row) => {
+                    const paid = !!row.payout;
+                    return (
+                      <tr key={row.key} className="border-t border-border/60">
+                        <td className="py-2 pr-3 text-foreground">
+                          {MONTH_NAMES[row.month - 1]} {row.year}
+                        </td>
+                        {isAdmin && (
+                          <td className="py-2 pr-3 text-foreground">{row.gymName}</td>
+                        )}
+                        <td className="py-2 pr-3 text-muted-foreground">{row.crates}</td>
+                        <td className="py-2 pr-3 font-semibold text-foreground">
+                          {formatGhs(paid ? Number(row.payout!.amount_paid) : row.amountOwed)}
+                        </td>
+                        <td className="py-2 pr-3">
+                          {paid ? (
+                            <span className="inline-block rounded-full bg-emerald-100 px-2 py-0.5 text-xs text-emerald-900">
+                              Paid · {new Date(row.payout!.paid_at).toLocaleDateString()}
+                              {row.payout!.reference ? ` · ${row.payout!.reference}` : ""}
+                            </span>
+                          ) : (
+                            <span className="inline-block rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-900">
+                              Unpaid
+                            </span>
+                          )}
+                        </td>
+                        {isAdmin && (
+                          <td className="py-2">
+                            {paid ? (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => unmarkPaid(row.payout!.id)}
+                              >
+                                Undo
+                              </Button>
+                            ) : (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() =>
+                                  markPaid(row.gymId, row.year, row.month, row.amountOwed)
+                                }
+                              >
+                                Mark paid
+                              </Button>
+                            )}
+                          </td>
+                        )}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </section>
         )}

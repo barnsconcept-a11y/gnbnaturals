@@ -14,6 +14,53 @@ export type Database = {
   }
   public: {
     Tables: {
+      commission_payouts: {
+        Row: {
+          amount_paid: number
+          created_at: string
+          gym_id: string
+          id: string
+          notes: string | null
+          paid_at: string
+          period_month: number
+          period_year: number
+          reference: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount_paid?: number
+          created_at?: string
+          gym_id: string
+          id?: string
+          notes?: string | null
+          paid_at?: string
+          period_month: number
+          period_year: number
+          reference?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount_paid?: number
+          created_at?: string
+          gym_id?: string
+          id?: string
+          notes?: string | null
+          paid_at?: string
+          period_month?: number
+          period_year?: number
+          reference?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_payouts_gym_id_fkey"
+            columns: ["gym_id"]
+            isOneToOne: false
+            referencedRelation: "gyms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gym_owners: {
         Row: {
           created_at: string
