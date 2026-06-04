@@ -153,16 +153,16 @@ function AdminDashboard() {
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 md:flex-row md:items-center md:justify-between md:px-6 md:py-4">
           <div>
-            <h1 className="text-lg font-semibold text-foreground">
+            <h1 className="text-base font-semibold text-foreground md:text-lg">
               G&B Naturals — Orders
             </h1>
             <p className="text-xs text-muted-foreground">
-              Signed in as {email} {isAdmin ? "· Admin" : "· Gym owner"}
+              {email} {isAdmin ? "· Admin" : "· Gym owner"}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {isAdmin && (
               <>
                 <Button variant="outline" size="sm" asChild>
@@ -180,18 +180,18 @@ function AdminDashboard() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl space-y-6 px-6 py-8">
-        <section className="grid grid-cols-2 gap-4 md:grid-cols-4">
+      <main className="mx-auto max-w-7xl space-y-5 px-4 py-5 md:space-y-6 md:px-6 md:py-8">
+        <section className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           <StatCard label="Orders" value={String(stats.count)} />
           <StatCard label="Crates" value={String(stats.crates)} />
           <StatCard label="Revenue" value={formatGhs(stats.revenue)} />
           <StatCard label="Commission" value={formatGhs(stats.commission)} />
         </section>
 
-        <section className="flex flex-wrap items-center gap-3">
+        <section className="flex flex-wrap items-center gap-2 md:gap-3">
           {isAdmin && (
             <Select value={gymFilter} onValueChange={setGymFilter}>
-              <SelectTrigger className="w-64">
+              <SelectTrigger className="w-full sm:w-64">
                 <SelectValue placeholder="All gyms" />
               </SelectTrigger>
               <SelectContent>
@@ -205,7 +205,7 @@ function AdminDashboard() {
             </Select>
           )}
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-48">
+            <SelectTrigger className="w-full sm:w-48">
               <SelectValue placeholder="All statuses" />
             </SelectTrigger>
             <SelectContent>
@@ -231,7 +231,7 @@ function AdminDashboard() {
                 return (
                   <div
                     key={name}
-                    className="flex items-center justify-between border-b border-border/60 py-1 last:border-0"
+                    className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 py-1 last:border-0"
                   >
                     <span className="text-foreground">{name}</span>
                     <span className="text-muted-foreground">
@@ -247,7 +247,63 @@ function AdminDashboard() {
           </section>
         )}
 
-        <section className="overflow-x-auto rounded-xl border border-border bg-card">
+        {/* Mobile: card list */}
+        <section className="space-y-3 md:hidden">
+          {filtered.map((o) => (
+            <div key={o.id} className="rounded-xl border border-border bg-card p-4 shadow-card">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="truncate font-medium text-foreground">{o.customer_name}</div>
+                  <a href={`tel:${o.customer_phone}`} className="text-xs text-muted-foreground">
+                    {o.customer_phone}
+                  </a>
+                </div>
+                <div className={`shrink-0 rounded-full px-2 py-0.5 text-xs ${statusClass(o.status)}`}>
+                  {statusLabel(o.status)}
+                </div>
+              </div>
+              <div className="mt-2 text-xs text-muted-foreground">
+                {new Date(o.created_at).toLocaleString()} · {o.pickup_station}
+              </div>
+              <div className="mt-3 space-y-0.5 text-sm">
+                {(o.items ?? []).map((it, i) => (
+                  <div key={i} className="text-muted-foreground">
+                    {it.qty}× {it.stack} · {it.variant}
+                  </div>
+                ))}
+              </div>
+              <div className="mt-3 flex items-center justify-between text-sm">
+                <span className="text-muted-foreground">{o.total_crates} crates</span>
+                <span className="font-semibold text-foreground">{formatGhs(Number(o.total_amount))}</span>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-2">
+                <Button size="sm" variant="outline" onClick={() => viewProof(o.proof_path)}>
+                  View proof
+                </Button>
+                <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
+                  <SelectTrigger className="h-9">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ORDER_STATUSES.map((s) => (
+                      <SelectItem key={s} value={s}>
+                        {statusLabel(s)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          ))}
+          {filtered.length === 0 && (
+            <div className="rounded-xl border border-border bg-card px-4 py-8 text-center text-muted-foreground">
+              No orders match these filters.
+            </div>
+          )}
+        </section>
+
+        {/* Desktop: table */}
+        <section className="hidden overflow-x-auto rounded-xl border border-border bg-card md:block">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
               <tr>
@@ -337,6 +393,7 @@ function AdminDashboard() {
           </table>
         </section>
       </main>
+
 
       <Dialog
         open={!!proofUrl}
