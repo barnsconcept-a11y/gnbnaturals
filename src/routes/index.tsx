@@ -96,7 +96,7 @@ function Nav() {
         <Logo compact />
         <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
           <a href="#product" className="hover:text-foreground transition-colors">Product</a>
-          <a href="#stacks" className="hover:text-foreground transition-colors">Stacks</a>
+          <a href="#stacks" className="hover:text-foreground transition-colors">Order</a>
           <a href="#why" className="hover:text-foreground transition-colors">Why eggs</a>
           <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
           <a href="#recipes" className="hover:text-foreground transition-colors">Recipes</a>
@@ -124,7 +124,7 @@ function Nav() {
           <div className="mx-auto flex max-w-6xl flex-col px-4 py-2 text-base">
             {[
               ["Product", "#product"],
-              ["Stacks", "#stacks"],
+              ["Order", "#stacks"],
               ["Why eggs", "#why"],
               ["How it works", "#how"],
               ["Recipes", "#recipes"],
