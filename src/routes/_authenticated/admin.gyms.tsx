@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import { formatGhs } from "@/lib/admin-utils";
 import { createGymUser } from "@/lib/admin-users.functions";
-import { Trash2, UserPlus, X, Copy, Check } from "lucide-react";
+import { Trash2, UserPlus, X } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/gyms")({
   head: () => ({ meta: [{ title: "Gyms — Admin" }] }),
