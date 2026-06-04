@@ -124,7 +124,7 @@ function Nav() {
           <div className="mx-auto flex max-w-6xl flex-col px-4 py-2 text-base">
             {[
               ["Product", "#product"],
-              ["Stacks", "#stacks"],
+              ["Order", "#stacks"],
               ["Why eggs", "#why"],
               ["How it works", "#how"],
               ["Recipes", "#recipes"],
