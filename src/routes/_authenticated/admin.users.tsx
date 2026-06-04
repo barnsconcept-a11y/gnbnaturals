@@ -45,9 +45,7 @@ function UsersPage() {
   const [gymId, setGymId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [creds, setCreds] = useState<{ email: string; password: string } | null>(
-    null,
-  );
+  const [invitedEmail, setInvitedEmail] = useState<string | null>(null);
 
   const load = async () => {
     try {
