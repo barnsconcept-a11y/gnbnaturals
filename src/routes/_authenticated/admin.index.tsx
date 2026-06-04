@@ -66,6 +66,7 @@ function AdminDashboard() {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
   const [email, setEmail] = useState<string>("");
+  const [ownerGymNames, setOwnerGymNames] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [loading, setLoading] = useState(true);
@@ -84,17 +85,26 @@ function AdminDashboard() {
       const admin = (roles ?? []).some((r) => r.role === "admin");
       setIsAdmin(admin);
 
-      const [{ data: ordersData, error: oErr }, { data: gymsData }] =
+      const [{ data: ordersData, error: oErr }, { data: gymsData }, { data: ownerGyms }] =
         await Promise.all([
           supabase
             .from("orders")
             .select("*")
             .order("created_at", { ascending: false }),
           supabase.from("gyms").select("*").order("name"),
+          supabase
+            .from("gym_owners")
+            .select("gyms(name)")
+            .eq("user_id", userData.user!.id),
         ]);
       if (oErr) toast.error(oErr.message);
       setOrders(((ordersData ?? []) as unknown) as Order[]);
       setGyms((gymsData as Gym[]) ?? []);
+      setOwnerGymNames(
+        ((ownerGyms ?? []) as any[])
+          .map((r) => r.gyms?.name)
+          .filter(Boolean) as string[],
+      );
       setLoading(false);
     };
     load();
