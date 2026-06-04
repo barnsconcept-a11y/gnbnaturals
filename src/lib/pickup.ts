@@ -11,3 +11,17 @@ export const PICKUP_STATIONS = [
   "Gym Ike Fitness & Health Club Center",
   "Other (I'll share on WhatsApp)",
 ];
+
+export function gymSlug(name: string) {
+  return name
+    .toLowerCase()
+    .replace(/—|–/g, "-")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
+
+export function stationFromSlug(slug: string | undefined): string | undefined {
+  if (!slug) return undefined;
+  const s = slug.toLowerCase();
+  return PICKUP_STATIONS.find((p) => gymSlug(p) === s);
+}
