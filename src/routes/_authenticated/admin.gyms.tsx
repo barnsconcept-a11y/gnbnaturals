@@ -336,63 +336,19 @@ function GymsPage() {
         </div>
       </main>
 
-      <Dialog open={!!creds} onOpenChange={(o) => !o && setCreds(null)}>
+      <Dialog open={!!invited} onOpenChange={(o) => !o && setInvited(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Owner login created</DialogTitle>
+            <DialogTitle>Invite sent</DialogTitle>
             <DialogDescription>
-              Share these credentials with the owner of{" "}
-              <strong>{creds?.gymName}</strong>. They'll be required to set a
-              new password on first sign-in.
+              We emailed a sign-in link to{" "}
+              <strong>{invited?.email}</strong> for{" "}
+              <strong>{invited?.gymName}</strong>. They'll set their password
+              after clicking the link.
             </DialogDescription>
           </DialogHeader>
-
-          <div className="space-y-3">
-            <div>
-              <Label className="text-xs text-muted-foreground">Email</Label>
-              <div className="flex gap-2">
-                <Input readOnly value={creds?.email ?? ""} className="font-mono text-sm" />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => creds && copy(creds.email, "email")}
-                >
-                  {copied === "email" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                </Button>
-              </div>
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Temporary password</Label>
-              <div className="flex gap-2">
-                <Input readOnly value={creds?.password ?? ""} className="font-mono text-sm" />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => creds && copy(creds.password, "password")}
-                >
-                  {copied === "password" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() =>
-                creds &&
-                copy(
-                  `Email: ${creds.email}\nTemporary password: ${creds.password}\nSign in at: ${window.location.origin}/auth`,
-                  "all",
-                )
-              }
-            >
-              {copied === "all" ? "Copied!" : "Copy all"}
-            </Button>
-            <Button type="button" onClick={() => setCreds(null)}>Done</Button>
+          <DialogFooter>
+            <Button type="button" onClick={() => setInvited(null)}>Done</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
