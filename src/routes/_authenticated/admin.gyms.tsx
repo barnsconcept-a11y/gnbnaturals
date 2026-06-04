@@ -5,10 +5,18 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { formatGhs } from "@/lib/admin-utils";
 import { createGymUser } from "@/lib/admin-users.functions";
-import { Trash2, UserPlus, X } from "lucide-react";
+import { Trash2, UserPlus, X, Copy, Check } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/gyms")({
   head: () => ({ meta: [{ title: "Gyms — Admin" }] }),
@@ -22,19 +30,23 @@ type Gym = {
   active: boolean;
 };
 
+type Creds = { email: string; password: string; gymName: string };
+
 function GymsPage() {
   const createUser = useServerFn(createGymUser);
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [name, setName] = useState("");
   const [rate, setRate] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
-  const [ownerPassword, setOwnerPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [assignFor, setAssignFor] = useState<string | null>(null);
   const [assignEmail, setAssignEmail] = useState("");
-  const [assignPass, setAssignPass] = useState("");
   const [assignSubmitting, setAssignSubmitting] = useState(false);
+  const [creds, setCreds] = useState<Creds | null>(null);
+  const [copied, setCopied] = useState<"email" | "password" | "all" | null>(
+    null,
+  );
 
   const load = async () => {
     const { data, error } = await supabase
@@ -50,16 +62,19 @@ function GymsPage() {
     load();
   }, []);
 
+  const copy = async (text: string, which: "email" | "password" | "all") => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(which);
+      setTimeout(() => setCopied(null), 1500);
+    } catch {
+      toast.error("Couldn't copy");
+    }
+  };
+
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
-
-    const wantsOwner = ownerEmail.trim().length > 0;
-    if (wantsOwner && ownerPassword.length < 8) {
-      toast.error("Owner password must be at least 8 characters");
-      return;
-    }
-
     setSubmitting(true);
     try {
       const { data: gym, error } = await supabase
@@ -68,22 +83,23 @@ function GymsPage() {
           name: name.trim(),
           commission_per_crate: Number(rate) || 0,
         })
-        .select("id")
+        .select("id, name")
         .single();
       if (error) throw new Error(error.message);
 
-      if (wantsOwner && gym) {
-        await createUser({
+      if (ownerEmail.trim() && gym) {
+        const res = await createUser({
           data: {
             email: ownerEmail.trim(),
-            password: ownerPassword,
             role: "gym_owner",
             gym_ids: [gym.id],
           },
         });
-        toast.success(
-          `Gym added and owner account created. Share login: ${ownerEmail.trim()}`,
-        );
+        setCreds({
+          email: res.email,
+          password: res.temp_password,
+          gymName: gym.name,
+        });
       } else {
         toast.success("Gym added");
       }
@@ -91,7 +107,6 @@ function GymsPage() {
       setName("");
       setRate("");
       setOwnerEmail("");
-      setOwnerPassword("");
       load();
     } catch (err: any) {
       toast.error(err.message ?? "Failed to add gym");
@@ -122,7 +137,6 @@ function GymsPage() {
       )
     )
       return;
-    // remove owner links first (no FK cascade)
     const { error: linkErr } = await supabase
       .from("gym_owners")
       .delete()
@@ -137,28 +151,29 @@ function GymsPage() {
   const openAssign = (gymId: string) => {
     setAssignFor(gymId);
     setAssignEmail("");
-    setAssignPass("");
   };
 
-  const submitAssign = async (gymId: string) => {
-    if (!assignEmail.trim() || assignPass.length < 8) {
-      toast.error("Email required and password must be at least 8 characters");
+  const submitAssign = async (gym: Gym) => {
+    if (!assignEmail.trim()) {
+      toast.error("Email required");
       return;
     }
     setAssignSubmitting(true);
     try {
-      await createUser({
+      const res = await createUser({
         data: {
           email: assignEmail.trim(),
-          password: assignPass,
           role: "gym_owner",
-          gym_ids: [gymId],
+          gym_ids: [gym.id],
         },
       });
-      toast.success(`Owner login created: ${assignEmail.trim()}`);
       setAssignFor(null);
       setAssignEmail("");
-      setAssignPass("");
+      setCreds({
+        email: res.email,
+        password: res.temp_password,
+        gymName: gym.name,
+      });
     } catch (err: any) {
       toast.error(err.message ?? "Failed to create owner");
     } finally {
@@ -186,8 +201,8 @@ function GymsPage() {
           <div>
             <h2 className="font-semibold">Add a gym</h2>
             <p className="text-xs text-muted-foreground">
-              Optionally create the owner's login at the same time so they can
-              sign in and see their sales & commission.
+              Optionally enter the owner's email — we'll auto-generate a
+              temporary password and show it to you to share.
             </p>
           </div>
 
@@ -218,33 +233,20 @@ function GymsPage() {
             <p className="mb-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
               Owner login (optional)
             </p>
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div>
-                <Label htmlFor="owner-email">Owner email</Label>
-                <Input
-                  id="owner-email"
-                  type="email"
-                  value={ownerEmail}
-                  onChange={(e) => setOwnerEmail(e.target.value)}
-                  placeholder="owner@example.com"
-                  autoComplete="off"
-                />
-              </div>
-              <div>
-                <Label htmlFor="owner-pass">Temporary password (min 8)</Label>
-                <Input
-                  id="owner-pass"
-                  type="text"
-                  value={ownerPassword}
-                  onChange={(e) => setOwnerPassword(e.target.value)}
-                  placeholder="••••••••"
-                  autoComplete="off"
-                />
-              </div>
+            <div>
+              <Label htmlFor="owner-email">Owner email</Label>
+              <Input
+                id="owner-email"
+                type="email"
+                value={ownerEmail}
+                onChange={(e) => setOwnerEmail(e.target.value)}
+                placeholder="owner@example.com"
+                autoComplete="off"
+              />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Leave blank to add the gym only — you can create their login later
-              from the list below.
+              A secure temporary password is generated automatically. The owner
+              must change it on first sign-in.
             </p>
           </div>
 
@@ -314,7 +316,7 @@ function GymsPage() {
               </div>
 
               {assignFor === g.id && (
-                <div className="mt-3 grid gap-2 rounded-lg border border-dashed border-border bg-muted/30 p-3 sm:grid-cols-[1fr_180px_auto]">
+                <div className="mt-3 grid gap-2 rounded-lg border border-dashed border-border bg-muted/30 p-3 sm:grid-cols-[1fr_auto]">
                   <Input
                     type="email"
                     placeholder="owner@example.com"
@@ -322,17 +324,10 @@ function GymsPage() {
                     onChange={(e) => setAssignEmail(e.target.value)}
                     autoComplete="off"
                   />
-                  <Input
-                    type="text"
-                    placeholder="Password (min 8)"
-                    value={assignPass}
-                    onChange={(e) => setAssignPass(e.target.value)}
-                    autoComplete="off"
-                  />
                   <Button
                     size="sm"
                     disabled={assignSubmitting}
-                    onClick={() => submitAssign(g.id)}
+                    onClick={() => submitAssign(g)}
                   >
                     {assignSubmitting ? "Creating…" : "Create login"}
                   </Button>
@@ -347,6 +342,67 @@ function GymsPage() {
           )}
         </div>
       </main>
+
+      <Dialog open={!!creds} onOpenChange={(o) => !o && setCreds(null)}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Owner login created</DialogTitle>
+            <DialogDescription>
+              Share these credentials with the owner of{" "}
+              <strong>{creds?.gymName}</strong>. They'll be required to set a
+              new password on first sign-in.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-3">
+            <div>
+              <Label className="text-xs text-muted-foreground">Email</Label>
+              <div className="flex gap-2">
+                <Input readOnly value={creds?.email ?? ""} className="font-mono text-sm" />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => creds && copy(creds.email, "email")}
+                >
+                  {copied === "email" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+            <div>
+              <Label className="text-xs text-muted-foreground">Temporary password</Label>
+              <div className="flex gap-2">
+                <Input readOnly value={creds?.password ?? ""} className="font-mono text-sm" />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => creds && copy(creds.password, "password")}
+                >
+                  {copied === "password" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2 sm:gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() =>
+                creds &&
+                copy(
+                  `Email: ${creds.email}\nTemporary password: ${creds.password}\nSign in at: ${window.location.origin}/auth`,
+                  "all",
+                )
+              }
+            >
+              {copied === "all" ? "Copied!" : "Copy all"}
+            </Button>
+            <Button type="button" onClick={() => setCreds(null)}>Done</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
