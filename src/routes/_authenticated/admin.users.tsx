@@ -45,9 +45,7 @@ function UsersPage() {
   const [gymId, setGymId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [creds, setCreds] = useState<{ email: string; password: string } | null>(
-    null,
-  );
+  const [invitedEmail, setInvitedEmail] = useState<string | null>(null);
 
   const load = async () => {
     try {
@@ -83,7 +81,8 @@ function UsersPage() {
           gym_ids: role === "gym_owner" ? [gymId] : [],
         },
       });
-      setCreds({ email: res.email, password: res.temp_password });
+      setInvitedEmail(res.email);
+      toast.success(`Invite sent to ${res.email}`);
       setEmail("");
       setGymId("");
       load();
@@ -170,33 +169,21 @@ function UsersPage() {
             {submitting ? "Creating…" : "Create account"}
           </Button>
           <p className="text-xs text-muted-foreground">
-            A secure temporary password is generated automatically — you'll see
-            it once after creating the account. The user must change it on
-            first sign-in.
+            We'll email the new user a sign-in link. They'll set their own
+            password on first sign-in.
           </p>
         </form>
 
-        {creds && (
+        {invitedEmail && (
           <div className="rounded-xl border-2 border-primary bg-primary/5 p-4">
-            <p className="font-semibold">Share these credentials</p>
-            <div className="mt-2 space-y-1 font-mono text-sm">
-              <p>Email: <strong>{creds.email}</strong></p>
-              <p>Temporary password: <strong>{creds.password}</strong></p>
-            </div>
-            <div className="mt-3 flex gap-2">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={async () => {
-                  await navigator.clipboard.writeText(
-                    `Email: ${creds.email}\nTemporary password: ${creds.password}\nSign in at: ${window.location.origin}/auth`,
-                  );
-                  toast.success("Copied");
-                }}
-              >
-                Copy
-              </Button>
-              <Button size="sm" variant="ghost" onClick={() => setCreds(null)}>
+            <p className="font-semibold">Invite sent</p>
+            <p className="mt-1 text-sm">
+              An email with a sign-in link was sent to{" "}
+              <strong>{invitedEmail}</strong>. They'll set their password after
+              clicking the link.
+            </p>
+            <div className="mt-3">
+              <Button size="sm" variant="ghost" onClick={() => setInvitedEmail(null)}>
                 Dismiss
               </Button>
             </div>

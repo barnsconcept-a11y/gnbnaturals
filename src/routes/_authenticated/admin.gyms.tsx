@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import { formatGhs } from "@/lib/admin-utils";
 import { createGymUser } from "@/lib/admin-users.functions";
-import { Trash2, UserPlus, X, Copy, Check } from "lucide-react";
+import { Trash2, UserPlus, X } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/gyms")({
   head: () => ({ meta: [{ title: "Gyms — Admin" }] }),
@@ -30,7 +30,7 @@ type Gym = {
   active: boolean;
 };
 
-type Creds = { email: string; password: string; gymName: string };
+type Invited = { email: string; gymName: string };
 
 function GymsPage() {
   const createUser = useServerFn(createGymUser);
@@ -44,10 +44,7 @@ function GymsPage() {
   const [assignFor, setAssignFor] = useState<string | null>(null);
   const [assignEmail, setAssignEmail] = useState("");
   const [assignSubmitting, setAssignSubmitting] = useState(false);
-  const [creds, setCreds] = useState<Creds | null>(null);
-  const [copied, setCopied] = useState<"email" | "password" | "all" | null>(
-    null,
-  );
+  const [invited, setInvited] = useState<Invited | null>(null);
 
   const load = async () => {
     const [{ data, error }, { data: owners, error: ownersErr }] =
@@ -70,15 +67,6 @@ function GymsPage() {
     load();
   }, []);
 
-  const copy = async (text: string, which: "email" | "password" | "all") => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(which);
-      setTimeout(() => setCopied(null), 1500);
-    } catch {
-      toast.error("Couldn't copy");
-    }
-  };
 
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,11 +91,7 @@ function GymsPage() {
             gym_ids: [gym.id],
           },
         });
-        setCreds({
-          email: res.email,
-          password: res.temp_password,
-          gymName: gym.name,
-        });
+        setInvited({ email: res.email, gymName: gym.name });
       } else {
         toast.success("Gym added");
       }
@@ -177,11 +161,7 @@ function GymsPage() {
       });
       setAssignFor(null);
       setAssignEmail("");
-      setCreds({
-        email: res.email,
-        password: res.temp_password,
-        gymName: gym.name,
-      });
+      setInvited({ email: res.email, gymName: gym.name });
     } catch (err: any) {
       toast.error(err.message ?? "Failed to create owner");
     } finally {
@@ -209,8 +189,8 @@ function GymsPage() {
           <div>
             <h2 className="font-semibold">Add a gym</h2>
             <p className="text-xs text-muted-foreground">
-              Optionally enter the owner's email — we'll auto-generate a
-              temporary password and show it to you to share.
+              Optionally enter the owner's email — we'll email them a sign-in
+              link automatically.
             </p>
           </div>
 
@@ -253,8 +233,8 @@ function GymsPage() {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              A secure temporary password is generated automatically. The owner
-              must change it on first sign-in.
+              The owner receives an email with a sign-in link. They'll set
+              their own password on first sign-in.
             </p>
           </div>
 
@@ -356,63 +336,19 @@ function GymsPage() {
         </div>
       </main>
 
-      <Dialog open={!!creds} onOpenChange={(o) => !o && setCreds(null)}>
+      <Dialog open={!!invited} onOpenChange={(o) => !o && setInvited(null)}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Owner login created</DialogTitle>
+            <DialogTitle>Invite sent</DialogTitle>
             <DialogDescription>
-              Share these credentials with the owner of{" "}
-              <strong>{creds?.gymName}</strong>. They'll be required to set a
-              new password on first sign-in.
+              We emailed a sign-in link to{" "}
+              <strong>{invited?.email}</strong> for{" "}
+              <strong>{invited?.gymName}</strong>. They'll set their password
+              after clicking the link.
             </DialogDescription>
           </DialogHeader>
-
-          <div className="space-y-3">
-            <div>
-              <Label className="text-xs text-muted-foreground">Email</Label>
-              <div className="flex gap-2">
-                <Input readOnly value={creds?.email ?? ""} className="font-mono text-sm" />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => creds && copy(creds.email, "email")}
-                >
-                  {copied === "email" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                </Button>
-              </div>
-            </div>
-            <div>
-              <Label className="text-xs text-muted-foreground">Temporary password</Label>
-              <div className="flex gap-2">
-                <Input readOnly value={creds?.password ?? ""} className="font-mono text-sm" />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  onClick={() => creds && copy(creds.password, "password")}
-                >
-                  {copied === "password" ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() =>
-                creds &&
-                copy(
-                  `Email: ${creds.email}\nTemporary password: ${creds.password}\nSign in at: ${window.location.origin}/auth`,
-                  "all",
-                )
-              }
-            >
-              {copied === "all" ? "Copied!" : "Copy all"}
-            </Button>
-            <Button type="button" onClick={() => setCreds(null)}>Done</Button>
+          <DialogFooter>
+            <Button type="button" onClick={() => setInvited(null)}>Done</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
