@@ -30,7 +30,7 @@ type Gym = {
   active: boolean;
 };
 
-type Creds = { email: string; password: string; gymName: string };
+type Invited = { email: string; gymName: string };
 
 function GymsPage() {
   const createUser = useServerFn(createGymUser);
