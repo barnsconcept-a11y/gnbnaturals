@@ -6,7 +6,10 @@ export const BUSINESS_WA_NUMBER = "233548363844";
 export const BUSINESS_WA_DISPLAY = "+233 54 836 3844";
 
 export function whatsappLink(message: string, number: string = BUSINESS_WA_NUMBER) {
-  return `https://wa.me/${number}?text=${encodeURIComponent(message)}`;
+  // Use web.whatsapp.com/send directly — avoids the api.whatsapp.com redirect
+  // that some networks/browsers block. Still deep-links into the WhatsApp app
+  // on iOS/Android via universal links.
+  return `https://web.whatsapp.com/send?phone=${number}&text=${encodeURIComponent(message)}`;
 }
 
 // Normalize a local Ghana number (e.g. 0548363844) to E.164 without "+"
