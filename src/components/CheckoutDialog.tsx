@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Copy, CheckCircle2, Upload, Loader2, Smartphone } from "lucide-react";
+import { Copy, CheckCircle2, Upload, Loader2, Smartphone, MessageCircle, Link as LinkIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useCart, formatGHS } from "@/lib/cart";
 import { supabase } from "@/integrations/supabase/client";
+import { whatsappLink } from "@/lib/whatsapp";
 import { toast } from "sonner";
 
 export const MOMO_NUMBER = "0548363844";
