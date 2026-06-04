@@ -98,8 +98,7 @@ export const listGymUsers = createServerFn({ method: "GET" })
       roles: (ur ?? []).filter((r) => r.user_id === u.id).map((r) => r.role),
       gyms: (gow ?? [])
         .filter((g) => g.user_id === u.id)
-        // @ts-expect-error - joined relation
-        .map((g) => g.gyms?.name)
+        .map((g: any) => g.gyms?.name)
         .filter(Boolean) as string[],
     }));
   });
