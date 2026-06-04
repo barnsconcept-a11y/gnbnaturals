@@ -155,6 +155,107 @@ function AdminDashboard() {
     return { revenue, crates, commission, count: filtered.length, byGym };
   }, [filtered, gyms]);
 
+  // Monthly commission breakdown per gym, derived from all non-cancelled orders.
+  // Honours gym + status filters except: cancelled/refunded never count.
+  const monthly = useMemo(() => {
+    type Row = {
+      key: string;
+      gymId: string;
+      gymName: string;
+      year: number;
+      month: number;
+      crates: number;
+      amountOwed: number;
+      payout: Payout | undefined;
+    };
+    const rows = new Map<string, Row>();
+    for (const o of orders) {
+      if (o.status === "cancelled" || o.status === "refunded") continue;
+      if (gymFilter !== "all" && o.pickup_station !== gymFilter) continue;
+      const g = gyms.find((g) => g.name === o.pickup_station);
+      if (!g) continue;
+      const d = new Date(o.created_at);
+      const year = d.getFullYear();
+      const month = d.getMonth() + 1;
+      const key = `${g.id}-${year}-${month}`;
+      const existing = rows.get(key);
+      const addCrates = o.total_crates;
+      const addAmount = addCrates * Number(g.commission_per_crate);
+      if (existing) {
+        existing.crates += addCrates;
+        existing.amountOwed += addAmount;
+      } else {
+        rows.set(key, {
+          key,
+          gymId: g.id,
+          gymName: g.name,
+          year,
+          month,
+          crates: addCrates,
+          amountOwed: addAmount,
+          payout: payouts.find(
+            (p) => p.gym_id === g.id && p.period_year === year && p.period_month === month,
+          ),
+        });
+      }
+    }
+    return Array.from(rows.values()).sort((a, b) => {
+      if (a.year !== b.year) return b.year - a.year;
+      if (a.month !== b.month) return b.month - a.month;
+      return a.gymName.localeCompare(b.gymName);
+    });
+  }, [orders, gyms, payouts, gymFilter]);
+
+  const markPaid = async (
+    gymId: string,
+    year: number,
+    month: number,
+    amount: number,
+  ) => {
+    const reference = window.prompt("Optional payment reference (MoMo ID, note)") ?? "";
+    const { data, error } = await supabase
+      .from("commission_payouts")
+      .upsert(
+        {
+          gym_id: gymId,
+          period_year: year,
+          period_month: month,
+          amount_paid: amount,
+          paid_at: new Date().toISOString(),
+          reference: reference || null,
+        },
+        { onConflict: "gym_id,period_year,period_month" },
+      )
+      .select()
+      .single();
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setPayouts((prev) => {
+      const others = prev.filter(
+        (p) => !(p.gym_id === gymId && p.period_year === year && p.period_month === month),
+      );
+      return [...others, data as unknown as Payout];
+    });
+    toast.success("Marked as paid");
+  };
+
+  const unmarkPaid = async (payoutId: string) => {
+    if (!window.confirm("Mark this commission as unpaid?")) return;
+    const { error } = await supabase
+      .from("commission_payouts")
+      .delete()
+      .eq("id", payoutId);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setPayouts((prev) => prev.filter((p) => p.id !== payoutId));
+    toast.success("Marked as unpaid");
+  };
+
+
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase
       .from("orders")
