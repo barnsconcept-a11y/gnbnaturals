@@ -233,8 +233,8 @@ function GymsPage() {
               />
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              A secure temporary password is generated automatically. The owner
-              must change it on first sign-in.
+              The owner receives an email with a sign-in link. They'll set
+              their own password on first sign-in.
             </p>
           </div>
 
