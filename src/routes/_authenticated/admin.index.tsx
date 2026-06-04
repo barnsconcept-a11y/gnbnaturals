@@ -148,7 +148,7 @@ function AdminDashboard() {
     }
     setOrders((prev) => prev.map((o) => (o.id === id ? { ...o, status } : o)));
     const updated = orders.find((o) => o.id === id);
-    if (updated && (status === "confirmed" || status === "ready")) {
+    if (isAdmin && updated && (status === "confirmed" || status === "ready")) {
       const link = customerWhatsappForStatus({ ...updated, status });
       toast.success("Status updated", {
         description: "Notify the customer on WhatsApp",
