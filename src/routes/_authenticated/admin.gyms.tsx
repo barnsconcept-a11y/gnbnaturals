@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { formatGhs } from "@/lib/admin-utils";
 import { createGymUser } from "@/lib/admin-users.functions";
+import { Trash2, UserPlus, X } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/gyms")({
   head: () => ({ meta: [{ title: "Gyms — Admin" }] }),
@@ -30,6 +31,10 @@ function GymsPage() {
   const [ownerPassword, setOwnerPassword] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [assignFor, setAssignFor] = useState<string | null>(null);
+  const [assignEmail, setAssignEmail] = useState("");
+  const [assignPass, setAssignPass] = useState("");
+  const [assignSubmitting, setAssignSubmitting] = useState(false);
 
   const load = async () => {
     const { data, error } = await supabase
@@ -110,6 +115,57 @@ function GymsPage() {
     load();
   };
 
+  const removeGym = async (g: Gym) => {
+    if (
+      !confirm(
+        `Delete "${g.name}"? This removes the gym and any owner-login links to it. Orders already placed at this pickup are kept.`,
+      )
+    )
+      return;
+    // remove owner links first (no FK cascade)
+    const { error: linkErr } = await supabase
+      .from("gym_owners")
+      .delete()
+      .eq("gym_id", g.id);
+    if (linkErr) return toast.error(linkErr.message);
+    const { error } = await supabase.from("gyms").delete().eq("id", g.id);
+    if (error) return toast.error(error.message);
+    toast.success("Gym deleted");
+    load();
+  };
+
+  const openAssign = (gymId: string) => {
+    setAssignFor(gymId);
+    setAssignEmail("");
+    setAssignPass("");
+  };
+
+  const submitAssign = async (gymId: string) => {
+    if (!assignEmail.trim() || assignPass.length < 8) {
+      toast.error("Email required and password must be at least 8 characters");
+      return;
+    }
+    setAssignSubmitting(true);
+    try {
+      await createUser({
+        data: {
+          email: assignEmail.trim(),
+          password: assignPass,
+          role: "gym_owner",
+          gym_ids: [gymId],
+        },
+      });
+      toast.success(`Owner login created: ${assignEmail.trim()}`);
+      setAssignFor(null);
+      setAssignEmail("");
+      setAssignPass("");
+    } catch (err: any) {
+      toast.error(err.message ?? "Failed to create owner");
+    } finally {
+      setAssignSubmitting(false);
+    }
+  };
+
   if (loading) return <div className="p-8">Loading…</div>;
 
   return (
@@ -187,8 +243,8 @@ function GymsPage() {
               </div>
             </div>
             <p className="mt-2 text-xs text-muted-foreground">
-              Leave blank to add the gym only. You can add owners later from
-              the Users page.
+              Leave blank to add the gym only — you can create their login later
+              from the list below.
             </p>
           </div>
 
@@ -197,46 +253,98 @@ function GymsPage() {
           </Button>
         </form>
 
-        <div className="overflow-x-auto rounded-xl border border-border bg-card">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-left text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Commission / crate</th>
-                <th className="px-4 py-3">Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {gyms.map((g) => (
-                <tr key={g.id} className="border-t border-border">
-                  <td className="px-4 py-3">{g.name}</td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        step="0.01"
-                        defaultValue={Number(g.commission_per_crate)}
-                        className="h-8 w-24"
-                        onBlur={(e) => updateRate(g.id, e.target.value)}
-                      />
-                      <span className="text-xs text-muted-foreground">
-                        ({formatGhs(Number(g.commission_per_crate))})
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-3">
-                    <Button
-                      size="sm"
-                      variant={g.active ? "outline" : "secondary"}
-                      onClick={() => toggleActive(g)}
-                    >
-                      {g.active ? "Active" : "Inactive"}
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="space-y-3">
+          {gyms.map((g) => (
+            <div
+              key={g.id}
+              className="rounded-xl border border-border bg-card p-4"
+            >
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium">{g.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {formatGhs(Number(g.commission_per_crate))} per crate
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <Label className="text-xs text-muted-foreground">
+                      GH₵
+                    </Label>
+                    <Input
+                      type="number"
+                      step="0.01"
+                      defaultValue={Number(g.commission_per_crate)}
+                      className="h-8 w-20"
+                      onBlur={(e) => updateRate(g.id, e.target.value)}
+                    />
+                  </div>
+                  <Button
+                    size="sm"
+                    variant={g.active ? "outline" : "secondary"}
+                    onClick={() => toggleActive(g)}
+                  >
+                    {g.active ? "Active" : "Inactive"}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      assignFor === g.id ? setAssignFor(null) : openAssign(g.id)
+                    }
+                  >
+                    {assignFor === g.id ? (
+                      <X className="h-4 w-4" />
+                    ) : (
+                      <>
+                        <UserPlus className="mr-1 h-4 w-4" />
+                        Add login
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    className="text-destructive hover:text-destructive"
+                    onClick={() => removeGym(g)}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              {assignFor === g.id && (
+                <div className="mt-3 grid gap-2 rounded-lg border border-dashed border-border bg-muted/30 p-3 sm:grid-cols-[1fr_180px_auto]">
+                  <Input
+                    type="email"
+                    placeholder="owner@example.com"
+                    value={assignEmail}
+                    onChange={(e) => setAssignEmail(e.target.value)}
+                    autoComplete="off"
+                  />
+                  <Input
+                    type="text"
+                    placeholder="Password (min 8)"
+                    value={assignPass}
+                    onChange={(e) => setAssignPass(e.target.value)}
+                    autoComplete="off"
+                  />
+                  <Button
+                    size="sm"
+                    disabled={assignSubmitting}
+                    onClick={() => submitAssign(g.id)}
+                  >
+                    {assignSubmitting ? "Creating…" : "Create login"}
+                  </Button>
+                </div>
+              )}
+            </div>
+          ))}
+          {gyms.length === 0 && (
+            <p className="text-center text-sm text-muted-foreground">
+              No gyms yet. Add your first one above.
+            </p>
+          )}
         </div>
       </main>
     </div>
