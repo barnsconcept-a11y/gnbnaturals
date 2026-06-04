@@ -62,6 +62,21 @@ type Order = {
 
 type Gym = { id: string; name: string; commission_per_crate: number };
 
+type Payout = {
+  id: string;
+  gym_id: string;
+  period_year: number;
+  period_month: number;
+  amount_paid: number;
+  paid_at: string;
+  reference: string | null;
+};
+
+const MONTH_NAMES = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
 function AdminDashboard() {
   const navigate = useNavigate();
   const [isAdmin, setIsAdmin] = useState(false);
