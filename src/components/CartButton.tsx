@@ -147,7 +147,7 @@ export function CartButton() {
                       <SelectValue placeholder="Choose your pickup location" />
                     </SelectTrigger>
                     <SelectContent>
-                      {PICKUP_STATIONS.map((p) => (
+                      {pickupLocations.map((p: string) => (
                         <SelectItem key={p} value={p}>
                           {p}
                         </SelectItem>
