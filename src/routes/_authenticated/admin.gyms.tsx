@@ -67,15 +67,6 @@ function GymsPage() {
     load();
   }, []);
 
-  const copy = async (text: string, which: "email" | "password" | "all") => {
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(which);
-      setTimeout(() => setCopied(null), 1500);
-    } catch {
-      toast.error("Couldn't copy");
-    }
-  };
 
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
