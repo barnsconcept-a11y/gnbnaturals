@@ -170,9 +170,38 @@ function UsersPage() {
             {submitting ? "Creating…" : "Create account"}
           </Button>
           <p className="text-xs text-muted-foreground">
-            You'll need to share the email & password with the user manually.
+            A secure temporary password is generated automatically — you'll see
+            it once after creating the account. The user must change it on
+            first sign-in.
           </p>
         </form>
+
+        {creds && (
+          <div className="rounded-xl border-2 border-primary bg-primary/5 p-4">
+            <p className="font-semibold">Share these credentials</p>
+            <div className="mt-2 space-y-1 font-mono text-sm">
+              <p>Email: <strong>{creds.email}</strong></p>
+              <p>Temporary password: <strong>{creds.password}</strong></p>
+            </div>
+            <div className="mt-3 flex gap-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={async () => {
+                  await navigator.clipboard.writeText(
+                    `Email: ${creds.email}\nTemporary password: ${creds.password}\nSign in at: ${window.location.origin}/auth`,
+                  );
+                  toast.success("Copied");
+                }}
+              >
+                Copy
+              </Button>
+              <Button size="sm" variant="ghost" onClick={() => setCreds(null)}>
+                Dismiss
+              </Button>
+            </div>
+          </div>
+        )}
 
         <div className="overflow-x-auto rounded-xl border border-border bg-card">
           <table className="w-full text-sm">
