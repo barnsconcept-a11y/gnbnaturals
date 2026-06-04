@@ -148,25 +148,25 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 pb-16 pt-12 md:grid-cols-2 md:gap-10 md:pb-24 md:pt-20">
+      <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-10 pt-6 md:grid-cols-2 md:gap-10 md:px-5 md:pb-24 md:pt-20">
         <div>
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card animate-hero-rise">
             <Leaf className="h-3 w-3 text-primary" />
             Natural Protein · Real Results
           </div>
-          <h1 className="mt-5 text-balance text-5xl font-bold leading-[1.02] tracking-tight md:text-6xl lg:text-7xl animate-hero-rise" style={{ animationDelay: "0.1s" }}>
+          <h1 className="mt-4 text-balance text-[2.25rem] font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl animate-hero-rise" style={{ animationDelay: "0.1s" }}>
             Affordable daily protein{" "}
             <span className="relative inline-block text-primary">
               <span className="relative z-10">made simple.</span>
               <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 rounded-full bg-accent/60 animate-hero-rise" style={{ animationDelay: "0.6s" }} />
             </span>
           </h1>
-          <p className="mt-6 max-w-xl text-balance text-lg text-muted-foreground animate-hero-rise" style={{ animationDelay: "0.2s" }}>
+          <p className="mt-4 max-w-xl text-balance text-base text-muted-foreground md:mt-6 md:text-lg animate-hero-rise" style={{ animationDelay: "0.2s" }}>
             Fresh <BrandMark className="text-primary text-[1.05em]" /> Naturals eggs reserved weekly
             and ready for pickup through your local fitness community. Clean fuel for real training.
           </p>
 
-          <ul className="mt-7 grid gap-2.5 text-sm">
+          <ul className="mt-5 grid gap-2 text-sm md:mt-7 md:gap-2.5">
             {[
               "Affordable daily protein",
               "Easier breakfast & meal prep",
@@ -175,7 +175,7 @@ function Hero() {
               "Built for consistent nutrition habits",
             ].map((b, i) => (
               <li key={b} className="flex items-center gap-3 animate-hero-rise" style={{ animationDelay: `${300 + i * 80}ms` }}>
-                <span className="grid h-5 w-5 place-items-center rounded-full bg-primary/10 text-primary">
+                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
                   <Check className="h-3 w-3" strokeWidth={3} />
                 </span>
                 <span className="text-foreground/90">{b}</span>
@@ -183,11 +183,11 @@ function Hero() {
             ))}
           </ul>
 
-          <div className="mt-9 flex flex-wrap items-center gap-3 animate-hero-rise" style={{ animationDelay: "0.7s" }}>
-            <Button asChild size="lg" className="h-12 rounded-full px-6 text-base shadow-elevated transition-transform hover:scale-[1.03]">
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center md:mt-9 animate-hero-rise" style={{ animationDelay: "0.7s" }}>
+            <Button asChild size="lg" className="h-12 w-full rounded-full px-6 text-base shadow-elevated transition-transform hover:scale-[1.03] sm:w-auto">
               <a href="#stacks">Start My Performance Stack <ArrowRight className="h-4 w-4" /></a>
             </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 rounded-full px-6 text-base">
+            <Button asChild size="lg" variant="outline" className="h-12 w-full rounded-full px-6 text-base sm:w-auto">
               <a href="#stacks">See Protein Stacks</a>
             </Button>
           </div>
