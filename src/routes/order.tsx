@@ -7,7 +7,7 @@ import { CartProvider, formatGHS, useCart } from "@/lib/cart";
 import { OrderBuilder, type BuilderStack } from "@/components/OrderBuilder";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
-import { stationFromSlug } from "@/lib/pickup";
+import { gymSlug, usePickupLocations } from "@/lib/pickup";
 
 const searchSchema = z.object({
   gym: fallback(z.string().optional(), undefined),
