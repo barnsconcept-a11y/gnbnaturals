@@ -35,6 +35,7 @@ type Creds = { email: string; password: string; gymName: string };
 function GymsPage() {
   const createUser = useServerFn(createGymUser);
   const [gyms, setGyms] = useState<Gym[]>([]);
+  const [ownerCounts, setOwnerCounts] = useState<Record<string, number>>({});
   const [name, setName] = useState("");
   const [rate, setRate] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
@@ -49,12 +50,19 @@ function GymsPage() {
   );
 
   const load = async () => {
-    const { data, error } = await supabase
-      .from("gyms")
-      .select("*")
-      .order("name");
+    const [{ data, error }, { data: owners, error: ownersErr }] =
+      await Promise.all([
+        supabase.from("gyms").select("*").order("name"),
+        supabase.from("gym_owners").select("gym_id"),
+      ]);
     if (error) toast.error(error.message);
+    if (ownersErr) toast.error(ownersErr.message);
     setGyms((data as Gym[]) ?? []);
+    const counts: Record<string, number> = {};
+    for (const o of (owners ?? []) as { gym_id: string }[]) {
+      counts[o.gym_id] = (counts[o.gym_id] ?? 0) + 1;
+    }
+    setOwnerCounts(counts);
     setLoading(false);
   };
 
@@ -297,6 +305,11 @@ function GymsPage() {
                   >
                     {assignFor === g.id ? (
                       <X className="h-4 w-4" />
+                    ) : (ownerCounts[g.id] ?? 0) > 0 ? (
+                      <>
+                        <UserPlus className="mr-1 h-4 w-4" />
+                        Add another login ({ownerCounts[g.id]})
+                      </>
                     ) : (
                       <>
                         <UserPlus className="mr-1 h-4 w-4" />
