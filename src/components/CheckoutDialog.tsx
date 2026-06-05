@@ -131,10 +131,10 @@ export function CheckoutDialog({
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-h-[92vh] gap-0 overflow-hidden p-0 sm:max-w-lg">
         <DialogHeader className="border-b border-border px-6 pb-4 pt-6">
-          <DialogTitle className="text-xl">
+          <DialogTitle className="text-2xl">
             {done ? "Order received" : "Pay with Mobile Money"}
           </DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="text-base">
             {done
               ? "We'll verify your payment and confirm your pickup shortly."
               : "Send payment, then upload the screenshot to complete checkout."}
@@ -147,14 +147,14 @@ export function CheckoutDialog({
               <div className="grid h-16 w-16 place-items-center rounded-full bg-primary/10 text-primary">
                 <CheckCircle2 className="h-8 w-8" />
               </div>
-              <p className="text-base font-semibold">Thanks, {name || "champ"}!</p>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-lg font-semibold">Thanks, {name || "champ"}!</p>
+              <p className="text-base text-muted-foreground">
                 Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)}) is being reviewed.
               </p>
               <div className="mt-2 w-full rounded-xl border-2 border-primary/30 bg-primary/10 px-4 py-3 text-center">
-                <div className="text-xs font-semibold uppercase tracking-wider text-primary">Expected pickup day</div>
-                <div className="mt-1 text-lg font-bold text-foreground">{expectedPickupLabel()}</div>
-                <div className="mt-1.5 text-sm text-muted-foreground">
+                <div className="text-sm font-semibold uppercase tracking-wider text-primary">Expected pickup day</div>
+                <div className="mt-1 text-xl font-bold text-foreground">{expectedPickupLabel()}</div>
+                <div className="mt-1.5 text-base text-muted-foreground">
                   We deliver Thu &amp; Mon. Orders by Tue 11:59pm → Thu; later → Mon.
                 </div>
               </div>
@@ -167,11 +167,11 @@ export function CheckoutDialog({
               return (
                 <>
                   <div className="rounded-xl border border-border bg-secondary/30 p-3">
-                    <div className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                       Your tracking link
                     </div>
                     <div className="mt-1 flex items-center gap-2">
-                      <code className="min-w-0 flex-1 truncate rounded-md bg-background px-2 py-1.5 text-xs">
+                      <code className="min-w-0 flex-1 truncate rounded-md bg-background px-2 py-1.5 text-sm">
                         /track/{shortId}…
                       </code>
                       <Button
@@ -192,7 +192,7 @@ export function CheckoutDialog({
                         {linkCopied ? "Copied" : "Copy"}
                       </Button>
                     </div>
-                    <p className="mt-2 text-[11px] text-muted-foreground">
+                    <p className="mt-2 text-sm text-muted-foreground">
                       Bookmark this page — it updates as your order progresses.
                     </p>
                   </div>
@@ -235,10 +235,10 @@ export function CheckoutDialog({
             <div className="space-y-5 px-6 py-5">
               {/* MoMo card */}
               <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
-                <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-primary">
-                  <Smartphone className="h-3.5 w-3.5" /> Step 1 · Send {formatGHS(totalPrice)}
+                <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
+                  <Smartphone className="h-4 w-4" /> Step 1 · Send {formatGHS(totalPrice)}
                 </div>
-                <div className="mt-3 space-y-1.5 text-sm">
+                <div className="mt-3 space-y-1.5 text-base">
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground">Network</span>
                     <span className="font-medium">{MOMO_NETWORK}</span>
@@ -248,9 +248,9 @@ export function CheckoutDialog({
                     <button
                       type="button"
                       onClick={copyNumber}
-                      className="inline-flex items-center gap-1.5 rounded-md bg-background px-2 py-1 font-mono text-base font-bold tracking-wide text-foreground transition-colors hover:bg-secondary"
+                      className="inline-flex items-center gap-1.5 rounded-md bg-background px-2 py-1 font-mono text-lg font-bold tracking-wide text-foreground transition-colors hover:bg-secondary"
                     >
-                      {MOMO_NUMBER} <Copy className="h-3.5 w-3.5" />
+                      {MOMO_NUMBER} <Copy className="h-4 w-4" />
                     </button>
                   </div>
                   <div className="flex justify-between gap-3">
@@ -294,7 +294,7 @@ export function CheckoutDialog({
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
                 />
-                <p className="text-[11px] text-muted-foreground">
+                <p className="text-sm text-muted-foreground">
                   We'll send order updates here once email is enabled.
                 </p>
               </div>
@@ -304,23 +304,23 @@ export function CheckoutDialog({
                 <button
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
-                  className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-background px-4 py-3 text-left text-sm transition-colors hover:bg-secondary/50"
+                  className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-background px-4 py-3 text-left text-base transition-colors hover:bg-secondary/50"
                 >
-                  <div className="grid h-9 w-9 place-items-center rounded-lg bg-secondary text-muted-foreground">
-                    <Upload className="h-4 w-4" />
+                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-secondary text-muted-foreground">
+                    <Upload className="h-5 w-5" />
                   </div>
                   <div className="min-w-0 flex-1">
                     {file ? (
                       <>
                         <div className="truncate font-medium">{file.name}</div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-sm text-muted-foreground">
                           {(file.size / 1024).toFixed(0)} KB · tap to change
                         </div>
                       </>
                     ) : (
                       <>
                         <div className="font-medium">Tap to attach screenshot</div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-sm text-muted-foreground">
                           JPG or PNG of your MoMo confirmation
                         </div>
                       </>
@@ -347,7 +347,7 @@ export function CheckoutDialog({
                 />
               </div>
 
-              <div className="rounded-xl bg-secondary/50 p-3 text-xs text-muted-foreground">
+              <div className="rounded-xl bg-secondary/50 p-3 text-sm text-muted-foreground">
                 Pickup at <span className="font-semibold text-foreground">{pickup || "—"}</span>
                 {" · "}
                 {totalCrates} crate{totalCrates !== 1 ? "s" : ""} ·{" "}
