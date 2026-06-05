@@ -14,7 +14,7 @@ import {
   CalendarCheck,
   MapPin,
   Instagram,
-  MessageCircle,
+  
   Mail,
   Sparkles,
   Flame,
@@ -784,13 +784,6 @@ function Footer() {
                 className="grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
               >
                 <Instagram className="h-4 w-4" />
-              </a>
-              <a
-                href="#"
-                aria-label="WhatsApp"
-                className="grid h-10 w-10 place-items-center rounded-full border border-border bg-card text-foreground transition-colors hover:bg-primary hover:text-primary-foreground"
-              >
-                <MessageCircle className="h-4 w-4" />
               </a>
               <a
                 href="mailto:hello@gbnaturals.com"
