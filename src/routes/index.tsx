@@ -139,8 +139,8 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-10 pt-6 md:grid-cols-2 md:gap-10 md:px-5 md:pb-24 md:pt-20">
-        <div className="order-2 md:order-1">
+      <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-10 pt-6 lg:grid-cols-2 lg:gap-10 md:px-5 md:pb-24 md:pt-20">
+        <div className="order-2 lg:order-1">
           <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card animate-hero-rise">
             <Leaf className="h-3 w-3 text-primary" />
             Natural Protein · Real Results
@@ -184,7 +184,7 @@ function Hero() {
           </div>
         </div>
 
-        <div className="relative order-1 md:order-2 animate-hero-rise" style={{ animationDelay: "0.3s" }}>
+        <div className="relative order-1 lg:order-2 animate-hero-rise" style={{ animationDelay: "0.3s" }}>
           <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl animate-hero-blob" />
           <div className="absolute -inset-10 -z-10 rounded-full bg-primary/10 blur-3xl animate-hero-blob" style={{ animationDelay: "1.5s" }} />
           <div className="hero-shine relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
