@@ -129,7 +129,7 @@ export function CheckoutDialog({
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[92vh] gap-0 overflow-hidden p-0 sm:max-w-lg">
+      <DialogContent className="max-h-[92vh] gap-0 overflow-hidden p-0 text-base sm:max-w-lg [&_label]:text-base [&_input]:text-base [&_input]:h-12 [&_textarea]:text-base">
         <DialogHeader className="border-b border-border px-6 pb-4 pt-6">
           <DialogTitle className="text-2xl">
             {done ? "Order received" : "Pay with Mobile Money"}
