@@ -146,7 +146,7 @@ function Hero() {
             Natural Protein · Real Results
           </div>
           <h1 className="mt-4 text-balance text-[2.25rem] font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl animate-hero-rise" style={{ animationDelay: "0.1s" }}>
-            Affordable daily protein{" "}
+            G&amp;B Naturals, Affordable daily protein{" "}
             <span className="relative inline-block text-primary">
               <span className="relative z-10">made simple.</span>
               <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 rounded-full bg-accent/60 animate-hero-rise" style={{ animationDelay: "0.6s" }} />
