@@ -340,9 +340,29 @@ function AdminDashboard() {
         <section className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           <StatCard label="Orders" value={String(stats.count)} />
           <StatCard label="Crates" value={String(stats.crates)} />
-          <StatCard label="Revenue" value={formatGhs(stats.revenue)} />
+          {isAdmin && <StatCard label="Revenue" value={formatGhs(stats.revenue)} />}
           <StatCard label="Commission" value={formatGhs(stats.commission)} />
         </section>
+
+        {monthly.length > 0 && (
+          <section className="grid grid-cols-2 gap-3 md:gap-4">
+            <StatCard
+              label="Paid commission"
+              value={formatGhs(
+                monthly.reduce(
+                  (sum, r) => sum + (r.payout ? Number(r.payout.amount_paid) : 0),
+                  0,
+                ),
+              )}
+            />
+            <StatCard
+              label="Outstanding commission"
+              value={formatGhs(
+                monthly.reduce((sum, r) => sum + (r.payout ? 0 : r.amountOwed), 0),
+              )}
+            />
+          </section>
+        )}
 
         <section className="flex flex-wrap items-center gap-2 md:gap-3">
           {isAdmin && (
