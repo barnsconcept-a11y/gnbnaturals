@@ -151,10 +151,11 @@ export function CheckoutDialog({
               <p className="text-sm text-muted-foreground">
                 Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)}) is being reviewed.
               </p>
-              <div className="mt-1 rounded-xl border border-primary/20 bg-primary/5 px-3 py-2 text-xs text-foreground">
-                Expected pickup day: <span className="font-semibold">{expectedPickupLabel()}</span>
-                <div className="mt-0.5 text-[11px] text-muted-foreground">
-                  We deliver Thu & Mon. Orders by Tue 11:59pm → Thu; later → Mon.
+              <div className="mt-2 w-full rounded-xl border-2 border-primary/30 bg-primary/10 px-4 py-3 text-center">
+                <div className="text-xs font-semibold uppercase tracking-wider text-primary">Expected pickup day</div>
+                <div className="mt-1 text-lg font-bold text-foreground">{expectedPickupLabel()}</div>
+                <div className="mt-1.5 text-sm text-muted-foreground">
+                  We deliver Thu &amp; Mon. Orders by Tue 11:59pm → Thu; later → Mon.
                 </div>
               </div>
             </div>
