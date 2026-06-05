@@ -507,7 +507,7 @@ function AdminDashboard() {
                       <SelectItem
                         key={s}
                         value={s}
-                        disabled={!isAdmin && s !== "picked_up" && s !== o.status}
+                        disabled={!isAdmin && s !== "picked_up"}
                       >
                         {statusLabel(s)}
                       </SelectItem>
@@ -609,7 +609,7 @@ function AdminDashboard() {
                           <SelectItem
                             key={s}
                             value={s}
-                            disabled={!isAdmin && s !== "picked_up" && s !== o.status}
+                            disabled={!isAdmin && s !== "picked_up"}
                           >
                             {statusLabel(s)}
                           </SelectItem>
