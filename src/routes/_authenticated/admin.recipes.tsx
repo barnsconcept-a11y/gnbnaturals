@@ -1,0 +1,249 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
+import { Trash2 } from "lucide-react";
+
+export const Route = createFileRoute("/_authenticated/admin/recipes")({
+  head: () => ({ meta: [{ title: "Recipes — Admin" }] }),
+  component: RecipesAdminPage,
+});
+
+type Recipe = {
+  id: string;
+  slug: string;
+  tag: string;
+  title: string;
+  body: string;
+  image_url: string | null;
+  published: boolean;
+  sort_order: number;
+};
+
+const slugify = (s: string) =>
+  s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+
+function RecipesAdminPage() {
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [form, setForm] = useState({
+    title: "",
+    tag: "",
+    body: "",
+    image_url: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const load = async () => {
+    const { data, error } = await supabase
+      .from("recipes")
+      .select("*")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
+    if (error) toast.error(error.message);
+    setRecipes((data as Recipe[]) ?? []);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    load();
+  }, []);
+
+  const add = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!form.title.trim()) return;
+    setSubmitting(true);
+    const slugBase = slugify(form.title);
+    const slug = `${slugBase}-${Math.random().toString(36).slice(2, 6)}`;
+    const { error } = await supabase.from("recipes").insert({
+      slug,
+      title: form.title.trim(),
+      tag: form.tag.trim(),
+      body: form.body.trim(),
+      image_url: form.image_url.trim() || null,
+      sort_order: recipes.length,
+    });
+    setSubmitting(false);
+    if (error) return toast.error(error.message);
+    toast.success("Recipe added");
+    setForm({ title: "", tag: "", body: "", image_url: "" });
+    load();
+  };
+
+  const update = async (id: string, patch: Partial<Recipe>) => {
+    const { error } = await supabase.from("recipes").update(patch).eq("id", id);
+    if (error) return toast.error(error.message);
+    setRecipes((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+  };
+
+  const remove = async (r: Recipe) => {
+    if (!confirm(`Delete "${r.title}"?`)) return;
+    const { error } = await supabase.from("recipes").delete().eq("id", r.id);
+    if (error) return toast.error(error.message);
+    toast.success("Deleted");
+    load();
+  };
+
+  if (loading) return <div className="p-8">Loading…</div>;
+
+  return (
+    <div className="min-h-screen bg-background">
+      <header className="border-b border-border bg-card">
+        <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
+          <h1 className="text-base font-semibold md:text-lg">Recipes</h1>
+          <Button variant="outline" size="sm" asChild>
+            <Link to="/admin">← Orders</Link>
+          </Button>
+        </div>
+      </header>
+
+      <main className="mx-auto max-w-4xl space-y-6 px-4 py-5 md:px-6 md:py-8">
+        <form
+          onSubmit={add}
+          className="space-y-4 rounded-xl border border-border bg-card p-4 md:p-5"
+        >
+          <div>
+            <h2 className="font-semibold">Add a recipe</h2>
+            <p className="text-xs text-muted-foreground">
+              Shows up on the landing page in the Recipes section.
+            </p>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
+            <div>
+              <Label htmlFor="r-title">Title</Label>
+              <Input
+                id="r-title"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                placeholder="High Protein Egg Recipes"
+              />
+            </div>
+            <div>
+              <Label htmlFor="r-tag">Tag</Label>
+              <Input
+                id="r-tag"
+                value={form.tag}
+                onChange={(e) => setForm({ ...form, tag: e.target.value })}
+                placeholder="Breakfast"
+              />
+            </div>
+          </div>
+          <div>
+            <Label htmlFor="r-body">Description</Label>
+            <Textarea
+              id="r-body"
+              value={form.body}
+              onChange={(e) => setForm({ ...form, body: e.target.value })}
+              placeholder="10-minute power breakfasts that hit 30g+ of protein."
+              rows={3}
+            />
+          </div>
+          <div>
+            <Label htmlFor="r-img">Image URL</Label>
+            <Input
+              id="r-img"
+              value={form.image_url}
+              onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+              placeholder="https://…/image.jpg"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              Paste any image URL (Unsplash, your own host, etc.).
+            </p>
+          </div>
+          <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
+            {submitting ? "Saving…" : "Add recipe"}
+          </Button>
+        </form>
+
+        <div className="space-y-3">
+          {recipes.map((r) => (
+            <div
+              key={r.id}
+              className="rounded-xl border border-border bg-card p-4"
+            >
+              <div className="flex gap-4">
+                {r.image_url ? (
+                  <img
+                    src={r.image_url}
+                    alt={r.title}
+                    className="h-20 w-20 shrink-0 rounded-lg object-cover"
+                  />
+                ) : (
+                  <div className="h-20 w-20 shrink-0 rounded-lg bg-muted" />
+                )}
+                <div className="min-w-0 flex-1 space-y-2">
+                  <Input
+                    defaultValue={r.title}
+                    onBlur={(e) =>
+                      e.target.value !== r.title &&
+                      update(r.id, { title: e.target.value })
+                    }
+                  />
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    <Input
+                      defaultValue={r.tag}
+                      placeholder="Tag"
+                      onBlur={(e) =>
+                        e.target.value !== r.tag &&
+                        update(r.id, { tag: e.target.value })
+                      }
+                    />
+                    <Input
+                      defaultValue={r.image_url ?? ""}
+                      placeholder="Image URL"
+                      onBlur={(e) =>
+                        e.target.value !== (r.image_url ?? "") &&
+                        update(r.id, { image_url: e.target.value || null })
+                      }
+                    />
+                  </div>
+                  <Textarea
+                    defaultValue={r.body}
+                    rows={2}
+                    onBlur={(e) =>
+                      e.target.value !== r.body &&
+                      update(r.id, { body: e.target.value })
+                    }
+                  />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Switch
+                        checked={r.published}
+                        onCheckedChange={(v) => update(r.id, { published: v })}
+                      />
+                      <span className="text-xs text-muted-foreground">
+                        {r.published ? "Published" : "Draft"}
+                      </span>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => remove(r)}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+          {recipes.length === 0 && (
+            <p className="text-center text-sm text-muted-foreground">
+              No recipes yet. Add your first one above.
+            </p>
+          )}
+        </div>
+      </main>
+    </div>
+  );
+}

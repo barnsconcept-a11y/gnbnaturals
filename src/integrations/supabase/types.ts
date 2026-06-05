@@ -168,6 +168,45 @@ export type Database = {
         }
         Relationships: []
       }
+      recipes: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          image_url: string | null
+          published: boolean
+          slug: string
+          sort_order: number
+          tag: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          slug: string
+          sort_order?: number
+          tag?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          published?: boolean
+          slug?: string
+          sort_order?: number
+          tag?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

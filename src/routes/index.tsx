@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { createFileRoute } from "@tanstack/react-router";
 import { OrderBuilder } from "@/components/OrderBuilder";
 import {
@@ -629,14 +630,44 @@ function HowItWorks() {
   );
 }
 
-const recipes = [
-  { tag: "Breakfast", title: "High Protein Egg Recipes", body: "10-minute power breakfasts that hit 30g+ of protein.", img: foodSunny },
-  { tag: "Prep", title: "Breakfast Meal Prep", body: "Sunday-night batch cooks that cover your whole week.", img: foodOmelet },
-  { tag: "Budget", title: "Affordable Protein Meals", body: "Hit your macros without burning your monthly budget.", img: foodEggs },
-  { tag: "Performance", title: "Fitness Nutrition Tips", body: "Simple frameworks for staying consistent year-round.", img: foodBowl },
+const fallbackRecipes = [
+  { tag: "Breakfast", title: "High Protein Egg Recipes", body: "10-minute power breakfasts that hit 30g+ of protein.", image_url: foodSunny },
+  { tag: "Prep", title: "Breakfast Meal Prep", body: "Sunday-night batch cooks that cover your whole week.", image_url: foodOmelet },
+  { tag: "Budget", title: "Affordable Protein Meals", body: "Hit your macros without burning your monthly budget.", image_url: foodEggs },
+  { tag: "Performance", title: "Fitness Nutrition Tips", body: "Simple frameworks for staying consistent year-round.", image_url: foodBowl },
 ];
 
+type RecipeCard = { tag: string; title: string; body: string; image_url: string };
+
 function Recipes() {
+  const [recipes, setRecipes] = useState<RecipeCard[]>(fallbackRecipes);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("recipes")
+        .select("tag, title, body, image_url")
+        .eq("published", true)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (cancelled) return;
+      if (data && data.length > 0) {
+        setRecipes(
+          data.map((r) => ({
+            tag: r.tag ?? "",
+            title: r.title,
+            body: r.body ?? "",
+            image_url: r.image_url || foodSunny,
+          })),
+        );
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <section id="recipes" className="border-t border-border bg-secondary/40">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
@@ -663,7 +694,7 @@ function Recipes() {
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
-                  src={r.img}
+                  src={r.image_url}
                   alt={r.title}
                   loading="lazy"
                   width={1024}
@@ -671,9 +702,11 @@ function Recipes() {
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
-                  {r.tag}
-                </span>
+                {r.tag && (
+                  <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
+                    {r.tag}
+                  </span>
+                )}
               </div>
               <div className="p-5">
                 <h3 className="text-base font-semibold">{r.title}</h3>
@@ -686,6 +719,7 @@ function Recipes() {
     </section>
   );
 }
+
 
 const testimonials = [
   { quote: "Meal prep became way easier. I just batch eggs every Sunday and I'm sorted for the week.", name: "Kojo A.", role: "Powerlifter" },
