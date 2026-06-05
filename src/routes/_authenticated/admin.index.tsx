@@ -327,6 +327,9 @@ function AdminDashboard() {
                 <Button variant="outline" size="sm" asChild>
                   <Link to="/admin/users">Users</Link>
                 </Button>
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/admin/recipes">Recipes</Link>
+                </Button>
               </>
             )}
             <Button variant="ghost" size="sm" onClick={signOut}>
