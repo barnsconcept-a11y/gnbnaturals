@@ -380,6 +380,23 @@ const stacks: Stack[] = [
     img: stackPerformance,
     imgAlt: "Kraft crate of medium fresh brown eggs — Performance Stack",
   },
+  {
+    id: "elite",
+    name: "The Elite Jumbo Stack™",
+    cratePrice: 80,
+    stackPrice: 310,
+    desc: "More protein. Bigger eggs. Bigger meals.",
+    features: [
+      "Jumbo fresh eggs",
+      "Bigger servings and fuller meals",
+      "Weekly protein supply reserved for you",
+      "Premium meal prep content",
+      "Priority reservation access",
+      "Exclusive nutrition content",
+    ],
+    img: stackElite,
+    imgAlt: "Kraft crate of jumbo brown eggs — Elite Stack",
+  },
 ];
 
 function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) {
