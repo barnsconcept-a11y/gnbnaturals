@@ -371,20 +371,31 @@ function RecipeRow({
           />
           <Input
             defaultValue={r.tag}
-            placeholder="Tag"
+            placeholder="Tag (Breakfast, Lunch, Dinner, Post-workout, Snack)"
             onBlur={(e) =>
               e.target.value !== r.tag &&
               onUpdate(r.id, { tag: e.target.value })
             }
           />
           <Textarea
-            defaultValue={r.body}
+            defaultValue={r.excerpt}
             rows={2}
+            placeholder="Short highlight (shown on the card)"
+            onBlur={(e) =>
+              e.target.value !== r.excerpt &&
+              onUpdate(r.id, { excerpt: e.target.value })
+            }
+          />
+          <Textarea
+            defaultValue={r.body}
+            rows={4}
+            placeholder="Full recipe details"
             onBlur={(e) =>
               e.target.value !== r.body &&
               onUpdate(r.id, { body: e.target.value })
             }
           />
+          
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Switch
