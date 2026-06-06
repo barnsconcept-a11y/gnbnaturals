@@ -1,0 +1,1 @@
+ALTER TABLE public.recipes ADD COLUMN IF NOT EXISTS excerpt text NOT NULL DEFAULT '';
