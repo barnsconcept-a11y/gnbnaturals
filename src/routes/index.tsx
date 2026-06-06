@@ -70,13 +70,21 @@ function BrandMark({ className = "" }: { className?: string }) {
 
 function Logo({ compact = false }: { compact?: boolean }) {
   return (
-    <img
-      src={gnbLogo.url}
-      alt="G&B Naturals — Affordable Daily Protein"
-      className={compact ? "h-9 w-auto" : "h-11 w-auto"}
-    />
+    <span
+      className={[
+        "inline-flex items-center justify-center rounded-full bg-cream ring-2 ring-primary/15 shadow-soft",
+        compact ? "h-14 w-14 p-1.5" : "h-20 w-20 p-2",
+      ].join(" ")}
+    >
+      <img
+        src={gnbLogo.url}
+        alt="G&B Naturals — Affordable Daily Protein"
+        className="h-full w-full object-contain"
+      />
+    </span>
   );
 }
+
 
 
 function Nav() {
