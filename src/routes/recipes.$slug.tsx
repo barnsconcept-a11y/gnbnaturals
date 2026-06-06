@@ -59,7 +59,7 @@ function RecipePage() {
       setLoading(true);
       const { data } = await supabase
         .from("recipes")
-        .select("slug, tag, title, body, image_url")
+        .select("slug, tag, title, excerpt, body, image_url")
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
