@@ -646,28 +646,41 @@ const fallbackRecipes = [
   { tag: "Performance", title: "Fitness Nutrition Tips", body: "Simple frameworks for staying consistent year-round.", image_url: foodBowl },
 ];
 
-type RecipeCard = { slug: string; tag: string; title: string; body: string; image_url: string };
+type RecipeCard = {
+  slug: string;
+  tag: string;
+  title: string;
+  excerpt: string;
+  image_url: string;
+};
 
-function truncate(text: string, max = 90) {
+const RECIPE_TAG_FILTERS = ["All", "Breakfast", "Post-workout", "Lunch", "Dinner", "Snack"] as const;
+type RecipeTagFilter = (typeof RECIPE_TAG_FILTERS)[number];
+
+function truncate(text: string, max = 110) {
   if (!text) return "";
   if (text.length <= max) return text;
   return text.slice(0, max).trimEnd() + "…";
 }
 
 const fallbackCardsWithSlug: RecipeCard[] = fallbackRecipes.map((r, i) => ({
-  ...r,
   slug: `sample-${i}`,
+  tag: r.tag,
+  title: r.title,
+  excerpt: r.body,
+  image_url: r.image_url,
 }));
 
 function Recipes() {
   const [recipes, setRecipes] = useState<RecipeCard[]>(fallbackCardsWithSlug);
+  const [filter, setFilter] = useState<RecipeTagFilter>("All");
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const { data } = await supabase
         .from("recipes")
-        .select("slug, tag, title, body, image_url")
+        .select("slug, tag, title, excerpt, body, image_url")
         .eq("published", true)
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: false });
@@ -678,7 +691,7 @@ function Recipes() {
             slug: r.slug,
             tag: r.tag ?? "",
             title: r.title,
-            body: r.body ?? "",
+            excerpt: (r.excerpt && r.excerpt.trim()) || r.body || "",
             image_url: r.image_url || foodSunny,
           })),
         );
@@ -688,6 +701,11 @@ function Recipes() {
       cancelled = true;
     };
   }, []);
+
+  const visible =
+    filter === "All"
+      ? recipes
+      : recipes.filter((r) => r.tag.toLowerCase() === filter.toLowerCase());
 
   return (
     <section id="recipes" className="border-t border-border bg-secondary/40">
@@ -707,41 +725,71 @@ function Recipes() {
           </span>
         </div>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {recipes.map((r) => (
-            <Link
-              key={r.slug}
-              to="/recipes/$slug"
-              params={{ slug: r.slug }}
-              className="group overflow-hidden rounded-3xl border border-border bg-card text-left shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            >
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={r.image_url}
-                  alt={r.title}
-                  loading="lazy"
-                  width={1024}
-                  height={768}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-                {r.tag && (
-                  <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
-                    {r.tag}
-                  </span>
-                )}
-              </div>
-              <div className="p-5">
-                <h3 className="text-base font-semibold">{r.title}</h3>
-                <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{truncate(r.body, 90)}</p>
-              </div>
-            </Link>
-          ))}
+        <div className="mt-8 flex flex-wrap gap-2">
+          {RECIPE_TAG_FILTERS.map((t) => {
+            const active = filter === t;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setFilter(t)}
+                className={[
+                  "rounded-full border px-4 py-1.5 text-sm transition-colors",
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-foreground hover:border-primary/40",
+                ].join(" ")}
+              >
+                {t}
+              </button>
+            );
+          })}
         </div>
+
+        {visible.length === 0 ? (
+          <p className="mt-12 text-center text-sm text-muted-foreground">
+            No recipes in “{filter}” yet.
+          </p>
+        ) : (
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {visible.map((r) => (
+              <Link
+                key={r.slug}
+                to="/recipes/$slug"
+                params={{ slug: r.slug }}
+                className="group overflow-hidden rounded-3xl border border-border bg-card text-left shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={r.image_url}
+                    alt={r.title}
+                    loading="lazy"
+                    width={1024}
+                    height={768}
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  {r.tag && (
+                    <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
+                      {r.tag}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="text-base font-semibold">{r.title}</h3>
+                  <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
+                    {truncate(r.excerpt, 110)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
 }
+
 
 
 
