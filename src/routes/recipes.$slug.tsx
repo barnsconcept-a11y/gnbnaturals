@@ -7,6 +7,7 @@ type Recipe = {
   slug: string;
   tag: string;
   title: string;
+  excerpt: string;
   body: string;
   image_url: string | null;
 };
