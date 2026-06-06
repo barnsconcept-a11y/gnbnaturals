@@ -24,6 +24,7 @@ import {
 import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import heroImg from "@/assets/hero.jpg";
 import gnbLogo from "@/assets/gnb-logo.png.asset.json";
 import productOpen from "@/assets/product-open.png";
@@ -647,8 +648,15 @@ const fallbackRecipes = [
 
 type RecipeCard = { tag: string; title: string; body: string; image_url: string };
 
+function truncate(text: string, max = 90) {
+  if (!text) return "";
+  if (text.length <= max) return text;
+  return text.slice(0, max).trimEnd() + "…";
+}
+
 function Recipes() {
   const [recipes, setRecipes] = useState<RecipeCard[]>(fallbackRecipes);
+  const [active, setActive] = useState<RecipeCard | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -696,9 +704,11 @@ function Recipes() {
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {recipes.map((r) => (
-            <article
+            <button
               key={r.title}
-              className="group overflow-hidden rounded-3xl border border-border bg-card shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated"
+              type="button"
+              onClick={() => setActive(r)}
+              className="group overflow-hidden rounded-3xl border border-border bg-card text-left shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
                 <img
@@ -718,15 +728,41 @@ function Recipes() {
               </div>
               <div className="p-5">
                 <h3 className="text-base font-semibold">{r.title}</h3>
-                <p className="mt-1.5 text-sm text-muted-foreground">{r.body}</p>
+                <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{truncate(r.body, 90)}</p>
               </div>
-            </article>
+            </button>
           ))}
         </div>
       </div>
+
+      <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>
+        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto p-0">
+          {active && (
+            <>
+              <div className="relative aspect-[16/9] overflow-hidden">
+                <img src={active.image_url} alt={active.title} className="h-full w-full object-cover" />
+                {active.tag && (
+                  <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
+                    {active.tag}
+                  </span>
+                )}
+              </div>
+              <div className="p-6">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl">{active.title}</DialogTitle>
+                </DialogHeader>
+                <div className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
+                  {active.body}
+                </div>
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }
+
 
 
 const testimonials = [
