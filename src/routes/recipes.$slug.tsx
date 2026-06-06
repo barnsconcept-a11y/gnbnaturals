@@ -120,6 +120,12 @@ function RecipePage() {
         {recipe.title}
       </h1>
 
+      {recipe.excerpt && (
+        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+          {recipe.excerpt}
+        </p>
+      )}
+
       <div className="mt-6 whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
         {recipe.body}
       </div>
