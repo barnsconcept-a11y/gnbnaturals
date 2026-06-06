@@ -19,11 +19,15 @@ type Recipe = {
   slug: string;
   tag: string;
   title: string;
+  excerpt: string;
   body: string;
   image_url: string | null;
   published: boolean;
   sort_order: number;
 };
+
+const TAG_FILTERS = ["All", "Breakfast", "Post-workout", "Lunch", "Dinner", "Snack"] as const;
+type TagFilter = (typeof TAG_FILTERS)[number];
 
 const slugify = (s: string) =>
   s
