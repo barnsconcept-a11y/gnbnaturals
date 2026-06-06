@@ -263,8 +263,8 @@ function RecipeRow({
   onReplaceImage,
 }: {
   recipe: Recipe;
-  onUpdate: (id: string, patch: Partial<Recipe>) => Promise<void>;
-  onRemove: (r: Recipe) => Promise<void>;
+  onUpdate: (id: string, patch: Partial<Recipe>) => Promise<unknown>;
+  onRemove: (r: Recipe) => Promise<unknown>;
   onReplaceImage: (id: string, file: File) => Promise<void>;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
