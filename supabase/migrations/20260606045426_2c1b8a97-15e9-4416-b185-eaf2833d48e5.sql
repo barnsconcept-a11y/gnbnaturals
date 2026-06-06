@@ -1,0 +1,1 @@
+GRANT SELECT ON public.recipes TO anon, authenticated; GRANT INSERT, UPDATE, DELETE ON public.recipes TO authenticated; GRANT ALL ON public.recipes TO service_role;
