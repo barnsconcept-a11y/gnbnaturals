@@ -19,11 +19,15 @@ type Recipe = {
   slug: string;
   tag: string;
   title: string;
+  excerpt: string;
   body: string;
   image_url: string | null;
   published: boolean;
   sort_order: number;
 };
+
+const TAG_FILTERS = ["All", "Breakfast", "Post-workout", "Lunch", "Dinner", "Snack"] as const;
+type TagFilter = (typeof TAG_FILTERS)[number];
 
 const slugify = (s: string) =>
   s
@@ -52,9 +56,11 @@ async function uploadRecipeImage(file: File): Promise<string> {
 function RecipesAdminPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<TagFilter>("All");
   const [form, setForm] = useState({
     title: "",
     tag: "",
+    excerpt: "",
     body: "",
     image_url: "",
   });
@@ -111,6 +117,7 @@ function RecipesAdminPage() {
       slug,
       title: form.title.trim(),
       tag: form.tag.trim(),
+      excerpt: form.excerpt.trim(),
       body: form.body.trim(),
       image_url: form.image_url.trim() || null,
       sort_order: recipes.length,
@@ -118,7 +125,7 @@ function RecipesAdminPage() {
     setSubmitting(false);
     if (error) return toast.error(error.message);
     toast.success("Recipe added");
-    setForm({ title: "", tag: "", body: "", image_url: "" });
+    setForm({ title: "", tag: "", excerpt: "", body: "", image_url: "" });
     load();
   };
 
@@ -181,13 +188,23 @@ function RecipesAdminPage() {
             </div>
           </div>
           <div>
-            <Label htmlFor="r-body">Description</Label>
+            <Label htmlFor="r-excerpt">Short highlight</Label>
+            <Textarea
+              id="r-excerpt"
+              value={form.excerpt}
+              onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+              placeholder="One-sentence teaser shown on the recipe card."
+              rows={2}
+            />
+          </div>
+          <div>
+            <Label htmlFor="r-body">Full recipe details</Label>
             <Textarea
               id="r-body"
               value={form.body}
               onChange={(e) => setForm({ ...form, body: e.target.value })}
-              placeholder="10-minute power breakfasts that hit 30g+ of protein."
-              rows={3}
+              placeholder="Ingredients, steps and tips — shown on the recipe page."
+              rows={6}
             />
           </div>
           <div>
@@ -236,20 +253,54 @@ function RecipesAdminPage() {
         </form>
 
         <div className="space-y-3">
-          {recipes.map((r) => (
-            <RecipeRow
-              key={r.id}
-              recipe={r}
-              onUpdate={update}
-              onRemove={remove}
-              onReplaceImage={handleReplaceImage}
-            />
-          ))}
-          {recipes.length === 0 && (
-            <p className="text-center text-sm text-muted-foreground">
-              No recipes yet. Add your first one above.
-            </p>
-          )}
+          <div className="flex flex-wrap gap-2">
+            {TAG_FILTERS.map((t) => {
+              const active = filter === t;
+              const count =
+                t === "All"
+                  ? recipes.length
+                  : recipes.filter((r) => r.tag.toLowerCase() === t.toLowerCase()).length;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setFilter(t)}
+                  className={[
+                    "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+                    active
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-card text-foreground hover:border-primary/40",
+                  ].join(" ")}
+                >
+                  {t} <span className="ml-1 opacity-60">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+          {(() => {
+            const visible =
+              filter === "All"
+                ? recipes
+                : recipes.filter((r) => r.tag.toLowerCase() === filter.toLowerCase());
+            if (visible.length === 0) {
+              return (
+                <p className="text-center text-sm text-muted-foreground">
+                  {recipes.length === 0
+                    ? "No recipes yet. Add your first one above."
+                    : `No recipes tagged "${filter}".`}
+                </p>
+              );
+            }
+            return visible.map((r) => (
+              <RecipeRow
+                key={r.id}
+                recipe={r}
+                onUpdate={update}
+                onRemove={remove}
+                onReplaceImage={handleReplaceImage}
+              />
+            ));
+          })()}
         </div>
       </main>
     </div>
@@ -320,20 +371,31 @@ function RecipeRow({
           />
           <Input
             defaultValue={r.tag}
-            placeholder="Tag"
+            placeholder="Tag (Breakfast, Lunch, Dinner, Post-workout, Snack)"
             onBlur={(e) =>
               e.target.value !== r.tag &&
               onUpdate(r.id, { tag: e.target.value })
             }
           />
           <Textarea
-            defaultValue={r.body}
+            defaultValue={r.excerpt}
             rows={2}
+            placeholder="Short highlight (shown on the card)"
+            onBlur={(e) =>
+              e.target.value !== r.excerpt &&
+              onUpdate(r.id, { excerpt: e.target.value })
+            }
+          />
+          <Textarea
+            defaultValue={r.body}
+            rows={4}
+            placeholder="Full recipe details"
             onBlur={(e) =>
               e.target.value !== r.body &&
               onUpdate(r.id, { body: e.target.value })
             }
           />
+          
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Switch

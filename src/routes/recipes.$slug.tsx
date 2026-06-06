@@ -7,6 +7,7 @@ type Recipe = {
   slug: string;
   tag: string;
   title: string;
+  excerpt: string;
   body: string;
   image_url: string | null;
 };
@@ -58,7 +59,7 @@ function RecipePage() {
       setLoading(true);
       const { data } = await supabase
         .from("recipes")
-        .select("slug, tag, title, body, image_url")
+        .select("slug, tag, title, excerpt, body, image_url")
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
@@ -118,6 +119,12 @@ function RecipePage() {
       <h1 className="mt-8 text-balance text-4xl font-bold tracking-tight md:text-5xl">
         {recipe.title}
       </h1>
+
+      {recipe.excerpt && (
+        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+          {recipe.excerpt}
+        </p>
+      )}
 
       <div className="mt-6 whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
         {recipe.body}
