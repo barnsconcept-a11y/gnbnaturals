@@ -117,6 +117,7 @@ function RecipesAdminPage() {
       slug,
       title: form.title.trim(),
       tag: form.tag.trim(),
+      excerpt: form.excerpt.trim(),
       body: form.body.trim(),
       image_url: form.image_url.trim() || null,
       sort_order: recipes.length,
@@ -124,7 +125,7 @@ function RecipesAdminPage() {
     setSubmitting(false);
     if (error) return toast.error(error.message);
     toast.success("Recipe added");
-    setForm({ title: "", tag: "", body: "", image_url: "" });
+    setForm({ title: "", tag: "", excerpt: "", body: "", image_url: "" });
     load();
   };
 
