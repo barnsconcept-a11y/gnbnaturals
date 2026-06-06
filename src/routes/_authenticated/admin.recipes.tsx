@@ -188,13 +188,23 @@ function RecipesAdminPage() {
             </div>
           </div>
           <div>
-            <Label htmlFor="r-body">Description</Label>
+            <Label htmlFor="r-excerpt">Short highlight</Label>
+            <Textarea
+              id="r-excerpt"
+              value={form.excerpt}
+              onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+              placeholder="One-sentence teaser shown on the recipe card."
+              rows={2}
+            />
+          </div>
+          <div>
+            <Label htmlFor="r-body">Full recipe details</Label>
             <Textarea
               id="r-body"
               value={form.body}
               onChange={(e) => setForm({ ...form, body: e.target.value })}
-              placeholder="10-minute power breakfasts that hit 30g+ of protein."
-              rows={3}
+              placeholder="Ingredients, steps and tips — shown on the recipe page."
+              rows={6}
             />
           </div>
           <div>
