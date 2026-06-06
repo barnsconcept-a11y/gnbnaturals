@@ -56,9 +56,11 @@ async function uploadRecipeImage(file: File): Promise<string> {
 function RecipesAdminPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState<TagFilter>("All");
   const [form, setForm] = useState({
     title: "",
     tag: "",
+    excerpt: "",
     body: "",
     image_url: "",
   });
