@@ -14,6 +14,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrackOrderIdRouteImport } from './routes/track.$orderId'
+import { Route as RecipesSlugRouteImport } from './routes/recipes.$slug'
 import { Route as AuthenticatedChangePasswordRouteImport } from './routes/_authenticated/change-password'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
@@ -42,6 +43,11 @@ const IndexRoute = IndexRouteImport.update({
 const TrackOrderIdRoute = TrackOrderIdRouteImport.update({
   id: '/track/$orderId',
   path: '/track/$orderId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecipesSlugRoute = RecipesSlugRouteImport.update({
+  id: '/recipes/$slug',
+  path: '/recipes/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedChangePasswordRoute =
@@ -77,6 +83,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
+  '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/admin/recipes': typeof AuthenticatedAdminRecipesRoute
@@ -88,6 +95,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
+  '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/admin/recipes': typeof AuthenticatedAdminRecipesRoute
@@ -101,6 +109,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
   '/_authenticated/change-password': typeof AuthenticatedChangePasswordRoute
+  '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/_authenticated/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/_authenticated/admin/recipes': typeof AuthenticatedAdminRecipesRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/order'
     | '/change-password'
+    | '/recipes/$slug'
     | '/track/$orderId'
     | '/admin/gyms'
     | '/admin/recipes'
@@ -125,6 +135,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/order'
     | '/change-password'
+    | '/recipes/$slug'
     | '/track/$orderId'
     | '/admin/gyms'
     | '/admin/recipes'
@@ -137,6 +148,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/order'
     | '/_authenticated/change-password'
+    | '/recipes/$slug'
     | '/track/$orderId'
     | '/_authenticated/admin/gyms'
     | '/_authenticated/admin/recipes'
@@ -149,6 +161,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   OrderRoute: typeof OrderRoute
+  RecipesSlugRoute: typeof RecipesSlugRoute
   TrackOrderIdRoute: typeof TrackOrderIdRoute
 }
 
@@ -187,6 +200,13 @@ declare module '@tanstack/react-router' {
       path: '/track/$orderId'
       fullPath: '/track/$orderId'
       preLoaderRoute: typeof TrackOrderIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recipes/$slug': {
+      id: '/recipes/$slug'
+      path: '/recipes/$slug'
+      fullPath: '/recipes/$slug'
+      preLoaderRoute: typeof RecipesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/change-password': {
@@ -251,6 +271,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   OrderRoute: OrderRoute,
+  RecipesSlugRoute: RecipesSlugRoute,
   TrackOrderIdRoute: TrackOrderIdRoute,
 }
 export const routeTree = rootRouteImport

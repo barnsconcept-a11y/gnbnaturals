@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { OrderBuilder } from "@/components/OrderBuilder";
 import {
   ArrowRight,
@@ -646,7 +646,7 @@ const fallbackRecipes = [
   { tag: "Performance", title: "Fitness Nutrition Tips", body: "Simple frameworks for staying consistent year-round.", image_url: foodBowl },
 ];
 
-type RecipeCard = { tag: string; title: string; body: string; image_url: string };
+type RecipeCard = { slug: string; tag: string; title: string; body: string; image_url: string };
 
 function truncate(text: string, max = 90) {
   if (!text) return "";
@@ -654,16 +654,20 @@ function truncate(text: string, max = 90) {
   return text.slice(0, max).trimEnd() + "…";
 }
 
+const fallbackCardsWithSlug: RecipeCard[] = fallbackRecipes.map((r, i) => ({
+  ...r,
+  slug: `sample-${i}`,
+}));
+
 function Recipes() {
-  const [recipes, setRecipes] = useState<RecipeCard[]>(fallbackRecipes);
-  const [active, setActive] = useState<RecipeCard | null>(null);
+  const [recipes, setRecipes] = useState<RecipeCard[]>(fallbackCardsWithSlug);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       const { data } = await supabase
         .from("recipes")
-        .select("tag, title, body, image_url")
+        .select("slug, tag, title, body, image_url")
         .eq("published", true)
         .order("sort_order", { ascending: true })
         .order("created_at", { ascending: false });
@@ -671,6 +675,7 @@ function Recipes() {
       if (data && data.length > 0) {
         setRecipes(
           data.map((r) => ({
+            slug: r.slug,
             tag: r.tag ?? "",
             title: r.title,
             body: r.body ?? "",
@@ -704,10 +709,10 @@ function Recipes() {
 
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {recipes.map((r) => (
-            <button
-              key={r.title}
-              type="button"
-              onClick={() => setActive(r)}
+            <Link
+              key={r.slug}
+              to="/recipes/$slug"
+              params={{ slug: r.slug }}
               className="group overflow-hidden rounded-3xl border border-border bg-card text-left shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               <div className="relative aspect-[4/3] overflow-hidden">
@@ -730,35 +735,10 @@ function Recipes() {
                 <h3 className="text-base font-semibold">{r.title}</h3>
                 <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">{truncate(r.body, 90)}</p>
               </div>
-            </button>
+            </Link>
           ))}
         </div>
       </div>
-
-      <Dialog open={!!active} onOpenChange={(o) => !o && setActive(null)}>
-        <DialogContent className="max-h-[90vh] max-w-2xl overflow-y-auto p-0">
-          {active && (
-            <>
-              <div className="relative aspect-[16/9] overflow-hidden">
-                <img src={active.image_url} alt={active.title} className="h-full w-full object-cover" />
-                {active.tag && (
-                  <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
-                    {active.tag}
-                  </span>
-                )}
-              </div>
-              <div className="p-6">
-                <DialogHeader>
-                  <DialogTitle className="text-2xl">{active.title}</DialogTitle>
-                </DialogHeader>
-                <div className="mt-4 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                  {active.body}
-                </div>
-              </div>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 }
