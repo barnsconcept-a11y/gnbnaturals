@@ -157,6 +157,30 @@ function RecipesAdminPage() {
       </header>
 
       <main className="mx-auto max-w-4xl space-y-6 px-4 py-5 md:px-6 md:py-8">
+        <div className="flex flex-wrap gap-2">
+          {TAG_FILTERS.map((t) => {
+            const active = filter === t;
+            const count =
+              t === "All"
+                ? recipes.length
+                : recipes.filter((r) => r.tag.toLowerCase() === t.toLowerCase()).length;
+            return (
+              <button
+                key={`top-${t}`}
+                type="button"
+                onClick={() => setFilter(t)}
+                className={[
+                  "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-foreground hover:border-primary/40",
+                ].join(" ")}
+              >
+                {t} <span className="ml-1 opacity-60">{count}</span>
+              </button>
+            );
+          })}
+        </div>
         <form
           onSubmit={add}
           className="space-y-4 rounded-xl border border-border bg-card p-4 md:p-5"
