@@ -253,20 +253,54 @@ function RecipesAdminPage() {
         </form>
 
         <div className="space-y-3">
-          {recipes.map((r) => (
-            <RecipeRow
-              key={r.id}
-              recipe={r}
-              onUpdate={update}
-              onRemove={remove}
-              onReplaceImage={handleReplaceImage}
-            />
-          ))}
-          {recipes.length === 0 && (
-            <p className="text-center text-sm text-muted-foreground">
-              No recipes yet. Add your first one above.
-            </p>
-          )}
+          <div className="flex flex-wrap gap-2">
+            {TAG_FILTERS.map((t) => {
+              const active = filter === t;
+              const count =
+                t === "All"
+                  ? recipes.length
+                  : recipes.filter((r) => r.tag.toLowerCase() === t.toLowerCase()).length;
+              return (
+                <button
+                  key={t}
+                  type="button"
+                  onClick={() => setFilter(t)}
+                  className={[
+                    "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
+                    active
+                      ? "border-primary bg-primary text-primary-foreground"
+                      : "border-border bg-card text-foreground hover:border-primary/40",
+                  ].join(" ")}
+                >
+                  {t} <span className="ml-1 opacity-60">{count}</span>
+                </button>
+              );
+            })}
+          </div>
+          {(() => {
+            const visible =
+              filter === "All"
+                ? recipes
+                : recipes.filter((r) => r.tag.toLowerCase() === filter.toLowerCase());
+            if (visible.length === 0) {
+              return (
+                <p className="text-center text-sm text-muted-foreground">
+                  {recipes.length === 0
+                    ? "No recipes yet. Add your first one above."
+                    : `No recipes tagged "${filter}".`}
+                </p>
+              );
+            }
+            return visible.map((r) => (
+              <RecipeRow
+                key={r.id}
+                recipe={r}
+                onUpdate={update}
+                onRemove={remove}
+                onReplaceImage={handleReplaceImage}
+              />
+            ));
+          })()}
         </div>
       </main>
     </div>
