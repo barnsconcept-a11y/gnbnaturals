@@ -24,6 +24,7 @@ import {
 import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import heroImg from "@/assets/hero.jpg";
 import gnbLogo from "@/assets/gnb-logo.png.asset.json";
 import productOpen from "@/assets/product-open.png";
