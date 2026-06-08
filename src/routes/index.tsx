@@ -988,14 +988,6 @@ function FinalCTA() {
             >
               <a href="#stacks">Start My Performance Stack <ArrowRight className="h-4 w-4" /></a>
             </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="outline"
-              className="h-12 rounded-full border-primary-foreground/30 bg-transparent px-7 text-base text-primary-foreground hover:bg-primary-foreground/10 hover:text-primary-foreground"
-            >
-              <a href="#stacks">See Protein Stacks</a>
-            </Button>
           </div>
         </div>
       </div>
