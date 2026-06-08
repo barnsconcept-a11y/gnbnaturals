@@ -36,16 +36,49 @@ export const Route = createFileRoute('/api/public/hooks/new-order')({
             return Response.json({ error: 'order not found' }, { status: 404 })
           }
 
+          // Collect recipients
+          const recipients = new Set<string>()
+
+          // 1. All super-admins
+          const { data: adminRoles } = await admin
+            .from('user_roles')
+            .select('user_id')
+            .eq('role', 'admin')
+          for (const r of adminRoles ?? []) {
+            const { data: u } = await admin.auth.admin.getUserById(r.user_id)
+            const email = u?.user?.email
+            if (email) recipients.add(email.toLowerCase())
+          }
+
+          // 2. Gym owners of the selected pickup gym
+          const { data: gym } = await admin
+            .from('gyms')
+            .select('id')
+            .eq('name', order.pickup_station)
+            .maybeSingle()
+          if (gym?.id) {
+            const { data: owners } = await admin
+              .from('gym_owners')
+              .select('user_id')
+              .eq('gym_id', gym.id)
+            for (const o of owners ?? []) {
+              const { data: u } = await admin.auth.admin.getUserById(o.user_id)
+              const email = u?.user?.email
+              if (email) recipients.add(email.toLowerCase())
+            }
+          }
+
+          // 3. Optional extra address from app_settings
           const { data: setting } = await admin
             .from('app_settings')
             .select('value')
             .eq('key', 'admin_notification_email')
             .maybeSingle()
+          const extra = setting?.value?.trim()
+          if (extra) recipients.add(extra.toLowerCase())
 
-          const adminEmail = setting?.value?.trim()
-          if (!adminEmail) {
-            // No admin email configured yet — succeed silently so checkout isn't blocked.
-            return Response.json({ skipped: 'no admin email configured' })
+          if (recipients.size === 0) {
+            return Response.json({ skipped: 'no recipients found' })
           }
 
           const template = TEMPLATES['new-order']
@@ -75,38 +108,36 @@ export const Route = createFileRoute('/api/public/hooks/new-order')({
               ? template.subject(templateData)
               : template.subject
 
-          const messageId = crypto.randomUUID()
-
-          await admin.from('email_send_log').insert({
-            message_id: messageId,
-            template_name: 'new-order',
-            recipient_email: adminEmail,
-            status: 'pending',
-          })
-
-          const { error: enqueueError } = await admin.rpc('enqueue_email', {
-            queue_name: 'transactional_emails',
-            payload: {
+          const results: { to: string; ok: boolean; error?: string }[] = []
+          for (const to of recipients) {
+            const messageId = crypto.randomUUID()
+            await admin.from('email_send_log').insert({
               message_id: messageId,
-              to: adminEmail,
-              from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
-              sender_domain: SENDER_DOMAIN,
-              subject,
-              html,
-              text,
-              purpose: 'transactional',
-              label: 'new-order',
-              idempotency_key: `new-order-${order.id}`,
-              queued_at: new Date().toISOString(),
-            },
-          })
+              template_name: 'new-order',
+              recipient_email: to,
+              status: 'pending',
+            })
 
-          if (enqueueError) {
-            console.error('enqueue failed', enqueueError)
-            return Response.json({ error: 'enqueue failed' }, { status: 500 })
+            const { error: enqueueError } = await admin.rpc('enqueue_email', {
+              queue_name: 'transactional_emails',
+              payload: {
+                message_id: messageId,
+                to,
+                from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
+                sender_domain: SENDER_DOMAIN,
+                subject,
+                html,
+                text,
+                purpose: 'transactional',
+                label: 'new-order',
+                idempotency_key: `new-order-${order.id}-${to}`,
+                queued_at: new Date().toISOString(),
+              },
+            })
+            results.push({ to, ok: !enqueueError, error: enqueueError?.message })
           }
 
-          return Response.json({ success: true })
+          return Response.json({ success: true, recipients: results })
         } catch (err) {
           console.error('new-order hook error', err)
           return Response.json({ error: 'internal error' }, { status: 500 })
