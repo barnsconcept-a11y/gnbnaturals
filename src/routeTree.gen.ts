@@ -27,6 +27,7 @@ import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authen
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as ApiPublicHooksNewOrderRouteImport } from './routes/api/public/hooks/new-order'
 
 const OrderRoute = OrderRouteImport.update({
   id: '/order',
@@ -123,6 +124,11 @@ const LovableEmailQueueProcessRoute =
     path: '/lovable/email/queue/process',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksNewOrderRoute = ApiPublicHooksNewOrderRouteImport.update({
+  id: '/api/public/hooks/new-order',
+  path: '/api/public/hooks/new-order',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -139,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/new-order': typeof ApiPublicHooksNewOrderRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
@@ -158,6 +165,7 @@ export interface FileRoutesByTo {
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/new-order': typeof ApiPublicHooksNewOrderRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
@@ -179,6 +187,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/hooks/new-order': typeof ApiPublicHooksNewOrderRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
   '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
@@ -200,6 +209,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/lovable/email/suppression'
     | '/admin/'
+    | '/api/public/hooks/new-order'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/lovable/email/suppression'
     | '/admin'
+    | '/api/public/hooks/new-order'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
@@ -239,6 +250,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/users'
     | '/lovable/email/suppression'
     | '/_authenticated/admin/'
+    | '/api/public/hooks/new-order'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
     | '/lovable/email/transactional/send'
@@ -254,6 +266,7 @@ export interface RootRouteChildren {
   RecipesSlugRoute: typeof RecipesSlugRoute
   TrackOrderIdRoute: typeof TrackOrderIdRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
+  ApiPublicHooksNewOrderRoute: typeof ApiPublicHooksNewOrderRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
   LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
@@ -387,6 +400,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/new-order': {
+      id: '/api/public/hooks/new-order'
+      path: '/api/public/hooks/new-order'
+      fullPath: '/api/public/hooks/new-order'
+      preLoaderRoute: typeof ApiPublicHooksNewOrderRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -421,6 +441,7 @@ const rootRouteChildren: RootRouteChildren = {
   RecipesSlugRoute: RecipesSlugRoute,
   TrackOrderIdRoute: TrackOrderIdRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
+  ApiPublicHooksNewOrderRoute: ApiPublicHooksNewOrderRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
   LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,

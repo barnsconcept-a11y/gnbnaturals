@@ -89,6 +89,8 @@ function AdminDashboard() {
   const [gymFilter, setGymFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [proofUrl, setProofUrl] = useState<string | null>(null);
+  const [notifyEmail, setNotifyEmail] = useState<string>("");
+  const [savingNotify, setSavingNotify] = useState(false);
 
   useEffect(() => {
     const load = async () => {
@@ -116,10 +118,28 @@ function AdminDashboard() {
       setGyms(gymRows);
       setPayouts(((payoutsData ?? []) as unknown) as Payout[]);
       setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
+      if (admin) {
+        const { data: setting } = await supabase
+          .from("app_settings")
+          .select("value")
+          .eq("key", "admin_notification_email")
+          .maybeSingle();
+        setNotifyEmail(setting?.value ?? "");
+      }
       setLoading(false);
     };
     load();
   }, []);
+
+  const saveNotifyEmail = async () => {
+    setSavingNotify(true);
+    const { error } = await supabase
+      .from("app_settings")
+      .upsert({ key: "admin_notification_email", value: notifyEmail.trim() || null });
+    setSavingNotify(false);
+    if (error) toast.error(error.message);
+    else toast.success("Notification email saved");
+  };
 
   const signOut = async () => {
     await supabase.auth.signOut();
@@ -367,6 +387,29 @@ function AdminDashboard() {
                 monthly.reduce((sum, r) => sum + (r.payout ? 0 : r.amountOwed), 0),
               )}
             />
+          </section>
+        )}
+
+        {isAdmin && (
+          <section className="rounded-xl border border-border bg-card p-4">
+            <h2 className="mb-2 text-sm font-semibold text-foreground">
+              New-order email alerts
+            </h2>
+            <p className="mb-3 text-xs text-muted-foreground">
+              We'll send an email here every time a customer places a new order. Leave blank to disable.
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                type="email"
+                value={notifyEmail}
+                onChange={(e) => setNotifyEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm"
+              />
+              <Button size="sm" onClick={saveNotifyEmail} disabled={savingNotify}>
+                {savingNotify ? "Saving…" : "Save"}
+              </Button>
+            </div>
           </section>
         )}
 

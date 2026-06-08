@@ -110,6 +110,12 @@ export function CheckoutDialog({
       setDone(true);
       clear();
       close();
+      // Fire-and-forget admin notification email
+      fetch("/api/public/hooks/new-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: inserted!.id }),
+      }).catch((e) => console.warn("notify hook failed", e));
       toast.success("Order received - we'll confirm shortly");
     } catch (err) {
       console.error(err);
