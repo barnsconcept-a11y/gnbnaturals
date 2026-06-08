@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrackOrderIdRouteImport } from './routes/track.$orderId'
 import { Route as RecipesSlugRouteImport } from './routes/recipes.$slug'
+import { Route as ArticlesSlugRouteImport } from './routes/articles.$slug'
 import { Route as AuthenticatedChangePasswordRouteImport } from './routes/_authenticated/change-password'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
@@ -49,6 +50,11 @@ const TrackOrderIdRoute = TrackOrderIdRouteImport.update({
 const RecipesSlugRoute = RecipesSlugRouteImport.update({
   id: '/recipes/$slug',
   path: '/recipes/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticlesSlugRoute = ArticlesSlugRouteImport.update({
+  id: '/articles/$slug',
+  path: '/articles/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedChangePasswordRoute =
@@ -90,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -103,6 +110,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -118,6 +126,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
   '/_authenticated/change-password': typeof AuthenticatedChangePasswordRoute
+  '/articles/$slug': typeof ArticlesSlugRoute
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
@@ -133,6 +142,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/order'
     | '/change-password'
+    | '/articles/$slug'
     | '/recipes/$slug'
     | '/track/$orderId'
     | '/admin/articles'
@@ -146,6 +156,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/order'
     | '/change-password'
+    | '/articles/$slug'
     | '/recipes/$slug'
     | '/track/$orderId'
     | '/admin/articles'
@@ -160,6 +171,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/order'
     | '/_authenticated/change-password'
+    | '/articles/$slug'
     | '/recipes/$slug'
     | '/track/$orderId'
     | '/_authenticated/admin/articles'
@@ -174,6 +186,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   OrderRoute: typeof OrderRoute
+  ArticlesSlugRoute: typeof ArticlesSlugRoute
   RecipesSlugRoute: typeof RecipesSlugRoute
   TrackOrderIdRoute: typeof TrackOrderIdRoute
 }
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: '/recipes/$slug'
       fullPath: '/recipes/$slug'
       preLoaderRoute: typeof RecipesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/articles/$slug': {
+      id: '/articles/$slug'
+      path: '/articles/$slug'
+      fullPath: '/articles/$slug'
+      preLoaderRoute: typeof ArticlesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/change-password': {
@@ -293,6 +313,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   OrderRoute: OrderRoute,
+  ArticlesSlugRoute: ArticlesSlugRoute,
   RecipesSlugRoute: RecipesSlugRoute,
   TrackOrderIdRoute: TrackOrderIdRoute,
 }
