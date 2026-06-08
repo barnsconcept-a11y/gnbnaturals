@@ -101,6 +101,7 @@ function Nav() {
           <a href="#why" className="hover:text-foreground transition-colors">Why eggs</a>
           <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
           <a href="#recipes" className="hover:text-foreground transition-colors">Recipes</a>
+          <a href="#articles" className="hover:text-foreground transition-colors">Articles</a>
         </nav>
         <div className="flex items-center gap-2">
           <Button asChild size="sm" className="rounded-full px-3 md:px-4">
@@ -129,6 +130,7 @@ function Nav() {
               ["Why eggs", "#why"],
               ["How it works", "#how"],
               ["Recipes", "#recipes"],
+              ["Articles", "#articles"],
             ].map(([label, href]) => (
               <a
                 key={href}
@@ -790,6 +792,135 @@ function Recipes() {
   );
 }
 
+type ArticleCard = {
+  slug: string;
+  category: string;
+  title: string;
+  excerpt: string;
+  image_url: string;
+};
+
+const ARTICLE_CATEGORIES = ["All", "Nutrition", "Training", "Recovery", "Habits", "Mindset"] as const;
+type ArticleCategoryFilter = (typeof ARTICLE_CATEGORIES)[number];
+
+function Articles() {
+  const [articles, setArticles] = useState<ArticleCard[]>([]);
+  const [filter, setFilter] = useState<ArticleCategoryFilter>("All");
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data } = await (supabase as any)
+        .from("articles")
+        .select("slug, category, title, excerpt, body, image_url")
+        .eq("published", true)
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (cancelled) return;
+      if (data && data.length > 0) {
+        setArticles(
+          data.map((r: any) => ({
+            slug: r.slug,
+            category: r.category ?? "",
+            title: r.title,
+            excerpt: (r.excerpt && r.excerpt.trim()) || r.body || "",
+            image_url: r.image_url || foodFresh,
+          })),
+        );
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const visible =
+    filter === "All"
+      ? articles
+      : articles.filter((r) => r.category.toLowerCase() === filter.toLowerCase());
+
+  return (
+    <section id="articles" className="border-t border-border bg-background">
+      <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <div>
+            <p className="text-sm font-medium uppercase tracking-widest text-primary">Read</p>
+            <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight md:text-5xl">
+              Why protein matters for real fitness.
+            </h2>
+            <p className="mt-3 max-w-xl text-muted-foreground">
+              Short reads on nutrition, training, recovery and habits — built for the way you train.
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-8 flex flex-wrap gap-2">
+          {ARTICLE_CATEGORIES.map((t) => {
+            const active = filter === t;
+            return (
+              <button
+                key={t}
+                type="button"
+                onClick={() => setFilter(t)}
+                className={[
+                  "rounded-full border px-4 py-1.5 text-sm transition-colors",
+                  active
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-border bg-card text-foreground hover:border-primary/40",
+                ].join(" ")}
+              >
+                {t}
+              </button>
+            );
+          })}
+        </div>
+
+        {visible.length === 0 ? (
+          <p className="mt-12 text-center text-sm text-muted-foreground">
+            {articles.length === 0
+              ? "Articles coming soon."
+              : `No articles in “${filter}” yet.`}
+          </p>
+        ) : (
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {visible.map((r) => (
+              <Link
+                key={r.slug}
+                to="/articles/$slug"
+                params={{ slug: r.slug }}
+                className="group overflow-hidden rounded-3xl border border-border bg-card text-left shadow-card transition-all hover:-translate-y-1 hover:shadow-elevated focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={r.image_url}
+                    alt={r.title}
+                    loading="lazy"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+                  {r.category && (
+                    <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/85 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
+                      {r.category}
+                    </span>
+                  )}
+                </div>
+                <div className="p-5">
+                  <h3 className="text-base font-semibold">{r.title}</h3>
+                  <p className="mt-1.5 line-clamp-2 text-sm text-muted-foreground">
+                    {truncate(r.excerpt, 110)}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}
+
+
+
 
 
 
@@ -938,6 +1069,7 @@ function Landing() {
           <WhyEggs />
           <HowItWorks />
           <Recipes />
+          <Articles />
           <Testimonials />
           <FinalCTA />
         </main>

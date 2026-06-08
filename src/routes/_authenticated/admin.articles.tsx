@@ -9,15 +9,15 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Trash2, Upload } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/admin/recipes")({
-  head: () => ({ meta: [{ title: "Recipes — Admin" }] }),
-  component: RecipesAdminPage,
+export const Route = createFileRoute("/_authenticated/admin/articles")({
+  head: () => ({ meta: [{ title: "Articles — Admin" }] }),
+  component: ArticlesAdminPage,
 });
 
-type Recipe = {
+type Article = {
   id: string;
   slug: string;
-  tag: string;
+  category: string;
   title: string;
   excerpt: string;
   body: string;
@@ -26,40 +26,35 @@ type Recipe = {
   sort_order: number;
 };
 
-const TAG_FILTERS = ["All", "Breakfast", "Post-workout", "Lunch", "Dinner", "Snack"] as const;
-type TagFilter = (typeof TAG_FILTERS)[number];
+const CATEGORY_FILTERS = ["All", "Nutrition", "Training", "Recovery", "Habits", "Mindset"] as const;
+type CategoryFilter = (typeof CATEGORY_FILTERS)[number];
 
 const slugify = (s: string) =>
-  s
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
+  s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-// ~100 years
 const SIGNED_URL_EXPIRY = 60 * 60 * 24 * 365 * 100;
 
-async function uploadRecipeImage(file: File): Promise<string> {
+async function uploadArticleImage(file: File): Promise<string> {
   const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
   const path = `${crypto.randomUUID()}.${ext}`;
   const { error: upErr } = await supabase.storage
-    .from("recipe-images")
+    .from("article-images")
     .upload(path, file, { cacheControl: "31536000", upsert: false });
   if (upErr) throw upErr;
   const { data, error } = await supabase.storage
-    .from("recipe-images")
+    .from("article-images")
     .createSignedUrl(path, SIGNED_URL_EXPIRY);
   if (error || !data) throw error ?? new Error("Failed to create URL");
   return data.signedUrl;
 }
 
-function RecipesAdminPage() {
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
+function ArticlesAdminPage() {
+  const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<TagFilter>("All");
+  const [filter, setFilter] = useState<CategoryFilter>("All");
   const [form, setForm] = useState({
     title: "",
-    tag: "",
+    category: "",
     excerpt: "",
     body: "",
     image_url: "",
@@ -69,13 +64,13 @@ function RecipesAdminPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
-    const { data, error } = await supabase
-      .from("recipes")
+    const { data, error } = await (supabase as any)
+      .from("articles")
       .select("*")
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) toast.error(error.message);
-    setRecipes((data as Recipe[]) ?? []);
+    setArticles((data as Article[]) ?? []);
     setLoading(false);
   };
 
@@ -86,7 +81,7 @@ function RecipesAdminPage() {
   const handleNewImageUpload = async (file: File) => {
     setUploading(true);
     try {
-      const url = await uploadRecipeImage(file);
+      const url = await uploadArticleImage(file);
       setForm((f) => ({ ...f, image_url: url }));
       toast.success("Image uploaded");
     } catch (e: any) {
@@ -99,7 +94,7 @@ function RecipesAdminPage() {
 
   const handleReplaceImage = async (id: string, file: File) => {
     try {
-      const url = await uploadRecipeImage(file);
+      const url = await uploadArticleImage(file);
       await update(id, { image_url: url });
       toast.success("Image updated");
     } catch (e: any) {
@@ -113,31 +108,31 @@ function RecipesAdminPage() {
     setSubmitting(true);
     const slugBase = slugify(form.title);
     const slug = `${slugBase}-${Math.random().toString(36).slice(2, 6)}`;
-    const { error } = await supabase.from("recipes").insert({
+    const { error } = await (supabase as any).from("articles").insert({
       slug,
       title: form.title.trim(),
-      tag: form.tag.trim(),
+      category: form.category.trim(),
       excerpt: form.excerpt.trim(),
       body: form.body.trim(),
       image_url: form.image_url.trim() || null,
-      sort_order: recipes.length,
+      sort_order: articles.length,
     });
     setSubmitting(false);
     if (error) return toast.error(error.message);
-    toast.success("Recipe added");
-    setForm({ title: "", tag: "", excerpt: "", body: "", image_url: "" });
+    toast.success("Article added");
+    setForm({ title: "", category: "", excerpt: "", body: "", image_url: "" });
     load();
   };
 
-  const update = async (id: string, patch: Partial<Recipe>) => {
-    const { error } = await supabase.from("recipes").update(patch).eq("id", id);
+  const update = async (id: string, patch: Partial<Article>) => {
+    const { error } = await (supabase as any).from("articles").update(patch).eq("id", id);
     if (error) return toast.error(error.message);
-    setRecipes((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
+    setArticles((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   };
 
-  const remove = async (r: Recipe) => {
+  const remove = async (r: Article) => {
     if (!confirm(`Delete "${r.title}"?`)) return;
-    const { error } = await supabase.from("recipes").delete().eq("id", r.id);
+    const { error } = await (supabase as any).from("articles").delete().eq("id", r.id);
     if (error) return toast.error(error.message);
     toast.success("Deleted");
     load();
@@ -149,10 +144,10 @@ function RecipesAdminPage() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
-          <h1 className="text-base font-semibold md:text-lg">Recipes</h1>
+          <h1 className="text-base font-semibold md:text-lg">Articles</h1>
           <div className="flex gap-2">
             <Button variant="outline" size="sm" asChild>
-              <Link to="/admin/articles">Articles</Link>
+              <Link to="/admin/recipes">Recipes</Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
               <Link to="/admin">← Orders</Link>
@@ -163,12 +158,12 @@ function RecipesAdminPage() {
 
       <main className="mx-auto max-w-4xl space-y-6 px-4 py-5 md:px-6 md:py-8">
         <div className="flex flex-wrap gap-2">
-          {TAG_FILTERS.map((t) => {
+          {CATEGORY_FILTERS.map((t) => {
             const active = filter === t;
             const count =
               t === "All"
-                ? recipes.length
-                : recipes.filter((r) => r.tag.toLowerCase() === t.toLowerCase()).length;
+                ? articles.length
+                : articles.filter((r) => r.category.toLowerCase() === t.toLowerCase()).length;
             return (
               <button
                 key={`top-${t}`}
@@ -186,65 +181,62 @@ function RecipesAdminPage() {
             );
           })}
         </div>
+
         <form
           onSubmit={add}
           className="space-y-4 rounded-xl border border-border bg-card p-4 md:p-5"
         >
           <div>
-            <h2 className="font-semibold">Add a recipe</h2>
+            <h2 className="font-semibold">Add an article</h2>
             <p className="text-xs text-muted-foreground">
-              Shows up on the landing page in the Recipes section.
+              General content on protein, training, recovery and habits — shown on the landing page.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
             <div>
-              <Label htmlFor="r-title">Title</Label>
+              <Label htmlFor="a-title">Title</Label>
               <Input
-                id="r-title"
+                id="a-title"
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                placeholder="High Protein Egg Recipes"
+                placeholder="Why protein matters for everyday fitness"
               />
             </div>
             <div>
-              <Label htmlFor="r-tag">Tag</Label>
+              <Label htmlFor="a-cat">Category</Label>
               <Input
-                id="r-tag"
-                value={form.tag}
-                onChange={(e) => setForm({ ...form, tag: e.target.value })}
-                placeholder="Breakfast"
+                id="a-cat"
+                value={form.category}
+                onChange={(e) => setForm({ ...form, category: e.target.value })}
+                placeholder="Nutrition"
               />
             </div>
           </div>
           <div>
-            <Label htmlFor="r-excerpt">Short highlight</Label>
+            <Label htmlFor="a-excerpt">Short highlight</Label>
             <Textarea
-              id="r-excerpt"
+              id="a-excerpt"
               value={form.excerpt}
               onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
-              placeholder="One-sentence teaser shown on the recipe card."
+              placeholder="One-sentence teaser shown on the article card."
               rows={2}
             />
           </div>
           <div>
-            <Label htmlFor="r-body">Full recipe details</Label>
+            <Label htmlFor="a-body">Full article</Label>
             <Textarea
-              id="r-body"
+              id="a-body"
               value={form.body}
               onChange={(e) => setForm({ ...form, body: e.target.value })}
-              placeholder="Ingredients, steps and tips — shown on the recipe page."
-              rows={6}
+              placeholder="The full article body — shown on the article page."
+              rows={8}
             />
           </div>
           <div>
             <Label>Image</Label>
             <div className="flex items-center gap-3">
               {form.image_url ? (
-                <img
-                  src={form.image_url}
-                  alt=""
-                  className="h-16 w-16 rounded-lg object-cover"
-                />
+                <img src={form.image_url} alt="" className="h-16 w-16 rounded-lg object-cover" />
               ) : (
                 <div className="h-16 w-16 rounded-lg bg-muted" />
               )}
@@ -277,53 +269,29 @@ function RecipesAdminPage() {
             />
           </div>
           <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
-            {submitting ? "Saving…" : "Add recipe"}
+            {submitting ? "Saving…" : "Add article"}
           </Button>
         </form>
 
         <div className="space-y-3">
-          <div className="flex flex-wrap gap-2">
-            {TAG_FILTERS.map((t) => {
-              const active = filter === t;
-              const count =
-                t === "All"
-                  ? recipes.length
-                  : recipes.filter((r) => r.tag.toLowerCase() === t.toLowerCase()).length;
-              return (
-                <button
-                  key={t}
-                  type="button"
-                  onClick={() => setFilter(t)}
-                  className={[
-                    "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
-                    active
-                      ? "border-primary bg-primary text-primary-foreground"
-                      : "border-border bg-card text-foreground hover:border-primary/40",
-                  ].join(" ")}
-                >
-                  {t} <span className="ml-1 opacity-60">{count}</span>
-                </button>
-              );
-            })}
-          </div>
           {(() => {
             const visible =
               filter === "All"
-                ? recipes
-                : recipes.filter((r) => r.tag.toLowerCase() === filter.toLowerCase());
+                ? articles
+                : articles.filter((r) => r.category.toLowerCase() === filter.toLowerCase());
             if (visible.length === 0) {
               return (
                 <p className="text-center text-sm text-muted-foreground">
-                  {recipes.length === 0
-                    ? "No recipes yet. Add your first one above."
-                    : `No recipes tagged "${filter}".`}
+                  {articles.length === 0
+                    ? "No articles yet. Add your first one above."
+                    : `No articles in "${filter}".`}
                 </p>
               );
             }
             return visible.map((r) => (
-              <RecipeRow
+              <ArticleRow
                 key={r.id}
-                recipe={r}
+                article={r}
                 onUpdate={update}
                 onRemove={remove}
                 onReplaceImage={handleReplaceImage}
@@ -336,15 +304,15 @@ function RecipesAdminPage() {
   );
 }
 
-function RecipeRow({
-  recipe: r,
+function ArticleRow({
+  article: r,
   onUpdate,
   onRemove,
   onReplaceImage,
 }: {
-  recipe: Recipe;
-  onUpdate: (id: string, patch: Partial<Recipe>) => Promise<unknown>;
-  onRemove: (r: Recipe) => Promise<unknown>;
+  article: Article;
+  onUpdate: (id: string, patch: Partial<Article>) => Promise<unknown>;
+  onRemove: (r: Article) => Promise<unknown>;
   onReplaceImage: (id: string, file: File) => Promise<void>;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -360,11 +328,7 @@ function RecipeRow({
           title="Click to replace image"
         >
           {r.image_url ? (
-            <img
-              src={r.image_url}
-              alt={r.title}
-              className="h-full w-full object-cover"
-            />
+            <img src={r.image_url} alt={r.title} className="h-full w-full object-cover" />
           ) : (
             <div className="flex h-full w-full items-center justify-center text-muted-foreground">
               <Upload className="h-5 w-5" />
@@ -393,17 +357,13 @@ function RecipeRow({
         <div className="min-w-0 flex-1 space-y-2">
           <Input
             defaultValue={r.title}
-            onBlur={(e) =>
-              e.target.value !== r.title &&
-              onUpdate(r.id, { title: e.target.value })
-            }
+            onBlur={(e) => e.target.value !== r.title && onUpdate(r.id, { title: e.target.value })}
           />
           <Input
-            defaultValue={r.tag}
-            placeholder="Tag (Breakfast, Lunch, Dinner, Post-workout, Snack)"
+            defaultValue={r.category}
+            placeholder="Category (Nutrition, Training, Recovery, Habits, Mindset)"
             onBlur={(e) =>
-              e.target.value !== r.tag &&
-              onUpdate(r.id, { tag: e.target.value })
+              e.target.value !== r.category && onUpdate(r.id, { category: e.target.value })
             }
           />
           <Textarea
@@ -411,20 +371,15 @@ function RecipeRow({
             rows={2}
             placeholder="Short highlight (shown on the card)"
             onBlur={(e) =>
-              e.target.value !== r.excerpt &&
-              onUpdate(r.id, { excerpt: e.target.value })
+              e.target.value !== r.excerpt && onUpdate(r.id, { excerpt: e.target.value })
             }
           />
           <Textarea
             defaultValue={r.body}
-            rows={4}
-            placeholder="Full recipe details"
-            onBlur={(e) =>
-              e.target.value !== r.body &&
-              onUpdate(r.id, { body: e.target.value })
-            }
+            rows={5}
+            placeholder="Full article"
+            onBlur={(e) => e.target.value !== r.body && onUpdate(r.id, { body: e.target.value })}
           />
-          
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Switch
