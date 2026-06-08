@@ -108,7 +108,7 @@ function ArticlesAdminPage() {
     setSubmitting(true);
     const slugBase = slugify(form.title);
     const slug = `${slugBase}-${Math.random().toString(36).slice(2, 6)}`;
-    const { error } = await supabase.from("articles").insert({
+    const { error } = await (supabase as any).from("articles").insert({
       slug,
       title: form.title.trim(),
       category: form.category.trim(),
