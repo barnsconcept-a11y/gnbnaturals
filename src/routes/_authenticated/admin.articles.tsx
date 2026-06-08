@@ -132,7 +132,7 @@ function ArticlesAdminPage() {
 
   const remove = async (r: Article) => {
     if (!confirm(`Delete "${r.title}"?`)) return;
-    const { error } = await supabase.from("articles").delete().eq("id", r.id);
+    const { error } = await (supabase as any).from("articles").delete().eq("id", r.id);
     if (error) return toast.error(error.message);
     toast.success("Deleted");
     load();
