@@ -1027,7 +1027,7 @@ function Footer() {
             <div className="text-sm font-semibold">Contact</div>
             <ul className="mt-3 space-y-2 text-sm text-muted-foreground">
               <li>hello@gbnaturals.com</li>
-              <li>+233 00 000 0000</li>
+              <li>+233548363844</li>
               <li>Accra, Ghana</li>
             </ul>
           </div>
