@@ -57,7 +57,7 @@ function ArticlePage() {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("articles")
         .select("slug, category, title, excerpt, body, image_url")
         .eq("slug", slug)
