@@ -1067,6 +1067,7 @@ function Landing() {
           <WhyEggs />
           <HowItWorks />
           <Recipes />
+          <Articles />
           <Testimonials />
           <FinalCTA />
         </main>
