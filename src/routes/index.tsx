@@ -69,7 +69,16 @@ function BrandMark({ className = "" }: { className?: string }) {
   );
 }
 
-function Logo({ compact = false }: { compact?: boolean }) {
+function Logo({ compact = false, plain = false }: { compact?: boolean; plain?: boolean }) {
+  if (plain) {
+    return (
+      <img
+        src={gnbLogo.url}
+        alt="G&B Naturals - Affordable Daily Protein"
+        className="h-32 w-32 object-contain"
+      />
+    );
+  }
   return (
     <span
       className={[
