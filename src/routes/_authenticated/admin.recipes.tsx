@@ -150,9 +150,14 @@ function RecipesAdminPage() {
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
           <h1 className="text-base font-semibold md:text-lg">Recipes</h1>
-          <Button variant="outline" size="sm" asChild>
-            <Link to="/admin">← Orders</Link>
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/admin/articles">Articles</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/admin">← Orders</Link>
+            </Button>
+          </div>
         </div>
       </header>
 
