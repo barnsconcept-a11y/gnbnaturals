@@ -125,7 +125,7 @@ function ArticlesAdminPage() {
   };
 
   const update = async (id: string, patch: Partial<Article>) => {
-    const { error } = await supabase.from("articles").update(patch).eq("id", id);
+    const { error } = await (supabase as any).from("articles").update(patch).eq("id", id);
     if (error) return toast.error(error.message);
     setArticles((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   };
