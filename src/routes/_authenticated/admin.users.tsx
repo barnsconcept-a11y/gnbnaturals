@@ -20,7 +20,7 @@ import {
 } from "@/lib/admin-users.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/users")({
-  head: () => ({ meta: [{ title: "Users — Admin" }] }),
+  head: () => ({ meta: [{ title: "Users - Admin" }] }),
   component: UsersPage,
 });
 
@@ -205,9 +205,9 @@ function UsersPage() {
               {users.map((u) => (
                 <tr key={u.id} className="border-t border-border">
                   <td className="px-4 py-3">{u.email}</td>
-                  <td className="px-4 py-3">{u.roles.join(", ") || "—"}</td>
+                  <td className="px-4 py-3">{u.roles.join(", ") || "-"}</td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
-                    {u.gyms.join(", ") || "—"}
+                    {u.gyms.join(", ") || "-"}
                   </td>
                   <td className="px-4 py-3 text-xs text-muted-foreground">
                     {new Date(u.created_at).toLocaleDateString()}

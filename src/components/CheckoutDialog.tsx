@@ -46,7 +46,7 @@ export function CheckoutDialog({
       await navigator.clipboard.writeText(MOMO_NUMBER);
       toast.success("MoMo number copied");
     } catch {
-      toast.error("Copy failed — please copy manually");
+      toast.error("Copy failed - please copy manually");
     }
   };
 
@@ -110,7 +110,7 @@ export function CheckoutDialog({
       setDone(true);
       clear();
       close();
-      toast.success("Order received — we'll confirm shortly");
+      toast.success("Order received - we'll confirm shortly");
     } catch (err) {
       console.error(err);
       toast.error("Couldn't submit order. Please try again.");
@@ -193,7 +193,7 @@ export function CheckoutDialog({
                       </Button>
                     </div>
                     <p className="mt-2 text-sm text-muted-foreground">
-                      Bookmark this page — it updates as your order progresses.
+                      Bookmark this page - it updates as your order progresses.
                     </p>
                   </div>
 
@@ -348,12 +348,12 @@ export function CheckoutDialog({
               </div>
 
               <div className="rounded-xl bg-secondary/50 p-3 text-sm text-muted-foreground">
-                Pickup at <span className="font-semibold text-foreground">{pickup || "—"}</span>
+                Pickup at <span className="font-semibold text-foreground">{pickup || "-"}</span>
                 {" · "}
                 {totalCrates} crate{totalCrates !== 1 ? "s" : ""} ·{" "}
                 <span className="font-semibold text-foreground">{formatGHS(totalPrice)}</span>
                 <div className="mt-1">
-                  Expected pickup: <span className="font-semibold text-foreground">{expectedPickupLabel()}</span> — order by Tue 11:59pm for Thu, later for Mon.
+                  Expected pickup: <span className="font-semibold text-foreground">{expectedPickupLabel()}</span> - order by Tue 11:59pm for Thu, later for Mon.
                 </div>
               </div>
             </div>

@@ -15,7 +15,7 @@ type Recipe = {
 export const Route = createFileRoute("/recipes/$slug")({
   head: ({ params }) => ({
     meta: [
-      { title: `Recipe — ${params.slug}` },
+      { title: `Recipe - ${params.slug}` },
       { name: "description", content: "A protein-focused recipe from GNB Naturals." },
     ],
   }),

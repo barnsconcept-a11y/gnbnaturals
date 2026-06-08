@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Trash2, Upload } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/articles")({
-  head: () => ({ meta: [{ title: "Articles — Admin" }] }),
+  head: () => ({ meta: [{ title: "Articles - Admin" }] }),
   component: ArticlesAdminPage,
 });
 
@@ -189,7 +189,7 @@ function ArticlesAdminPage() {
           <div>
             <h2 className="font-semibold">Add an article</h2>
             <p className="text-xs text-muted-foreground">
-              General content on protein, training, recovery and habits — shown on the landing page.
+              General content on protein, training, recovery and habits - shown on the landing page.
             </p>
           </div>
           <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
@@ -228,7 +228,7 @@ function ArticlesAdminPage() {
               id="a-body"
               value={form.body}
               onChange={(e) => setForm({ ...form, body: e.target.value })}
-              placeholder="The full article body — shown on the article page."
+              placeholder="The full article body - shown on the article page."
               rows={8}
             />
           </div>

@@ -8,7 +8,7 @@ import { formatGHS } from "@/lib/cart";
 import { expectedPickupLabel } from "@/lib/delivery";
 
 export const Route = createFileRoute("/track/$orderId")({
-  head: () => ({ meta: [{ title: "Track your order — G&B Naturals" }] }),
+  head: () => ({ meta: [{ title: "Track your order - G&B Naturals" }] }),
   component: TrackPage,
   errorComponent: ({ error }) => (
     <div className="mx-auto max-w-md p-8 text-center text-sm text-muted-foreground">
@@ -196,7 +196,7 @@ function TrackPage() {
       </Button>
 
       <p className="mt-4 text-center text-xs text-muted-foreground">
-        Bookmark this page — it updates automatically as your order progresses.
+        Bookmark this page - it updates automatically as your order progresses.
       </p>
     </div>
   );

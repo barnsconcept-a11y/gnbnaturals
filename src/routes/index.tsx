@@ -45,13 +45,13 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "G&B Naturals — Natural Protein. Real Results." },
+      { title: "G&B Naturals - Natural Protein. Real Results." },
       {
         name: "description",
         content:
           "Fresh eggs reserved weekly through your local fitness community. Affordable daily protein, easier meal prep, consistent nutrition habits.",
       },
-      { property: "og:title", content: "G&B Naturals — Natural Protein. Real Results." },
+      { property: "og:title", content: "G&B Naturals - Natural Protein. Real Results." },
       {
         property: "og:description",
         content:
@@ -79,7 +79,7 @@ function Logo({ compact = false }: { compact?: boolean }) {
     >
       <img
         src={gnbLogo.url}
-        alt="G&B Naturals — Affordable Daily Protein"
+        alt="G&B Naturals - Affordable Daily Protein"
         className="h-full w-full object-contain"
       />
     </span>
@@ -246,7 +246,7 @@ function Packaging() {
             Clean packaging. Cleaner nutrition.
           </h2>
           <p className="mt-4 text-muted-foreground">
-            Designed in kraft and deep green — recyclable, stackable, and built for the way you train.
+            Designed in kraft and deep green - recyclable, stackable, and built for the way you train.
           </p>
         </div>
 
@@ -254,7 +254,7 @@ function Packaging() {
           <div className="md:col-span-3">
             <img
               src={productOpen}
-              alt="G&B Naturals open kraft carton with 30 fresh eggs — Good nutrition builds a stronger you"
+              alt="G&B Naturals open kraft carton with 30 fresh eggs - Good nutrition builds a stronger you"
               className="aspect-[16/10] w-full object-cover md:aspect-auto md:h-full"
               loading="lazy"
             />
@@ -280,7 +280,7 @@ function Packaging() {
 const problems = [
   { icon: Egg, title: "Eating enough protein", body: "Hitting daily targets is hard without a system." },
   { icon: Wallet, title: "Expensive supplements", body: "Powders and bars add up fast every month." },
-  { icon: Clock, title: "Skipping breakfast", body: "Mornings are rushed — protein gets dropped first." },
+  { icon: Clock, title: "Skipping breakfast", body: "Mornings are rushed - protein gets dropped first." },
   { icon: ChefHat, title: "Poor meal prep habits", body: "No plan means inconsistent fuel all week." },
   { icon: Repeat, title: "Convenience", body: "Without convenience, no habit ever sticks." },
 ];
@@ -359,7 +359,7 @@ const stacks: Stack[] = [
       "Affordable daily protein",
     ],
     img: stackStarter,
-    imgAlt: "Kraft crate of small fresh brown eggs — Starter Stack",
+    imgAlt: "Kraft crate of small fresh brown eggs - Starter Stack",
   },
   {
     id: "performance",
@@ -380,7 +380,7 @@ const stacks: Stack[] = [
     featured: true,
     highlight: "One simple habit. One month of protein covered.",
     img: stackPerformance,
-    imgAlt: "Kraft crate of medium fresh brown eggs — Performance Stack",
+    imgAlt: "Kraft crate of medium fresh brown eggs - Performance Stack",
   },
   {
     id: "elite",
@@ -397,7 +397,7 @@ const stacks: Stack[] = [
       "Exclusive nutrition content",
     ],
     img: stackElite,
-    imgAlt: "Kraft crate of jumbo brown eggs — Elite Stack",
+    imgAlt: "Kraft crate of jumbo brown eggs - Elite Stack",
   },
 ];
 
@@ -444,7 +444,7 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
           </span>
         </div>
         <div className={["mt-1 text-sm", featured ? "text-primary-foreground/75" : "text-muted-foreground"].join(" ")}>
-          4-Crate Monthly Stack — {formatGHS(s.stackPrice)}
+          4-Crate Monthly Stack - {formatGHS(s.stackPrice)}
           {savings > 0 && (
             <span className={featured ? "ml-1.5 text-primary-foreground" : "ml-1.5 font-semibold text-primary"}>
               save {formatGHS(savings)}
@@ -573,7 +573,7 @@ function WhyEggs() {
               The original performance food.
             </h2>
             <p className="mt-4 max-w-xl text-muted-foreground md:text-lg">
-              Before powders, bars and shakes — there were eggs. Simple, affordable, and built for
+              Before powders, bars and shakes - there were eggs. Simple, affordable, and built for
               people who care about staying consistent.
             </p>
 
@@ -596,7 +596,7 @@ function WhyEggs() {
 }
 
 const steps = [
-  { icon: ShoppingBag, title: "Choose Your Protein Stack", body: "Starter, Performance or Elite — built for your routine.", img: stepChoose, imgAlt: "Three protein stack boxes lined up to choose from" },
+  { icon: ShoppingBag, title: "Choose Your Protein Stack", body: "Starter, Performance or Elite - built for your routine.", img: stepChoose, imgAlt: "Three protein stack boxes lined up to choose from" },
   { icon: CalendarCheck, title: "Reserve Weekly Supply", body: "We hold your eggs each week so you never run out.", img: stepReserve, imgAlt: "Weekly calendar beside stacked egg crates reserved each week" },
   { icon: MapPin, title: "Pick Up Through Your Fitness Community", body: "Grab them at your gym, hub or partner location.", img: stepPickup, imgAlt: "Athlete picking up a kraft bag of eggs at the gym" },
 ];
@@ -719,7 +719,7 @@ function Recipes() {
               Protein-focused nutrition content.
             </h2>
             <p className="mt-3 max-w-xl text-muted-foreground">
-              Recipes, meal prep guides and habit tools — built for the way you actually train.
+              Recipes, meal prep guides and habit tools - built for the way you actually train.
             </p>
           </div>
           <span className="rounded-full border border-border bg-card px-3 py-1 text-xs text-muted-foreground">
@@ -849,7 +849,7 @@ function Articles() {
               Why protein matters for real fitness.
             </h2>
             <p className="mt-3 max-w-xl text-muted-foreground">
-              Short reads on nutrition, training, recovery and habits — built for the way you train.
+              Short reads on nutrition, training, recovery and habits - built for the way you train.
             </p>
           </div>
         </div>

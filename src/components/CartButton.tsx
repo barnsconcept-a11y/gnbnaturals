@@ -64,7 +64,7 @@ export function CartButton() {
           <SheetHeader className="border-b border-border p-6">
             <SheetTitle className="text-xl">Your reservation</SheetTitle>
             <SheetDescription>
-              Reserve weekly crates and monthly stacks. Confirm via WhatsApp — we hold them for you.
+              Reserve weekly crates and monthly stacks. Confirm via WhatsApp - we hold them for you.
             </SheetDescription>
           </SheetHeader>
 
