@@ -118,10 +118,28 @@ function AdminDashboard() {
       setGyms(gymRows);
       setPayouts(((payoutsData ?? []) as unknown) as Payout[]);
       setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
+      if (admin) {
+        const { data: setting } = await supabase
+          .from("app_settings")
+          .select("value")
+          .eq("key", "admin_notification_email")
+          .maybeSingle();
+        setNotifyEmail(setting?.value ?? "");
+      }
       setLoading(false);
     };
     load();
   }, []);
+
+  const saveNotifyEmail = async () => {
+    setSavingNotify(true);
+    const { error } = await supabase
+      .from("app_settings")
+      .upsert({ key: "admin_notification_email", value: notifyEmail.trim() || null });
+    setSavingNotify(false);
+    if (error) toast.error(error.message);
+    else toast.success("Notification email saved");
+  };
 
   const signOut = async () => {
     await supabase.auth.signOut();
