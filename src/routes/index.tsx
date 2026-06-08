@@ -1010,7 +1010,7 @@ function Footer() {
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <Logo />
+            <Logo plain />
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
               Affordable daily protein, made simple. Built for fitness communities and people who
               care about staying consistent.
