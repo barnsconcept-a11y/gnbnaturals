@@ -126,3 +126,23 @@ export const template = {
     trackUrl: 'https://gnbnaturals.com/admin',
   },
 } satisfies TemplateEntry
+
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '24px', maxWidth: '560px', margin: '0 auto' }
+const h1 = { fontSize: '22px', color: '#111', margin: '0 0 4px' }
+const muted = { color: '#666', fontSize: '13px', margin: '0 0 16px' }
+const card = {
+  border: '1px solid #eee',
+  borderRadius: '8px',
+  padding: '14px 16px',
+  margin: '0 0 12px',
+}
+const label = {
+  fontSize: '11px',
+  textTransform: 'uppercase' as const,
+  letterSpacing: '0.06em',
+  color: '#888',
+  margin: '0 0 4px',
+}
+const value = { fontSize: '15px', color: '#111', margin: '2px 0' }
+const hr = { borderColor: '#eee', margin: '10px 0' }
