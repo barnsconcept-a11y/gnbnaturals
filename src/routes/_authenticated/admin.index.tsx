@@ -390,6 +390,29 @@ function AdminDashboard() {
           </section>
         )}
 
+        {isAdmin && (
+          <section className="rounded-xl border border-border bg-card p-4">
+            <h2 className="mb-2 text-sm font-semibold text-foreground">
+              New-order email alerts
+            </h2>
+            <p className="mb-3 text-xs text-muted-foreground">
+              We'll send an email here every time a customer places a new order. Leave blank to disable.
+            </p>
+            <div className="flex flex-col gap-2 sm:flex-row">
+              <input
+                type="email"
+                value={notifyEmail}
+                onChange={(e) => setNotifyEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm"
+              />
+              <Button size="sm" onClick={saveNotifyEmail} disabled={savingNotify}>
+                {savingNotify ? "Saving…" : "Save"}
+              </Button>
+            </div>
+          </section>
+        )}
+
         <section className="flex flex-wrap items-center gap-2 md:gap-3">
           {isAdmin && (
             <Select value={gymFilter} onValueChange={setGymFilter}>
