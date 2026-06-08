@@ -64,7 +64,7 @@ function ArticlesAdminPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
-    const { data, error } = await supabase
+    const { data, error } = await (supabase as any)
       .from("articles")
       .select("*")
       .order("sort_order", { ascending: true })
