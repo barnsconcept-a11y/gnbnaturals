@@ -5,7 +5,7 @@
 // Africa/Accra is UTC+0 year-round, so we can use UTC directly.
 
 export const DELIVERY_SCHEDULE_TEXT =
-  "We deliver twice a week. Order by Tuesday 11:59pm for Thursday pickup — later orders are ready the following Monday.";
+  "We deliver twice a week. Order by Tuesday 11:59pm for Thursday pickup - later orders are ready the following Monday.";
 
 export function expectedPickupDate(placedAt: Date = new Date()): Date {
   // Work in UTC (Africa/Accra == UTC)

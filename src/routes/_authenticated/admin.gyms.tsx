@@ -19,7 +19,7 @@ import { createGymUser } from "@/lib/admin-users.functions";
 import { Trash2, UserPlus, X } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/gyms")({
-  head: () => ({ meta: [{ title: "Gyms — Admin" }] }),
+  head: () => ({ meta: [{ title: "Gyms - Admin" }] }),
   component: GymsPage,
 });
 
@@ -189,7 +189,7 @@ function GymsPage() {
           <div>
             <h2 className="font-semibold">Add a gym</h2>
             <p className="text-xs text-muted-foreground">
-              Optionally enter the owner's email — we'll email them a sign-in
+              Optionally enter the owner's email - we'll email them a sign-in
               link automatically.
             </p>
           </div>
@@ -201,7 +201,7 @@ function GymsPage() {
                 id="gym-name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Pulse Fitness — Osu"
+                placeholder="e.g. Pulse Fitness - Osu"
               />
             </div>
             <div>

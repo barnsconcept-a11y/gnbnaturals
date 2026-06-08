@@ -21,7 +21,7 @@ export type BuilderStack = {
 
 type Choice = {
   stackId: string;
-  // crates per month — 1 single crate, 4 = 1 monthly stack, etc.
+  // crates per month - 1 single crate, 4 = 1 monthly stack, etc.
   crates: number;
 };
 

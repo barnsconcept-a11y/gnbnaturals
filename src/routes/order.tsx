@@ -18,13 +18,13 @@ export const Route = createFileRoute("/order")({
   validateSearch: zodValidator(searchSchema),
   head: () => ({
     meta: [
-      { title: "Place Your Order — G&B Naturals" },
+      { title: "Place Your Order - G&B Naturals" },
       {
         name: "description",
         content:
           "Scan, pick your stack, choose your gym pickup station and pay with MoMo. Fresh eggs reserved weekly.",
       },
-      { property: "og:title", content: "Place Your Order — G&B Naturals" },
+      { property: "og:title", content: "Place Your Order - G&B Naturals" },
       {
         property: "og:description",
         content: "Reserve your weekly egg stack in under a minute.",

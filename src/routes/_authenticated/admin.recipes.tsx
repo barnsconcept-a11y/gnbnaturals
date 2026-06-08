@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { Trash2, Upload } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/recipes")({
-  head: () => ({ meta: [{ title: "Recipes — Admin" }] }),
+  head: () => ({ meta: [{ title: "Recipes - Admin" }] }),
   component: RecipesAdminPage,
 });
 
@@ -232,7 +232,7 @@ function RecipesAdminPage() {
               id="r-body"
               value={form.body}
               onChange={(e) => setForm({ ...form, body: e.target.value })}
-              placeholder="Ingredients, steps and tips — shown on the recipe page."
+              placeholder="Ingredients, steps and tips - shown on the recipe page."
               rows={6}
             />
           </div>

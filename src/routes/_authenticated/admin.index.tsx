@@ -30,7 +30,7 @@ function customerWhatsappForStatus(o: { id: string; customer_name: string; custo
   const trackUrl = `${typeof window !== "undefined" ? window.location.origin : ""}/track/${o.id}`;
   let msg = `Hi ${o.customer_name.split(" ")[0]}, this is G&B Naturals about your order #${shortId}. Track: ${trackUrl}`;
   if (o.status === "confirmed") {
-    msg = `Hi ${o.customer_name.split(" ")[0]}! ✅ Payment confirmed for order #${shortId}. We're preparing your crates — we'll let you know once they're ready for pickup at ${o.pickup_station}. Track: ${trackUrl}`;
+    msg = `Hi ${o.customer_name.split(" ")[0]}! ✅ Payment confirmed for order #${shortId}. We're preparing your crates - we'll let you know once they're ready for pickup at ${o.pickup_station}. Track: ${trackUrl}`;
   } else if (o.status === "ready") {
     msg = `Hi ${o.customer_name.split(" ")[0]}! 📦 Your order #${shortId} is ready for pickup at ${o.pickup_station}. See you soon! Track: ${trackUrl}`;
   } else if (o.status === "pending_review") {
@@ -40,7 +40,7 @@ function customerWhatsappForStatus(o: { id: string; customer_name: string; custo
 }
 
 export const Route = createFileRoute("/_authenticated/admin/")({
-  head: () => ({ meta: [{ title: "Orders — G&B Naturals Admin" }] }),
+  head: () => ({ meta: [{ title: "Orders - G&B Naturals Admin" }] }),
   component: AdminDashboard,
 });
 
@@ -307,7 +307,7 @@ function AdminDashboard() {
           <div>
             <h1 className="text-base font-semibold text-foreground md:text-lg">
               {isAdmin
-                ? "G&B Naturals — Orders"
+                ? "G&B Naturals - Orders"
                 : `Welcome back, ${email}`}
             </h1>
             <p className="text-xs text-muted-foreground">

@@ -6,7 +6,7 @@ export const OTHER_PICKUP = "Other (I'll share on WhatsApp)";
 export function gymSlug(name: string) {
   return name
     .toLowerCase()
-    .replace(/—|–/g, "-")
+    .replace(/-|–/g, "-")
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
