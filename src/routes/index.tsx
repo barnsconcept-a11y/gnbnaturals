@@ -101,6 +101,7 @@ function Nav() {
           <a href="#why" className="hover:text-foreground transition-colors">Why eggs</a>
           <a href="#how" className="hover:text-foreground transition-colors">How it works</a>
           <a href="#recipes" className="hover:text-foreground transition-colors">Recipes</a>
+          <a href="#articles" className="hover:text-foreground transition-colors">Articles</a>
         </nav>
         <div className="flex items-center gap-2">
           <Button asChild size="sm" className="rounded-full px-3 md:px-4">
