@@ -75,10 +75,15 @@ function Logo({ compact = false, plain = false }: { compact?: boolean; plain?: b
       <img
         src={gnbLogo.url}
         alt="G&B Naturals - Affordable Daily Protein"
-        className="h-32 w-32 object-contain"
+        width={224}
+        height={224}
+        decoding="async"
+        className="h-56 w-56 object-contain [image-rendering:auto]"
+        style={{ imageRendering: "auto" }}
       />
     );
   }
+
   return (
     <span
       className={[
