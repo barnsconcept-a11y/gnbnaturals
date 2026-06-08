@@ -108,8 +108,47 @@ export const Route = createFileRoute('/api/public/hooks/new-order')({
               ? template.subject(templateData)
               : template.subject
 
+          const generateToken = () => {
+            const bytes = new Uint8Array(32)
+            crypto.getRandomValues(bytes)
+            return Array.from(bytes).map((b) => b.toString(16).padStart(2, '0')).join('')
+          }
+
           const results: { to: string; ok: boolean; error?: string }[] = []
           for (const to of recipients) {
+            // Skip suppressed
+            const { data: suppressed } = await admin
+              .from('suppressed_emails')
+              .select('id')
+              .eq('email', to)
+              .maybeSingle()
+            if (suppressed) {
+              results.push({ to, ok: false, error: 'suppressed' })
+              continue
+            }
+
+            // Get or create unsubscribe token
+            let unsubscribeToken: string
+            const { data: existing } = await admin
+              .from('email_unsubscribe_tokens')
+              .select('token, used_at')
+              .eq('email', to)
+              .maybeSingle()
+            if (existing && !existing.used_at) {
+              unsubscribeToken = existing.token
+            } else {
+              unsubscribeToken = generateToken()
+              await admin
+                .from('email_unsubscribe_tokens')
+                .upsert({ token: unsubscribeToken, email: to }, { onConflict: 'email', ignoreDuplicates: true })
+              const { data: stored } = await admin
+                .from('email_unsubscribe_tokens')
+                .select('token')
+                .eq('email', to)
+                .maybeSingle()
+              if (stored?.token) unsubscribeToken = stored.token
+            }
+
             const messageId = crypto.randomUUID()
             await admin.from('email_send_log').insert({
               message_id: messageId,
@@ -131,6 +170,7 @@ export const Route = createFileRoute('/api/public/hooks/new-order')({
                 purpose: 'transactional',
                 label: 'new-order',
                 idempotency_key: `new-order-${order.id}-${to}`,
+                unsubscribe_token: unsubscribeToken,
                 queued_at: new Date().toISOString(),
               },
             })
