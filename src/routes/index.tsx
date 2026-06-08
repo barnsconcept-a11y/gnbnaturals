@@ -69,7 +69,16 @@ function BrandMark({ className = "" }: { className?: string }) {
   );
 }
 
-function Logo({ compact = false }: { compact?: boolean }) {
+function Logo({ compact = false, plain = false }: { compact?: boolean; plain?: boolean }) {
+  if (plain) {
+    return (
+      <img
+        src={gnbLogo.url}
+        alt="G&B Naturals - Affordable Daily Protein"
+        className="h-32 w-32 object-contain"
+      />
+    );
+  }
   return (
     <span
       className={[
@@ -1001,7 +1010,7 @@ function Footer() {
       <div className="mx-auto max-w-6xl px-5 py-14">
         <div className="grid gap-10 md:grid-cols-4">
           <div className="md:col-span-2">
-            <Logo />
+            <Logo plain />
             <p className="mt-4 max-w-sm text-sm text-muted-foreground">
               Affordable daily protein, made simple. Built for fitness communities and people who
               care about staying consistent.
