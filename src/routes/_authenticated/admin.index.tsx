@@ -89,6 +89,8 @@ function AdminDashboard() {
   const [gymFilter, setGymFilter] = useState<string>("all");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [proofUrl, setProofUrl] = useState<string | null>(null);
+  const [notifyEmail, setNotifyEmail] = useState<string>("");
+  const [savingNotify, setSavingNotify] = useState(false);
 
   useEffect(() => {
     const load = async () => {
