@@ -130,6 +130,7 @@ function Nav() {
               ["Why eggs", "#why"],
               ["How it works", "#how"],
               ["Recipes", "#recipes"],
+              ["Articles", "#articles"],
             ].map(([label, href]) => (
               <a
                 key={href}
