@@ -378,8 +378,8 @@ const stacks: Stack[] = [
   {
     id: "performance",
     name: "The 4-A-Day Performance Stack™",
-    cratePrice: 70,
-    stackPrice: 270,
+    cratePrice: 65,
+    stackPrice: 250,
     desc: "30 days of affordable daily protein without expensive supplements.",
     features: [
       "Medium-sized fresh eggs",
@@ -399,8 +399,8 @@ const stacks: Stack[] = [
   {
     id: "elite",
     name: "The Elite Jumbo Stack™",
-    cratePrice: 80,
-    stackPrice: 310,
+    cratePrice: 75,
+    stackPrice: 290,
     desc: "More protein. Bigger eggs. Bigger meals.",
     features: [
       "Jumbo fresh eggs",
