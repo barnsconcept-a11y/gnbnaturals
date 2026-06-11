@@ -26,7 +26,7 @@ import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import heroImg from "@/assets/hero.jpg";
-import gnbLogo from "@/assets/gnb-logo.png.asset.json";
+import gnbLogo from "@/assets/logo.png";
 import productOpen from "@/assets/product-open.png";
 import foodSunny from "@/assets/food-sunny.jpg";
 import foodOmelet from "@/assets/food-omelet.jpg";
@@ -73,7 +73,7 @@ function Logo({ compact = false, plain = false }: { compact?: boolean; plain?: b
   if (plain) {
     return (
       <img
-        src={gnbLogo.url}
+        src={gnbLogo}
         alt="G&B Naturals - Affordable Daily Protein"
         width={224}
         height={224}
@@ -92,7 +92,7 @@ function Logo({ compact = false, plain = false }: { compact?: boolean; plain?: b
       ].join(" ")}
     >
       <img
-        src={gnbLogo.url}
+        src={gnbLogo}
         alt="G&B Naturals - Affordable Daily Protein"
         className="h-full w-full object-contain"
       />
