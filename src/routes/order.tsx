@@ -35,8 +35,8 @@ export const Route = createFileRoute("/order")({
 
 const builderStacks: BuilderStack[] = [
   { id: "starter", name: "The Daily Starter Stack™", cratePrice: 60, stackPrice: 230 },
-  { id: "performance", name: "The 4-A-Day Performance Stack™", cratePrice: 70, stackPrice: 270 },
-  { id: "elite", name: "The Elite Jumbo Stack™", cratePrice: 80, stackPrice: 310 },
+  { id: "performance", name: "The 4-A-Day Performance Stack™", cratePrice: 65, stackPrice: 250 },
+  { id: "elite", name: "The Elite Jumbo Stack™", cratePrice: 75, stackPrice: 290 },
 ];
 
 function OrderPage() {
