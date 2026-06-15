@@ -74,7 +74,7 @@ function ArticlePage() {
 
   if (loading) {
     return (
-      <div className="mx-auto max-w-3xl px-5 py-24 text-center text-muted-foreground">
+      <div className="article-longform mx-auto max-w-[760px] px-5 py-24 text-center">
         Loading article…
       </div>
     );
@@ -82,51 +82,71 @@ function ArticlePage() {
 
   if (!article) {
     return (
-      <div className="mx-auto max-w-2xl px-5 py-24 text-center">
+      <div className="article-longform mx-auto max-w-[760px] px-5 py-24 text-center">
         <h1 className="text-3xl font-bold">Article not found</h1>
-        <Link to="/" className="mt-6 inline-block text-primary underline">
+        <Link to="/" className="mt-6 inline-block underline">
           Back to home
         </Link>
       </div>
     );
   }
 
+  // Split body into paragraphs; support markdown-ish blockquotes (lines starting with ">")
+  // and H2 (## ) / H3 (### ) headings for elegant hierarchy.
+  const blocks = article.body.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+
   return (
-    <article className="mx-auto max-w-3xl px-5 py-12 md:py-16">
+    <article className="article-longform mx-auto max-w-[760px] px-5 py-14 md:py-20">
       <Link
         to="/"
         hash="articles"
-        className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
+        className="article-back inline-flex items-center gap-1.5 text-sm"
       >
         <ArrowLeft className="h-4 w-4" /> All articles
       </Link>
 
+      {article.category && (
+        <div className="article-eyebrow mt-10">{article.category}</div>
+      )}
+
+      <h1 className="article-title mt-3">{article.title}</h1>
+
+      {article.excerpt && (
+        <p className="article-deck mt-5">{article.excerpt}</p>
+      )}
+
+      <div className="article-rule mt-8" />
+
       {article.image_url && (
-        <div className="relative mt-6 aspect-[16/9] overflow-hidden rounded-3xl border border-border">
+        <figure className="my-10">
           <img
             src={article.image_url}
             alt={article.title}
-            className="h-full w-full object-cover"
+            className="w-full rounded-sm"
           />
-          {article.category && (
-            <span className="absolute left-4 top-4 inline-flex rounded-full bg-background/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-foreground backdrop-blur">
-              {article.category}
-            </span>
-          )}
-        </div>
+        </figure>
       )}
 
-      <h1 className="mt-8 text-balance text-4xl font-bold tracking-tight md:text-5xl">
-        {article.title}
-      </h1>
-
-      {article.excerpt && (
-        <p className="mt-4 text-lg leading-relaxed text-muted-foreground">{article.excerpt}</p>
-      )}
-
-      <div className="mt-6 whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
-        {article.body}
+      <div className="article-body mt-8">
+        {blocks.map((block, i) => {
+          if (block.startsWith("### ")) {
+            return <h3 key={i}>{block.slice(4)}</h3>;
+          }
+          if (block.startsWith("## ")) {
+            return <h2 key={i}>{block.slice(3)}</h2>;
+          }
+          if (block.startsWith("> ")) {
+            const quote = block
+              .split("\n")
+              .map((l) => l.replace(/^>\s?/, ""))
+              .join(" ");
+            return <blockquote key={i}>{quote}</blockquote>;
+          }
+          return <p key={i}>{block}</p>;
+        })}
       </div>
+
+      <div className="article-endmark mt-16">■</div>
     </article>
   );
 }
