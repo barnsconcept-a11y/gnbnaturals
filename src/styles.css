@@ -197,7 +197,7 @@
    strong hierarchy, generous whitespace, premium reading rhythm.
    =========================================================== */
 .article-longform {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", Times, serif;
   color: oklch(0.18 0.02 150);
   font-feature-settings: "kern", "liga", "onum";
 }
@@ -217,29 +217,56 @@
   font-family: var(--font-sans);
   font-size: 12px;
   font-weight: 700;
-  letter-spacing: 0.18em;
+  letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.article-longform .article-eyebrow::after {
+  content: "";
+  width: 28px;
+  height: 1px;
+  background: var(--primary);
+  opacity: 0.55;
 }
 
 .article-longform .article-title {
-  font-family: Georgia, "Times New Roman", Times, serif;
-  font-weight: 700;
-  letter-spacing: -0.015em;
-  line-height: 1.08;
-  font-size: clamp(2.25rem, 1.4rem + 3.5vw, 3.75rem);
-  color: oklch(0.14 0.02 150);
+  font-family: "Playfair Display", Georgia, "Times New Roman", Times, serif;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.04;
+  font-size: clamp(2.5rem, 1.4rem + 4.2vw, 4.25rem);
+  color: oklch(0.12 0.02 150);
   text-wrap: balance;
 }
 
 .article-longform .article-deck {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Source Serif 4", Georgia, serif;
   font-style: italic;
   font-weight: 400;
-  font-size: clamp(1.125rem, 1rem + 0.4vw, 1.375rem);
+  font-size: clamp(1.2rem, 1rem + 0.55vw, 1.5rem);
   line-height: 1.5;
-  color: oklch(0.38 0.02 150);
+  color: oklch(0.4 0.02 150);
   text-wrap: balance;
+}
+
+.article-longform .article-meta {
+  font-family: var(--font-sans);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: oklch(0.5 0.02 150);
+  display: flex;
+  align-items: center;
+  gap: 0.75em;
+  flex-wrap: wrap;
+}
+.article-longform .article-meta .dot {
+  width: 3px; height: 3px; border-radius: 999px;
+  background: oklch(0.7 0.02 150);
+  display: inline-block;
 }
 
 .article-longform .article-rule {
@@ -247,47 +274,60 @@
   background: oklch(0.85 0.01 90);
 }
 
-.article-longform figure img {
+.article-longform .article-hero {
+  margin: 2.5rem 0 0;
+}
+.article-longform .article-hero img {
   display: block;
   width: 100%;
   height: auto;
+  border-radius: 2px;
+}
+.article-longform .article-hero figcaption {
+  font-family: var(--font-sans);
+  font-size: 12.5px;
+  color: oklch(0.5 0.02 150);
+  margin-top: 0.75rem;
+  letter-spacing: 0.02em;
 }
 
 .article-longform .article-body {
-  font-size: 22px;
+  font-family: "Source Serif 4", Georgia, "Times New Roman", Times, serif;
+  font-size: 21px;
   line-height: 1.72;
-  color: oklch(0.2 0.02 150);
+  color: oklch(0.18 0.02 150);
 }
-.article-longform .article-body > * + * { margin-top: 1.4em; }
+.article-longform .article-body > * + * { margin-top: 1.35em; }
 
 .article-longform .article-body p {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Source Serif 4", Georgia, serif;
   font-weight: 400;
 }
 
 .article-longform .article-body p:first-of-type::first-letter {
-  font-size: 3.6em;
-  font-weight: 700;
+  font-family: "Playfair Display", Georgia, serif;
+  font-size: 4.2em;
+  font-weight: 800;
   float: left;
-  line-height: 0.9;
-  padding: 0.05em 0.12em 0 0;
-  color: oklch(0.14 0.02 150);
+  line-height: 0.85;
+  padding: 0.08em 0.12em 0 0;
+  color: oklch(0.12 0.02 150);
 }
 
 .article-longform .article-body h2 {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
-  letter-spacing: -0.01em;
-  font-size: 1.75rem;
+  letter-spacing: -0.015em;
+  font-size: 1.85rem;
   line-height: 1.2;
-  margin-top: 2.2em;
-  padding-top: 1.1em;
+  margin-top: 2.4em;
+  padding-top: 1.2em;
   border-top: 1px solid oklch(0.88 0.01 90);
-  color: oklch(0.14 0.02 150);
+  color: oklch(0.12 0.02 150);
 }
 
 .article-longform .article-body h3 {
-  font-family: Georgia, "Times New Roman", Times, serif;
+  font-family: "Source Serif 4", Georgia, serif;
   font-style: italic;
   font-weight: 600;
   font-size: 1.35rem;
@@ -297,15 +337,15 @@
 }
 
 .article-longform .article-body blockquote {
-  margin: 2em 0;
-  padding: 0.25em 0 0.25em 1.25em;
-  border-left: 2px solid var(--primary);
-  font-family: Georgia, "Times New Roman", Times, serif;
+  margin: 2.2em 0;
+  padding: 0.25em 0 0.25em 1.4em;
+  border-left: 3px solid var(--primary);
+  font-family: "Playfair Display", Georgia, serif;
   font-style: italic;
-  font-weight: 400;
-  font-size: 1.5rem;
-  line-height: 1.45;
-  color: oklch(0.22 0.02 150);
+  font-weight: 500;
+  font-size: 1.65rem;
+  line-height: 1.4;
+  color: oklch(0.14 0.02 150);
   text-wrap: balance;
 }
 
