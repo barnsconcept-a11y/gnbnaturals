@@ -10,6 +10,7 @@ type Article = {
   excerpt: string;
   body: string;
   image_url: string | null;
+  created_at?: string | null;
 };
 
 export const Route = createFileRoute("/articles/$slug")({
