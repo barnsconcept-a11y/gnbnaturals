@@ -10,6 +10,7 @@ type Article = {
   excerpt: string;
   body: string;
   image_url: string | null;
+  created_at?: string | null;
 };
 
 export const Route = createFileRoute("/articles/$slug")({
@@ -59,7 +60,7 @@ function ArticlePage() {
       setLoading(true);
       const { data } = await (supabase as any)
         .from("articles")
-        .select("slug, category, title, excerpt, body, image_url")
+        .select("slug, category, title, excerpt, body, image_url, created_at")
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
@@ -91,9 +92,16 @@ function ArticlePage() {
     );
   }
 
-  // Split body into paragraphs; support markdown-ish blockquotes (lines starting with ">")
-  // and H2 (## ) / H3 (### ) headings for elegant hierarchy.
   const blocks = article.body.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean);
+  const wordCount = article.body.trim().split(/\s+/).length;
+  const readingTime = Math.max(1, Math.round(wordCount / 220));
+  const dateStr = article.created_at
+    ? new Date(article.created_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
 
   return (
     <article className="article-longform mx-auto max-w-[760px] px-5 py-14 md:py-20">
@@ -109,25 +117,27 @@ function ArticlePage() {
         <div className="article-eyebrow mt-10">{article.category}</div>
       )}
 
-      <h1 className="article-title mt-3">{article.title}</h1>
+      <h1 className="article-title mt-4">{article.title}</h1>
 
       {article.excerpt && (
         <p className="article-deck mt-5">{article.excerpt}</p>
       )}
 
-      <div className="article-rule mt-8" />
+      <div className="article-meta mt-6">
+        {dateStr && <span>{dateStr}</span>}
+        {dateStr && <span className="dot" />}
+        <span>{readingTime} min read</span>
+      </div>
 
       {article.image_url && (
-        <figure className="my-10">
-          <img
-            src={article.image_url}
-            alt={article.title}
-            className="w-full rounded-sm"
-          />
+        <figure className="article-hero">
+          <img src={article.image_url} alt={article.title} />
         </figure>
       )}
 
-      <div className="article-body mt-8">
+      <div className="article-rule mt-10" />
+
+      <div className="article-body mt-10">
         {blocks.map((block, i) => {
           if (block.startsWith("### ")) {
             return <h3 key={i}>{block.slice(4)}</h3>;
@@ -150,3 +160,4 @@ function ArticlePage() {
     </article>
   );
 }
+
