@@ -499,7 +499,7 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
           featured ? "bg-primary-foreground text-primary hover:bg-primary-foreground/90" : "",
         ].join(" ")}
       >
-        <ShoppingBag className="h-4 w-4" /> Order this stack
+        <ShoppingBag className="h-4 w-4" /> Order this pack
       </Button>
       <p className={["mt-2 text-center text-[11px]", featured ? "text-primary-foreground/70" : "text-muted-foreground"].join(" ")}>
         Mix other stacks & crates on the next step
