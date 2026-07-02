@@ -89,7 +89,7 @@ function Logo({ compact = false, plain = false }: { compact?: boolean; plain?: b
     <span
       className={[
         "inline-flex items-center justify-center rounded-full bg-cream ring-2 ring-primary/15 shadow-soft",
-        compact ? "h-14 w-14 p-1.5" : "h-20 w-20 p-2",
+        compact ? "h-44 w-44 p-3" : "h-20 w-20 p-2",
       ].join(" ")}
     >
       <img
