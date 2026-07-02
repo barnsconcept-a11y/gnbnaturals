@@ -35,49 +35,57 @@
   --color-kraft: var(--kraft);
   --color-kraft-foreground: var(--kraft-foreground);
   --color-cream: var(--cream);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
 
-  --font-display: "Hanken Grotesk", "Inter", system-ui, sans-serif;
-  --font-sans: "Hanken Grotesk", "Inter", system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hanken Grotesk", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hanken Grotesk", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-brand: "Cormorant Garamond", "Playfair Display", Georgia, serif;
 
-  --shadow-soft: 0 2px 8px -2px oklch(0.3 0.04 150 / 0.06), 0 8px 24px -8px oklch(0.3 0.04 150 / 0.08);
-  --shadow-elevated: 0 8px 24px -6px oklch(0.3 0.06 150 / 0.12), 0 24px 48px -12px oklch(0.3 0.06 150 / 0.18);
-  --shadow-card: 0 1px 2px oklch(0.2 0.02 150 / 0.04), 0 4px 16px -4px oklch(0.2 0.02 150 / 0.08);
+  --shadow-soft: 0 8px 22px rgba(16, 34, 25, 0.045);
+  --shadow-elevated: 0 18px 48px rgba(16, 34, 25, 0.055);
+  --shadow-card: 0 1px 2px rgba(16, 34, 25, 0.04), 0 4px 16px -4px rgba(16, 34, 25, 0.06);
 }
 
 :root {
-  --radius: 0.875rem;
+  --radius: 1.375rem; /* 22px */
 
-  --background: oklch(0.995 0.003 90);
-  --foreground: oklch(0.22 0.03 155);
+  /* Editorial off-white surfaces */
+  --background: #FAF9F6;
+  --foreground: #111111;
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.22 0.03 155);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.22 0.03 155);
+  --card: #FFFFFF;
+  --card-foreground: #111111;
+  --popover: #FFFFFF;
+  --popover-foreground: #111111;
 
-  /* Dark green */
-  --primary: oklch(0.32 0.06 155);
-  --primary-foreground: oklch(0.985 0.005 90);
+  /* Deep editorial green */
+  --primary: #102219;
+  --primary-foreground: #FAF9F6;
 
-  /* Kraft paper */
-  --kraft: oklch(0.84 0.04 75);
-  --kraft-foreground: oklch(0.28 0.04 60);
-  --cream: oklch(0.97 0.015 85);
+  /* Warm gold accent */
+  --gold: #F2B233;
+  --gold-light: #F7C65C;
 
-  --secondary: oklch(0.96 0.012 90);
-  --secondary-foreground: oklch(0.25 0.03 155);
-  --muted: oklch(0.965 0.008 90);
-  --muted-foreground: oklch(0.5 0.02 150);
-  --accent: oklch(0.92 0.04 145);
-  --accent-foreground: oklch(0.22 0.05 155);
+  /* Kraft / cream surfaces */
+  --kraft: #F4F2ED;
+  --kraft-foreground: #173326;
+  --cream: #FAF9F6;
 
-  --destructive: oklch(0.58 0.22 27);
-  --destructive-foreground: oklch(0.985 0.005 90);
-  --border: oklch(0.92 0.012 90);
-  --input: oklch(0.92 0.012 90);
-  --ring: oklch(0.32 0.06 155);
+  --secondary: #F4F2ED;
+  --secondary-foreground: #102219;
+  --muted: #F4F2ED;
+  --muted-foreground: #656D66;
+  --accent: #F2B233;
+  --accent-foreground: #102219;
+
+  --destructive: #C7351F;
+  --destructive-foreground: #FAF9F6;
+  --border: #E8E8E4;
+  --input: #E8E8E4;
+  --ring: #102219;
 }
+
 
 @layer base {
   * {
