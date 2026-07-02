@@ -102,14 +102,14 @@
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: var(--font-sans);
-    font-size: 17px;
-    font-weight: 500;
-    line-height: 1.6;
+    font-size: 15.5px;
+    font-weight: 450;
+    line-height: 1.62;
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: "ss01", "cv11";
+    text-rendering: optimizeLegibility;
   }
   @media (min-width: 768px) {
-    body { font-size: 19px; }
+    body { font-size: 16.5px; }
   }
   /* Larger tap targets on touch devices */
   @media (hover: none) and (pointer: coarse) {
@@ -117,15 +117,18 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
-    font-weight: 700;
+    letter-spacing: -0.045em;
+    font-weight: 600;
+    color: var(--color-primary);
   }
+  h1 { letter-spacing: -0.055em; }
   p, li, span, a, label, button, input, textarea, select {
-    font-weight: 500;
+    font-weight: 450;
   }
   .text-muted-foreground {
-    font-weight: 500;
+    font-weight: 450;
   }
+
 }
 
 @layer utilities {
