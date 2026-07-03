@@ -516,9 +516,9 @@ function Stacks() {
     <section id="stacks" className="border-t border-border">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-medium uppercase tracking-widest text-primary">Protein Stacks</p>
+          <p className="text-sm font-medium uppercase tracking-widest text-primary">Protein Packs</p>
           <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight md:text-5xl">
-            Pick the stack that matches your habit.
+            Pick the pack that matches your habit.
           </h2>
           <p className="mt-4 text-muted-foreground">
             Reserve weekly. Pick up locally. Stay consistent without overthinking.
