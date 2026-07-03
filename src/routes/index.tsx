@@ -203,10 +203,10 @@ function Hero() {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center md:mt-9 animate-hero-rise" style={{ animationDelay: "0.7s" }}>
             <Button asChild size="lg" className="h-12 w-full rounded-full px-6 text-base shadow-elevated transition-transform hover:scale-[1.03] sm:w-auto">
-              <a href="#stacks">Start My Performance Stack <ArrowRight className="h-4 w-4" /></a>
+              <a href="#stacks">Order Medium Pack <ArrowRight className="h-4 w-4" /></a>
             </Button>
             <Button asChild size="lg" variant="outline" className="h-12 w-full rounded-full px-6 text-base sm:w-auto">
-              <a href="#stacks">See Protein Stacks</a>
+              <a href="#stacks">See Protein Packs</a>
             </Button>
           </div>
         </div>
@@ -503,7 +503,7 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
         <ShoppingBag className="h-4 w-4" /> Order this pack
       </Button>
       <p className={["mt-2 text-center text-[11px]", featured ? "text-primary-foreground/70" : "text-muted-foreground"].join(" ")}>
-        Mix other stacks & crates on the next step
+        Mix other packs & crates on the next step
       </p>
     </div>
   );
@@ -611,7 +611,7 @@ function WhyEggs() {
 }
 
 const steps = [
-  { icon: ShoppingBag, title: "Choose Your Protein Stack", body: "Starter, Performance or Elite - built for your routine.", img: stepChoose, imgAlt: "Three protein stack boxes lined up to choose from" },
+  { icon: ShoppingBag, title: "Choose Your Protein Pack", body: "Small, Medium or Jumbo - built for your routine.", img: stepChoose, imgAlt: "Three protein pack boxes lined up to choose from" },
   { icon: CalendarCheck, title: "Reserve Weekly Supply", body: "We hold your eggs each week so you never run out.", img: stepReserve, imgAlt: "Weekly calendar beside stacked egg crates reserved each week" },
   { icon: MapPin, title: "Pick Up Through Your Fitness Community", body: "Grab them at your gym, hub or partner location.", img: stepPickup, imgAlt: "Athlete picking up a kraft bag of eggs at the gym" },
 ];
@@ -1001,7 +1001,7 @@ function FinalCTA() {
               size="lg"
               className="h-12 rounded-full bg-primary-foreground px-7 text-base text-primary hover:bg-primary-foreground/90"
             >
-              <a href="#stacks">Start My Performance Stack <ArrowRight className="h-4 w-4" /></a>
+              <a href="#stacks">Order Medium Pack <ArrowRight className="h-4 w-4" /></a>
             </Button>
           </div>
         </div>
