@@ -276,11 +276,11 @@ function Packaging() {
             />
           </div>
           <div className="flex flex-col justify-center gap-4 p-8 md:col-span-2 md:p-10">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-primary-foreground/70">Inside every pack</p>
-            <h3 className="font-brand text-4xl leading-tight md:text-5xl" style={{ fontFamily: "var(--font-brand)" }}>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-white">Inside every pack</p>
+            <h3 className="font-brand text-4xl leading-tight text-white md:text-5xl" style={{ fontFamily: "var(--font-brand)" }}>
               Good nutrition builds a stronger you.
             </h3>
-            <div className="mt-2 grid grid-cols-2 gap-3 text-xs font-semibold uppercase tracking-wider text-primary-foreground/85">
+            <div className="mt-2 grid grid-cols-2 gap-3 text-xs font-semibold uppercase tracking-wider text-white">
               <div className="flex items-center gap-2"><Egg className="h-4 w-4" /> High in Protein</div>
               <div className="flex items-center gap-2"><Leaf className="h-4 w-4" /> 100% Natural</div>
               <div className="flex items-center gap-2"><Sparkles className="h-4 w-4" /> Fresh & Nutritious</div>
