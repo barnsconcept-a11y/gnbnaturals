@@ -203,10 +203,10 @@ function Hero() {
 
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center md:mt-9 animate-hero-rise" style={{ animationDelay: "0.7s" }}>
             <Button asChild size="lg" className="h-12 w-full rounded-full px-6 text-base shadow-elevated transition-transform hover:scale-[1.03] sm:w-auto">
-              <a href="#stacks">Start My Performance Stack <ArrowRight className="h-4 w-4" /></a>
+              <a href="#stacks">Order Medium Pack <ArrowRight className="h-4 w-4" /></a>
             </Button>
             <Button asChild size="lg" variant="outline" className="h-12 w-full rounded-full px-6 text-base sm:w-auto">
-              <a href="#stacks">See Protein Stacks</a>
+              <a href="#stacks">See Protein Packs</a>
             </Button>
           </div>
         </div>
@@ -362,7 +362,7 @@ type Stack = {
 const stacks: Stack[] = [
   {
     id: "starter",
-    name: "The Daily Starter Stack™",
+    name: "Small",
     cratePrice: 60,
     stackPrice: 230,
     desc: "Simple affordable protein for people getting started.",
@@ -374,11 +374,11 @@ const stacks: Stack[] = [
       "Affordable daily protein",
     ],
     img: stackStarter,
-    imgAlt: "Kraft crate of small fresh brown eggs - Starter Stack",
+    imgAlt: "Kraft crate of small fresh brown eggs - Small",
   },
   {
     id: "performance",
-    name: "The 4-A-Day Performance Stack™",
+    name: "Medium",
     cratePrice: 65,
     stackPrice: 250,
     desc: "30 days of affordable daily protein without expensive supplements.",
@@ -395,11 +395,11 @@ const stacks: Stack[] = [
     featured: true,
     highlight: "One simple habit. One month of protein covered.",
     img: stackPerformance,
-    imgAlt: "Kraft crate of medium fresh brown eggs - Performance Stack",
+    imgAlt: "Kraft crate of medium fresh brown eggs - Medium",
   },
   {
     id: "elite",
-    name: "The Elite Jumbo Stack™",
+    name: "Jumbo",
     cratePrice: 75,
     stackPrice: 290,
     desc: "More protein. Bigger eggs. Bigger meals.",
@@ -412,7 +412,7 @@ const stacks: Stack[] = [
       "Exclusive nutrition content",
     ],
     img: stackElite,
-    imgAlt: "Kraft crate of jumbo brown eggs - Elite Stack",
+    imgAlt: "Kraft crate of jumbo brown eggs - Jumbo",
   },
 ];
 
@@ -503,7 +503,7 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
         <ShoppingBag className="h-4 w-4" /> Order this pack
       </Button>
       <p className={["mt-2 text-center text-[11px]", featured ? "text-primary-foreground/70" : "text-muted-foreground"].join(" ")}>
-        Mix other stacks & crates on the next step
+        Mix other packs & crates on the next step
       </p>
     </div>
   );
@@ -516,9 +516,9 @@ function Stacks() {
     <section id="stacks" className="border-t border-border">
       <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
         <div className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-medium uppercase tracking-widest text-primary">Protein Stacks</p>
+          <p className="text-sm font-medium uppercase tracking-widest text-primary">Protein Packs</p>
           <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight md:text-5xl">
-            Pick the stack that matches your habit.
+            Pick the pack that matches your habit.
           </h2>
           <p className="mt-4 text-muted-foreground">
             Reserve weekly. Pick up locally. Stay consistent without overthinking.
@@ -611,7 +611,7 @@ function WhyEggs() {
 }
 
 const steps = [
-  { icon: ShoppingBag, title: "Choose Your Protein Stack", body: "Starter, Performance or Elite - built for your routine.", img: stepChoose, imgAlt: "Three protein stack boxes lined up to choose from" },
+  { icon: ShoppingBag, title: "Choose Your Protein Pack", body: "Small, Medium or Jumbo - built for your routine.", img: stepChoose, imgAlt: "Three protein pack boxes lined up to choose from" },
   { icon: CalendarCheck, title: "Reserve Weekly Supply", body: "We hold your eggs each week so you never run out.", img: stepReserve, imgAlt: "Weekly calendar beside stacked egg crates reserved each week" },
   { icon: MapPin, title: "Pick Up Through Your Fitness Community", body: "Grab them at your gym, hub or partner location.", img: stepPickup, imgAlt: "Athlete picking up a kraft bag of eggs at the gym" },
 ];
@@ -1001,7 +1001,7 @@ function FinalCTA() {
               size="lg"
               className="h-12 rounded-full bg-primary-foreground px-7 text-base text-primary hover:bg-primary-foreground/90"
             >
-              <a href="#stacks">Start My Performance Stack <ArrowRight className="h-4 w-4" /></a>
+              <a href="#stacks">Order Medium Pack <ArrowRight className="h-4 w-4" /></a>
             </Button>
           </div>
         </div>
