@@ -9,8 +9,8 @@ import {
 } from "react";
 
 export type CartItem = {
-  id: string; // e.g. "performance-single" | "performance-pack4"
-  stack: string; // "The 4-A-Day Performance Stack™"
+  id: string; // e.g. "starter-single" | "performance-pack4"
+  stack: string; // "Small" | "Medium" | "Jumbo"
   variant: "Single Crate" | "4-Crate Monthly Stack";
   unitPrice: number; // GHS, the price per added line unit
   qty: number;

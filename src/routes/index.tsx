@@ -362,7 +362,7 @@ type Stack = {
 const stacks: Stack[] = [
   {
     id: "starter",
-    name: "The Daily Starter Stack™",
+    name: "Small",
     cratePrice: 60,
     stackPrice: 230,
     desc: "Simple affordable protein for people getting started.",
@@ -374,11 +374,11 @@ const stacks: Stack[] = [
       "Affordable daily protein",
     ],
     img: stackStarter,
-    imgAlt: "Kraft crate of small fresh brown eggs - Starter Stack",
+    imgAlt: "Kraft crate of small fresh brown eggs - Small",
   },
   {
     id: "performance",
-    name: "The 4-A-Day Performance Stack™",
+    name: "Medium",
     cratePrice: 65,
     stackPrice: 250,
     desc: "30 days of affordable daily protein without expensive supplements.",
@@ -395,11 +395,11 @@ const stacks: Stack[] = [
     featured: true,
     highlight: "One simple habit. One month of protein covered.",
     img: stackPerformance,
-    imgAlt: "Kraft crate of medium fresh brown eggs - Performance Stack",
+    imgAlt: "Kraft crate of medium fresh brown eggs - Medium",
   },
   {
     id: "elite",
-    name: "The Elite Jumbo Stack™",
+    name: "Jumbo",
     cratePrice: 75,
     stackPrice: 290,
     desc: "More protein. Bigger eggs. Bigger meals.",
@@ -412,7 +412,7 @@ const stacks: Stack[] = [
       "Exclusive nutrition content",
     ],
     img: stackElite,
-    imgAlt: "Kraft crate of jumbo brown eggs - Elite Stack",
+    imgAlt: "Kraft crate of jumbo brown eggs - Jumbo",
   },
 ];
 
