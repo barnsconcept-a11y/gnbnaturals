@@ -25,7 +25,7 @@ import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import heroImgAsset from "@/assets/egg-on-stone.png.asset.json";
+import heroImgAsset from "@/assets/egg-on-stone-portrait.png.asset.json";
 const heroImg = heroImgAsset.url;
 import gnbLogoAsset from "@/assets/gnb-logo-new.png.asset.json";
 const gnbLogo = gnbLogoAsset.url;
