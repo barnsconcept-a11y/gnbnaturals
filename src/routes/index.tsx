@@ -25,7 +25,7 @@ import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import heroImgAsset from "@/assets/egg-on-stone.png.asset.json";
+import heroImgAsset from "@/assets/egg-on-stone-portrait.png.asset.json";
 const heroImg = heroImgAsset.url;
 import gnbLogoAsset from "@/assets/gnb-logo-new.png.asset.json";
 const gnbLogo = gnbLogoAsset.url;
@@ -218,10 +218,10 @@ function Hero() {
           <div className="hero-shine relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
             <img
               src={heroImg}
-              alt="Kraft paper egg packaging with healthy breakfast meal prep, water bottle and dumbbell"
-              width={1536}
-              height={1536}
-              className="aspect-square w-full object-cover animate-hero-zoom"
+              alt="G&amp;B Naturals portrait - white egg on dark stone"
+              width={1024}
+              height={1535}
+              className="aspect-[2/3] w-full object-cover animate-hero-zoom"
             />
           </div>
           <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block animate-hero-float">
