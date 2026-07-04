@@ -447,7 +447,7 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
         />
       </div>
 
-      <h3 className="text-xl font-bold tracking-tight">{s.name}</h3>
+      <h3 className={["text-xl font-bold tracking-tight", featured ? "text-primary-foreground" : "text-foreground"].join(" ")}>{s.name}</h3>
       <p className={["mt-1.5 text-sm", featured ? "text-primary-foreground/75" : "text-muted-foreground"].join(" ")}>
         {s.desc}
       </p>
