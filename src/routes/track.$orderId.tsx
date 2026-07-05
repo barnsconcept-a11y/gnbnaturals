@@ -54,40 +54,28 @@ function TrackPage() {
   useEffect(() => {
     let active = true;
     const load = async () => {
-      const { data, error } = await supabase
-        .from("orders")
-        .select(
-          "id,customer_name,customer_phone,pickup_station,total_amount,total_crates,status,created_at",
-        )
-        .eq("id", orderId)
-        .maybeSingle();
+      const { data, error } = await supabase.rpc("get_order_status", {
+        order_id: orderId,
+      });
       if (!active) return;
-      if (error || !data) {
+      const row = Array.isArray(data) ? data[0] : data;
+      if (error || !row) {
         setNotFound(true);
       } else {
-        setOrder(data as TrackedOrder);
+        setOrder(row as TrackedOrder);
       }
       setLoading(false);
     };
     load();
 
-    // Live status updates
-    const channel = supabase
-      .channel(`order-${orderId}`)
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "orders", filter: `id=eq.${orderId}` },
-        (payload) => {
-          if (!active) return;
-          setOrder((prev) => (prev ? { ...prev, ...(payload.new as Partial<TrackedOrder>) } : prev));
-        },
-      )
-      .subscribe();
+    // Poll every 20s for status updates (realtime disabled for privacy).
+    const interval = setInterval(load, 20000);
 
     return () => {
       active = false;
-      supabase.removeChannel(channel);
+      clearInterval(interval);
     };
+
   }, [orderId]);
 
   if (loading) {
