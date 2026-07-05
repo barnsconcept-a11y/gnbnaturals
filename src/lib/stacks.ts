@@ -39,10 +39,9 @@ export function applyDiscounts(
       d.crate_price != null
         ? Number(d.crate_price)
         : Math.round(s.cratePrice * factor);
-    const stack =
-      d.stack_price != null
-        ? Number(d.stack_price)
-        : Math.round(s.stackPrice * factor);
+    // Bundle price is always crate*4 - GHS 2, regardless of per-gym overrides,
+    // so the "8 crates → GHS 4 off" rule holds everywhere.
+    const stack = crate * 4 - BUNDLE_DISCOUNT;
     return { ...s, cratePrice: crate, stackPrice: stack };
   });
 }
