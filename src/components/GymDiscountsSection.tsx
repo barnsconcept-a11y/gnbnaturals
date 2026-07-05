@@ -9,7 +9,6 @@ import { Percent, Save } from "lucide-react";
 type Row = {
   stack_id: string;
   crate_price: string;
-  stack_price: string;
   discount_percent: string;
 };
 
@@ -17,7 +16,6 @@ const empty = (): Row[] =>
   DEFAULT_STACKS.map((s) => ({
     stack_id: s.id,
     crate_price: "",
-    stack_price: "",
     discount_percent: "",
   }));
 
@@ -42,7 +40,6 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
           return {
             stack_id: s.id,
             crate_price: d?.crate_price != null ? String(d.crate_price) : "",
-            stack_price: d?.stack_price != null ? String(d.stack_price) : "",
             discount_percent:
               d?.discount_percent != null ? String(d.discount_percent) : "",
           };
@@ -65,11 +62,10 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
     try {
       for (const r of rows) {
         const crate = r.crate_price.trim() === "" ? null : Number(r.crate_price);
-        const stack = r.stack_price.trim() === "" ? null : Number(r.stack_price);
         const pct =
           r.discount_percent.trim() === "" ? null : Number(r.discount_percent);
 
-        const allEmpty = crate == null && stack == null && pct == null;
+        const allEmpty = crate == null && pct == null;
 
         if (allEmpty) {
           const { error } = await supabase
@@ -86,7 +82,6 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
                 gym_id: gymId,
                 stack_id: r.stack_id,
                 crate_price: crate,
-                stack_price: stack,
                 discount_percent: pct,
               },
               { onConflict: "gym_id,stack_id" },
@@ -110,9 +105,8 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
       <div>
         <h2 className="font-semibold">Per-stack discounts</h2>
         <p className="text-xs text-muted-foreground">
-          Set a percentage off the default, or override the crate / 4-crate
-          stack price. Leave blank to charge the default. Overrides win over
-          percentages.
+          Set a percentage off the default, or override the crate price. Leave
+          blank to charge the default. Overrides win over percentages.
         </p>
       </div>
 
@@ -123,8 +117,7 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
               <th className="pb-2 pr-3">Stack</th>
               <th className="pb-2 pr-3">Default</th>
               <th className="pb-2 pr-3">Discount %</th>
-              <th className="pb-2 pr-3">Crate GH₵</th>
-              <th className="pb-2">4-crate GH₵</th>
+              <th className="pb-2">Crate GH₵</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
@@ -165,19 +158,6 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
                       value={r.crate_price}
                       onChange={(e) =>
                         update(r.stack_id, { crate_price: e.target.value })
-                      }
-                    />
-                  </td>
-                  <td className="py-2">
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder={String(def.stackPrice)}
-                      className="h-9"
-                      value={r.stack_price}
-                      onChange={(e) =>
-                        update(r.stack_id, { stack_price: e.target.value })
                       }
                     />
                   </td>
