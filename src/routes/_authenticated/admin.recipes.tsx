@@ -130,19 +130,20 @@ function RecipesAdminPage() {
     setSubmitting(true);
     const slugBase = slugify(form.title);
     const slug = `${slugBase}-${Math.random().toString(36).slice(2, 6)}`;
-    const { error } = await supabase.from("recipes").insert({
+    const { error } = await (supabase as any).from("recipes").insert({
       slug,
       title: form.title.trim(),
       tag: form.tag.trim(),
       excerpt: form.excerpt.trim(),
       body: form.body.trim(),
       image_url: form.image_url.trim() || null,
+      author_id: form.author_id || null,
       sort_order: recipes.length,
     });
     setSubmitting(false);
     if (error) return toast.error(error.message);
     toast.success("Recipe added");
-    setForm({ title: "", tag: "", excerpt: "", body: "", image_url: "" });
+    setForm({ title: "", tag: "", excerpt: "", body: "", image_url: "", author_id: "" });
     load();
   };
 
