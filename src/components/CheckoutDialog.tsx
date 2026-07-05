@@ -376,7 +376,7 @@ export function CheckoutDialog({
                     <Loader2 className="h-4 w-4 animate-spin" /> Submitting…
                   </>
                 ) : (
-                  <>Complete checkout</>
+                  <>Submit order</>
                 )}
               </Button>
             </div>
