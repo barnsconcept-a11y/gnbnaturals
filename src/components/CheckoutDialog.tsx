@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Copy, CheckCircle2, Upload, Loader2, Smartphone, MessageCircle, Link as LinkIcon } from "lucide-react";
+import { Copy, CheckCircle2, Upload, Loader2, MessageCircle, Link as LinkIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +30,9 @@ export function CheckoutDialog({
 }) {
   const { items, totalPrice, totalCrates, pickup, clear, close } = useCart();
   // Snapshot totals so the success screen stays populated after we clear the cart
-  const [summary, setSummary] = useState<{ crates: number; price: number; orderId: string } | null>(null);
+  const [summary, setSummary] = useState<{ crates: number; price: number; orderId: string } | null>(
+    null,
+  );
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -155,77 +157,92 @@ export function CheckoutDialog({
               </div>
               <p className="text-lg font-semibold">Thanks, {name || "champ"}!</p>
               <p className="text-base text-muted-foreground">
-                Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)}) is being reviewed.
+                Your order for {summary?.crates ?? totalCrates} crate
+                {(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} (
+                {formatGHS(summary?.price ?? totalPrice)}) is being reviewed.
               </p>
               <div className="mt-2 w-full rounded-xl border-2 border-primary/30 bg-primary/10 px-4 py-3 text-center">
-                <div className="text-sm font-semibold uppercase tracking-wider text-primary">Expected pickup day</div>
-                <div className="mt-1 text-xl font-bold text-foreground">{expectedPickupLabel()}</div>
+                <div className="text-sm font-semibold uppercase tracking-wider text-primary">
+                  Expected pickup day
+                </div>
+                <div className="mt-1 text-xl font-bold text-foreground">
+                  {expectedPickupLabel()}
+                </div>
                 <div className="mt-1.5 text-base text-muted-foreground">
                   We deliver Thu &amp; Mon. Orders by Tue 11:59pm → Thu; later → Mon.
                 </div>
               </div>
             </div>
 
-            {summary?.orderId && (() => {
-              const trackUrl = `${window.location.origin}/track/${summary.orderId}`;
-              const shortId = summary.orderId.slice(0, 8).toUpperCase();
-              const waMsg = `Hi! I just placed order #${shortId} (${name}). Here's my tracking link: ${trackUrl}`;
-              return (
-                <>
-                  <div className="rounded-xl border border-border bg-secondary/30 p-3">
-                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      Your tracking link
+            {summary?.orderId &&
+              (() => {
+                const trackUrl = `${window.location.origin}/track/${summary.orderId}`;
+                const shortId = summary.orderId.slice(0, 8).toUpperCase();
+                const waMsg = `Hi! I just placed order #${shortId} (${name}). Here's my tracking link: ${trackUrl}`;
+                return (
+                  <>
+                    <div className="rounded-xl border border-border bg-secondary/30 p-3">
+                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Your tracking link
+                      </div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <code className="min-w-0 flex-1 truncate rounded-md bg-background px-2 py-1.5 text-sm">
+                          /track/{shortId}…
+                        </code>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(trackUrl);
+                              setLinkCopied(true);
+                              toast.success("Link copied");
+                            } catch {
+                              toast.error("Copy failed");
+                            }
+                          }}
+                        >
+                          {linkCopied ? (
+                            <CheckCircle2 className="h-4 w-4" />
+                          ) : (
+                            <LinkIcon className="h-4 w-4" />
+                          )}
+                          {linkCopied ? "Copied" : "Copy"}
+                        </Button>
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        Bookmark this page - it updates as your order progresses.
+                      </p>
                     </div>
-                    <div className="mt-1 flex items-center gap-2">
-                      <code className="min-w-0 flex-1 truncate rounded-md bg-background px-2 py-1.5 text-sm">
-                        /track/{shortId}…
-                      </code>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={async () => {
-                          try {
-                            await navigator.clipboard.writeText(trackUrl);
-                            setLinkCopied(true);
-                            toast.success("Link copied");
-                          } catch {
-                            toast.error("Copy failed");
-                          }
-                        }}
+
+                    <Button
+                      asChild
+                      size="lg"
+                      className="h-12 w-full rounded-full bg-[#25D366] text-white shadow-elevated hover:bg-[#1ebe57]"
+                    >
+                      <a href={whatsappLink(waMsg)} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="h-5 w-5" /> Message us on WhatsApp
+                      </a>
+                    </Button>
+
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="lg"
+                      className="h-12 w-full rounded-full"
+                    >
+                      <a
+                        href={`/track/${summary.orderId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        {linkCopied ? <CheckCircle2 className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
-                        {linkCopied ? "Copied" : "Copy"}
-                      </Button>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Bookmark this page - it updates as your order progresses.
-                    </p>
-                  </div>
-
-                  <Button
-                    asChild
-                    size="lg"
-                    className="h-12 w-full rounded-full bg-[#25D366] text-white shadow-elevated hover:bg-[#1ebe57]"
-                  >
-                    <a href={whatsappLink(waMsg)} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-5 w-5" /> Message us on WhatsApp
-                    </a>
-                  </Button>
-
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="lg"
-                    className="h-12 w-full rounded-full"
-                  >
-                    <a href={`/track/${summary.orderId}`} target="_blank" rel="noopener noreferrer">
-                      Open tracking page
-                    </a>
-                  </Button>
-                </>
-              );
-            })()}
+                        Open tracking page
+                      </a>
+                    </Button>
+                  </>
+                );
+              })()}
 
             <Button
               variant="ghost"
@@ -239,12 +256,17 @@ export function CheckoutDialog({
         ) : (
           <form onSubmit={handleSubmit} className="max-h-[70vh] overflow-y-auto">
             <div className="space-y-5 px-6 py-5">
-              {/* MoMo card */}
-              <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
-                <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
-                  <Smartphone className="h-4 w-4" /> Step 1 · Send {formatGHS(totalPrice)}
+              {/* Step 1 — Payment */}
+              <div className="overflow-hidden rounded-2xl border border-primary/30 bg-primary/5">
+                <div className="flex items-center gap-2 bg-primary/10 px-4 py-2.5">
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    1
+                  </span>
+                  <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+                    Send {formatGHS(totalPrice)}
+                  </span>
                 </div>
-                <div className="mt-3 space-y-1.5 text-base">
+                <div className="space-y-1.5 p-4 text-base">
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground">Network</span>
                     <span className="font-medium">{MOMO_NETWORK}</span>
@@ -266,80 +288,96 @@ export function CheckoutDialog({
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label htmlFor="co-name">Your name</Label>
-                  <Input
-                    id="co-name"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Full name"
-                  />
+              {/* Your details */}
+              <div className="space-y-3">
+                <div className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Your details
                 </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="co-name">Your name</Label>
+                    <Input
+                      id="co-name"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Full name"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="co-phone">Phone</Label>
+                    <Input
+                      id="co-phone"
+                      required
+                      inputMode="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="02XX XXX XXXX"
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-1.5">
-                  <Label htmlFor="co-phone">Phone</Label>
+                  <Label htmlFor="co-email">Email (optional)</Label>
                   <Input
-                    id="co-phone"
-                    required
-                    inputMode="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="02XX XXX XXXX"
+                    id="co-email"
+                    type="email"
+                    inputMode="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
                   />
+                  <p className="text-sm text-muted-foreground">
+                    We'll send order updates here once email is enabled.
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="co-email">Email (optional)</Label>
-                <Input
-                  id="co-email"
-                  type="email"
-                  inputMode="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                />
-                <p className="text-sm text-muted-foreground">
-                  We'll send order updates here once email is enabled.
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label>Step 2 · Upload payment screenshot</Label>
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-background px-4 py-3 text-left text-base transition-colors hover:bg-secondary/50"
-                >
-                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-secondary text-muted-foreground">
-                    <Upload className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    {file ? (
-                      <>
-                        <div className="truncate font-medium">{file.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {(file.size / 1024).toFixed(0)} KB · tap to change
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="font-medium">Tap to attach screenshot</div>
-                        <div className="text-sm text-muted-foreground">
-                          JPG or PNG of your MoMo confirmation
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="sr-only"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                />
+              {/* Step 2 — Upload */}
+              <div className="overflow-hidden rounded-2xl border border-accent/30 bg-accent/5">
+                <div className="flex items-center gap-2 bg-accent/10 px-4 py-2.5">
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
+                    2
+                  </span>
+                  <span className="text-sm font-semibold uppercase tracking-wider text-accent-foreground">
+                    Upload payment screenshot
+                  </span>
+                </div>
+                <div className="p-4">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-background px-4 py-3 text-left text-base transition-colors hover:bg-secondary/50"
+                  >
+                    <div className="grid h-10 w-10 place-items-center rounded-lg bg-secondary text-muted-foreground">
+                      <Upload className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      {file ? (
+                        <>
+                          <div className="truncate font-medium">{file.name}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {(file.size / 1024).toFixed(0)} KB · tap to change
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="font-medium">Tap to attach screenshot</div>
+                          <div className="text-sm text-muted-foreground">
+                            JPG or PNG of your MoMo confirmation
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
               </div>
 
               <div className="space-y-1.5">
@@ -359,7 +397,9 @@ export function CheckoutDialog({
                 {totalCrates} crate{totalCrates !== 1 ? "s" : ""} ·{" "}
                 <span className="font-semibold text-foreground">{formatGHS(totalPrice)}</span>
                 <div className="mt-1">
-                  Expected pickup: <span className="font-semibold text-foreground">{expectedPickupLabel()}</span> - order by Tue 11:59pm for Thu, later for Mon.
+                  Expected pickup:{" "}
+                  <span className="font-semibold text-foreground">{expectedPickupLabel()}</span> -
+                  order by Tue 11:59pm for Thu, later for Mon.
                 </div>
               </div>
             </div>
