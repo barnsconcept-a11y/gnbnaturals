@@ -38,7 +38,7 @@ import stepPickup from "@/assets/step-pickup.jpg";
 import stackStarter from "@/assets/stack-starter.jpg";
 import stackPerformance from "@/assets/stack-performance.jpg";
 import stackElite from "@/assets/stack-elite.jpg";
-import smallestAdvantage from "@/assets/smallest-advantage.png.asset.json";
+
 import eggsPan from "@/assets/eggs-pan.jpg";
 
 export const Route = createFileRoute("/")({
@@ -888,7 +888,7 @@ function Testimonials() {
   return (
     <section className="border-t border-border">
       <img
-        src={smallestAdvantage.url}
+        src="/smallest-advantage.png"
         alt="The smallest advantage. The biggest results."
         className="block h-auto w-full"
       />
