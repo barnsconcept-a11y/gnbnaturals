@@ -164,6 +164,8 @@ function GymDetailPage() {
         },
       });
       toast.success("Saved");
+      setLockSignal((v) => v + 1);
+      setMapUnlocked(false);
       load();
     } catch (e: any) {
       toast.error(e.message ?? "Save failed");
