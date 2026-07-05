@@ -80,6 +80,8 @@ function GymDetailPage() {
   const [newEmail, setNewEmail] = useState("");
   const [addingOwner, setAddingOwner] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [lockSignal, setLockSignal] = useState(0);
+  const [mapUnlocked, setMapUnlocked] = useState(false);
 
   const load = async () => {
     try {
