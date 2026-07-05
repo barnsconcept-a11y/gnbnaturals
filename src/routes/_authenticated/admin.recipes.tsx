@@ -66,6 +66,7 @@ async function uploadRecipeImage(file: File): Promise<string> {
 
 function RecipesAdminPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [authors, setAuthors] = useState<AuthorOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<TagFilter>("All");
   const [form, setForm] = useState({
@@ -74,19 +75,24 @@ function RecipesAdminPage() {
     excerpt: "",
     body: "",
     image_url: "",
+    author_id: "" as string,
   });
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
-    const { data, error } = await supabase
-      .from("recipes")
-      .select("*")
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: false });
+    const [{ data, error }, { data: authorData }] = await Promise.all([
+      supabase
+        .from("recipes")
+        .select("*")
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false }),
+      (supabase as any).from("authors").select("id, name").order("name"),
+    ]);
     if (error) toast.error(error.message);
     setRecipes((data as Recipe[]) ?? []);
+    setAuthors((authorData as AuthorOption[]) ?? []);
     setLoading(false);
   };
 
