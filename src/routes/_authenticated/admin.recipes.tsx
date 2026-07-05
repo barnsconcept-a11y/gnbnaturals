@@ -235,6 +235,28 @@ function RecipesAdminPage() {
             </div>
           </div>
           <div>
+            <Label htmlFor="r-author">Author</Label>
+            <Select
+              value={form.author_id || NO_AUTHOR}
+              onValueChange={(v) => setForm({ ...form, author_id: v === NO_AUTHOR ? "" : v })}
+            >
+              <SelectTrigger id="r-author">
+                <SelectValue placeholder="Select an author (optional)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NO_AUTHOR}>No author</SelectItem>
+                {authors.map((a) => (
+                  <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {authors.length === 0 && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                No authors yet — <Link to="/admin/authors" className="underline">add one</Link> to attribute this recipe.
+              </p>
+            )}
+          </div>
+          <div>
             <Label htmlFor="r-excerpt">Short highlight</Label>
             <Textarea
               id="r-excerpt"
