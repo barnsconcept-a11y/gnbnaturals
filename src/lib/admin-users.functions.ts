@@ -199,7 +199,62 @@ export const getGymDetail = createServerFn({ method: "GET" })
       }),
     );
 
-    return { gym, owners };
+    // Signed URL for image (private bucket)
+    let image_signed_url: string | null = null;
+    if (gym.image_url) {
+      const { data: signed } = await supabaseAdmin.storage
+        .from("gym-images")
+        .createSignedUrl(gym.image_url, 60 * 60);
+      image_signed_url = signed?.signedUrl ?? null;
+    }
+
+    // Sales stats: sum of orders for this gym (by pickup_station = gym.name)
+    // Count only revenue-generating statuses
+    const revenueStatuses = ["confirmed", "ready", "picked_up"];
+    const { data: orderRows } = await supabaseAdmin
+      .from("orders")
+      .select("total_amount, total_crates, status")
+      .eq("pickup_station", gym.name)
+      .in("status", revenueStatuses);
+
+    const total_sales = (orderRows ?? []).reduce(
+      (s, r: any) => s + Number(r.total_amount ?? 0),
+      0,
+    );
+    const total_crates = (orderRows ?? []).reduce(
+      (s, r: any) => s + Number(r.total_crates ?? 0),
+      0,
+    );
+    const total_orders = orderRows?.length ?? 0;
+    const commission_earned =
+      total_crates * Number(gym.commission_per_crate ?? 0);
+
+    const { data: payouts } = await supabaseAdmin
+      .from("commission_payouts")
+      .select("amount_paid")
+      .eq("gym_id", data.gym_id);
+    const commission_paid = (payouts ?? []).reduce(
+      (s, r: any) => s + Number(r.amount_paid ?? 0),
+      0,
+    );
+    const commission_outstanding = Math.max(
+      commission_earned - commission_paid,
+      0,
+    );
+
+    return {
+      gym,
+      owners,
+      image_signed_url,
+      stats: {
+        total_sales,
+        total_crates,
+        total_orders,
+        commission_earned,
+        commission_paid,
+        commission_outstanding,
+      },
+    };
   });
 
 export const updateGym = createServerFn({ method: "POST" })
@@ -211,6 +266,10 @@ export const updateGym = createServerFn({ method: "POST" })
         name: z.string().min(1).max(200),
         commission_per_crate: z.number().min(0),
         active: z.boolean(),
+        address: z.string().max(500).nullable().optional(),
+        latitude: z.number().min(-90).max(90).nullable().optional(),
+        longitude: z.number().min(-180).max(180).nullable().optional(),
+        image_url: z.string().max(500).nullable().optional(),
       })
       .parse(input),
   )
@@ -223,11 +282,16 @@ export const updateGym = createServerFn({ method: "POST" })
         name: data.name,
         commission_per_crate: data.commission_per_crate,
         active: data.active,
+        address: data.address ?? null,
+        latitude: data.latitude ?? null,
+        longitude: data.longitude ?? null,
+        image_url: data.image_url ?? null,
       })
       .eq("id", data.gym_id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
 
 export const removeGymOwner = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])

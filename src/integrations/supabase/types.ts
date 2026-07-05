@@ -302,25 +302,37 @@ export type Database = {
       gyms: {
         Row: {
           active: boolean
+          address: string | null
           commission_per_crate: number
           created_at: string
           id: string
+          image_url: string | null
+          latitude: number | null
+          longitude: number | null
           name: string
           updated_at: string
         }
         Insert: {
           active?: boolean
+          address?: string | null
           commission_per_crate?: number
           created_at?: string
           id?: string
+          image_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
           name: string
           updated_at?: string
         }
         Update: {
           active?: boolean
+          address?: string | null
           commission_per_crate?: number
           created_at?: string
           id?: string
+          image_url?: string | null
+          latitude?: number | null
+          longitude?: number | null
           name?: string
           updated_at?: string
         }
