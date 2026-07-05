@@ -60,7 +60,9 @@ type Order = {
   notes: string | null;
 };
 
-type Gym = { id: string; name: string; commission_per_crate: number };
+type Gym = { id: string; name: string; commission_per_crate: number; image_url?: string | null };
+
+type OwnerGym = { id: string; name: string; imageUrl: string | null };
 
 type Payout = {
   id: string;
