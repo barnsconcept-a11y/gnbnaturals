@@ -1,7 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
-import { z } from "zod";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { ArrowRight, Leaf, MapPin, ShoppingBag, Sparkles } from "lucide-react";
 import { CartProvider, formatGHS, useCart } from "@/lib/cart";
 import { OrderBuilder, type BuilderStack } from "@/components/OrderBuilder";
@@ -11,13 +9,13 @@ import { gymSlug, usePickupLocations } from "@/lib/pickup";
 import { DEFAULT_STACKS, applyDiscounts, type GymDiscountRow } from "@/lib/stacks";
 import { supabase } from "@/integrations/supabase/client";
 
-const searchSchema = z.object({
-  gym: fallback(z.string().optional(), undefined),
-});
+type OrderSearch = { gym?: string };
 
 export const Route = createFileRoute("/order")({
   component: OrderPage,
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (search: Record<string, unknown>): OrderSearch => ({
+    gym: typeof search.gym === "string" ? search.gym : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Place Your Order - G&B Naturals" },

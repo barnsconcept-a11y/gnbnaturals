@@ -84,31 +84,33 @@ export function CheckoutDialog({
         .upload(path, file, { contentType: file.type, upsert: false });
       if (upErr) throw upErr;
 
-      const { data: inserted, error: insErr } = await supabase
-        .from("orders")
-        .insert({
-          customer_name: name.trim(),
-          customer_phone: phone.trim(),
-          customer_email: email.trim() || null,
-          pickup_station: pickup,
-          items: items.map((i) => ({
-            stack: i.stack,
-            variant: i.variant,
-            unit_price: i.unitPrice,
-            qty: i.qty,
-          })),
-          total_amount: totalPrice,
-          total_crates: totalCrates,
-          currency: "GHS",
-          momo_reference: null,
-          proof_path: path,
-          notes: notes.trim() || null,
-        })
-        .select("id")
-        .single();
+      const orderId =
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+
+      const { error: insErr } = await supabase.from("orders").insert({
+        id: orderId,
+        customer_name: name.trim(),
+        customer_phone: phone.trim(),
+        customer_email: email.trim() || null,
+        pickup_station: pickup,
+        items: items.map((i) => ({
+          stack: i.stack,
+          variant: i.variant,
+          unit_price: i.unitPrice,
+          qty: i.qty,
+        })),
+        total_amount: totalPrice,
+        total_crates: totalCrates,
+        currency: "GHS",
+        momo_reference: null,
+        proof_path: path,
+        notes: notes.trim() || null,
+      });
       if (insErr) throw insErr;
 
-      setSummary({ crates: totalCrates, price: totalPrice, orderId: inserted!.id });
+      setSummary({ crates: totalCrates, price: totalPrice, orderId });
       setDone(true);
       clear();
       close();
@@ -116,7 +118,7 @@ export function CheckoutDialog({
       fetch("/api/public/hooks/new-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: inserted!.id }),
+        body: JSON.stringify({ orderId }),
       }).catch((e) => console.warn("notify hook failed", e));
       toast.success("Order received - we'll confirm shortly");
     } catch (err) {

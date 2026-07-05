@@ -40,7 +40,7 @@ export function OrderBuilder({
   initialStackId?: string;
   stationPrefilled?: boolean;
 }) {
-  const { add, pickup, setPickup, open: openCart } = useCart();
+  const { add, pickup, setPickup, open: openCart, close: closeCart } = useCart();
   const pickupLocations = usePickupLocations();
   const [step, setStep] = useState(0);
   const [choice, setChoice] = useState<Choice>({
@@ -102,14 +102,21 @@ export function OrderBuilder({
     if (!canAdvance) return;
     if (isLast) {
       commitToCart();
+      onOpenChange(false);
+      // add() opens the cart sheet by default; close it so the checkout dialog
+      // isn't hidden behind the sheet's aria-hidden overlay
+      closeCart();
       setCheckoutOpen(true);
       return;
     }
     setStep((s) => s + 1);
   };
 
+
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92vh] gap-0 overflow-hidden p-0 sm:max-w-md">
         <DialogHeader className="border-b border-border px-5 pb-3 pt-5">
           <div className="flex items-center justify-between gap-3">
@@ -346,16 +353,15 @@ export function OrderBuilder({
           Save to cart and keep shopping
         </button>
       </DialogContent>
+      </Dialog>
       <CheckoutDialog
         open={checkoutOpen}
-        onOpenChange={(v) => {
-          setCheckoutOpen(v);
-          if (!v) onOpenChange(false);
-        }}
+        onOpenChange={setCheckoutOpen}
       />
-    </Dialog>
+    </>
   );
 }
+
 
 function StepDots({ total, current }: { total: number; current: number }) {
   return (
