@@ -125,21 +125,6 @@ function GymsPage() {
     }
   };
 
-  const updateRate = async (id: string, value: string) => {
-    const { error } = await supabase
-      .from("gyms")
-      .update({ commission_per_crate: Number(value) || 0 })
-      .eq("id", id);
-    if (error) return toast.error(error.message);
-    toast.success("Saved");
-    load();
-  };
-
-  const toggleActive = async (g: Gym) => {
-    await supabase.from("gyms").update({ active: !g.active }).eq("id", g.id);
-    load();
-  };
-
   const removeGym = async (g: Gym) => {
     if (
       !confirm(
@@ -156,35 +141,6 @@ function GymsPage() {
     if (error) return toast.error(error.message);
     toast.success("Gym deleted");
     load();
-  };
-
-  const openAssign = (gymId: string) => {
-    setAssignFor(gymId);
-    setAssignEmail("");
-  };
-
-  const submitAssign = async (gym: Gym) => {
-    if (!assignEmail.trim()) {
-      toast.error("Email required");
-      return;
-    }
-    setAssignSubmitting(true);
-    try {
-      const res = await createUser({
-        data: {
-          email: assignEmail.trim(),
-          role: "gym_owner",
-          gym_ids: [gym.id],
-        },
-      });
-      setAssignFor(null);
-      setAssignEmail("");
-      setInvited({ email: res.email, gymName: gym.name });
-    } catch (err: any) {
-      toast.error(err.message ?? "Failed to create owner");
-    } finally {
-      setAssignSubmitting(false);
-    }
   };
 
   if (loading) return <div className="p-8">Loading…</div>;
