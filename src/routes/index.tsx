@@ -25,7 +25,7 @@ import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-const heroImg = "/assets/egg-on-stone-portrait.png";
+const heroImg = "/assets/eggs-in-shaker.png";
 const gnbLogo = "/assets/gnb-logo-new.png";
 import productOpen from "@/assets/product-open.png";
 import foodSunny from "@/assets/food-sunny.jpg";
@@ -213,13 +213,13 @@ function Hero() {
         <div className="relative order-1 lg:order-2 animate-hero-rise" style={{ animationDelay: "0.3s" }}>
           <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl animate-hero-blob" />
           <div className="absolute -inset-10 -z-10 rounded-full bg-primary/10 blur-3xl animate-hero-blob" style={{ animationDelay: "1.5s" }} />
-          <div className="hero-shine relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
+          <div className="relative">
             <img
               src={heroImg}
-              alt="G&amp;B Naturals portrait - white egg on dark stone"
-              width={1024}
-              height={1535}
-              className="aspect-[2/3] w-full object-cover animate-hero-zoom"
+              alt="G&amp;B Naturals - fresh eggs pouring out of a black protein shaker"
+              width={1023}
+              height={1537}
+              className="w-full h-auto max-w-none scale-110 lg:scale-125 origin-center animate-hero-zoom drop-shadow-2xl"
             />
           </div>
           <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block animate-hero-float">
