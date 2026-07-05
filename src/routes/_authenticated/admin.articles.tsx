@@ -132,12 +132,13 @@ function ArticlesAdminPage() {
       excerpt: form.excerpt.trim(),
       body: form.body.trim(),
       image_url: form.image_url.trim() || null,
+      author_id: form.author_id || null,
       sort_order: articles.length,
     });
     setSubmitting(false);
     if (error) return toast.error(error.message);
     toast.success("Article added");
-    setForm({ title: "", category: "", excerpt: "", body: "", image_url: "" });
+    setForm({ title: "", category: "", excerpt: "", body: "", image_url: "", author_id: "" });
     load();
   };
 
