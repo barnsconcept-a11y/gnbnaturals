@@ -26,6 +26,7 @@ import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 const heroImg = "/assets/egg-on-stone-portrait.webp";
+const heroBackgroundImg = "/assets/hero-background.webp"; // replace with your uploaded hero image
 const gnbLogo = "/assets/gnb-logo-new.png";
 const foodFresh = "/assets/eggs-in-shaker.webp";
 import productOpen from "@/assets/product-open.webp";
@@ -59,7 +60,7 @@ export const Route = createFileRoute("/")({
       },
     ],
     links: [
-      { rel: "preload", as: "image", href: "/assets/egg-on-stone-portrait.webp", fetchpriority: "high" },
+      { rel: "preload", as: "image", href: "/assets/hero-background.webp", fetchpriority: "high" },
     ],
   }),
 });
@@ -167,10 +168,27 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden">
-      <div className="mx-auto grid max-w-6xl items-center gap-8 px-4 pb-10 pt-6 lg:grid-cols-2 lg:gap-10 md:px-5 md:pb-24 md:pt-20">
+    <section className="relative min-h-[600px] overflow-hidden lg:min-h-[760px]">
+      {/* Full-width hero image background */}
+      <div className="absolute inset-0 -z-20">
+        <img
+          src={heroBackgroundImg}
+          alt="G&amp;B Naturals hero background"
+          width={1920}
+          height={1280}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
+        {/* Overlay for text readability */}
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/40" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/30" />
+      </div>
+
+      <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 pb-16 pt-8 lg:grid-cols-2 lg:gap-10 md:px-5 md:pb-24 md:pt-20">
         <div className="order-2 lg:order-1">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-muted-foreground shadow-card animate-hero-rise">
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-card backdrop-blur-sm animate-hero-rise">
             <Leaf className="h-3 w-3 text-primary" />
             Natural Protein · Real Results
           </div>
@@ -213,6 +231,7 @@ function Hero() {
           </div>
         </div>
 
+        {/* Right side decorative product image */}
         <div className="relative order-1 lg:order-2 animate-hero-rise" style={{ animationDelay: "0.3s" }}>
           <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl animate-hero-blob" />
           <div className="absolute -inset-10 -z-10 rounded-full bg-primary/10 blur-3xl animate-hero-blob" style={{ animationDelay: "1.5s" }} />
