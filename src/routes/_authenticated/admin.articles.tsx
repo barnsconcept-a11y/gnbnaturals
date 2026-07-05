@@ -347,11 +347,13 @@ function ArticlesAdminPage() {
 
 function ArticleRow({
   article: r,
+  authors,
   onUpdate,
   onRemove,
   onReplaceImage,
 }: {
   article: Article;
+  authors: AuthorOption[];
   onUpdate: (id: string, patch: Partial<Article>) => Promise<unknown>;
   onRemove: (r: Article) => Promise<unknown>;
   onReplaceImage: (id: string, file: File) => Promise<void>;
