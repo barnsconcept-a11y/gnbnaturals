@@ -159,8 +159,8 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="relative min-h-[600px] overflow-hidden lg:min-h-[760px]">
-      {/* Full-width hero image background — replaces placeholder text + product image */}
+    <section className="relative aspect-[3/2] w-full min-h-[420px] overflow-hidden md:min-h-[600px]">
+      {/* Full-width hero image background — matches the image's natural 3:2 ratio so it isn't cropped/stretched */}
       <div className="absolute inset-0">
         <img
           src={heroBackgroundImg}
@@ -179,6 +179,7 @@ function Hero() {
     </section>
   );
 }
+
 
 function Packaging() {
   return (
