@@ -25,10 +25,10 @@ import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-const heroImg = "/assets/egg-on-stone-portrait.png";
+const heroImg = "/assets/egg-on-stone-portrait.webp";
 const gnbLogo = "/assets/gnb-logo-new.png";
-const foodFresh = "/assets/eggs-in-shaker.png";
-import productOpen from "@/assets/product-open.png";
+const foodFresh = "/assets/eggs-in-shaker.webp";
+import productOpen from "@/assets/product-open.webp";
 import foodSunny from "@/assets/food-sunny.jpg";
 import foodOmelet from "@/assets/food-omelet.jpg";
 import foodEggs from "@/assets/food-eggs.jpg";
@@ -57,6 +57,9 @@ export const Route = createFileRoute("/")({
         content:
           "Modern protein convenience for fitness communities. Reserve weekly, pick up locally, stay consistent.",
       },
+    ],
+    links: [
+      { rel: "preload", as: "image", href: "/assets/egg-on-stone-portrait.webp", fetchpriority: "high" },
     ],
   }),
 });
@@ -219,6 +222,9 @@ function Hero() {
               alt="G&amp;B Naturals portrait - white egg on dark stone"
               width={1024}
               height={1535}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               className="aspect-[2/3] w-full object-cover animate-hero-zoom"
             />
           </div>
