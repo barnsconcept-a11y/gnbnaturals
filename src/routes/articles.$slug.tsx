@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { AuthorCard, type Author } from "@/components/AuthorCard";
 
 type Article = {
   slug: string;
@@ -11,6 +12,7 @@ type Article = {
   body: string;
   image_url: string | null;
   created_at?: string | null;
+  author: Author | null;
 };
 
 export const Route = createFileRoute("/articles/$slug")({
