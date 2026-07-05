@@ -8,6 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Trash2, Upload } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type AuthorOption = { id: string; name: string };
+const NO_AUTHOR = "__none__";
 
 export const Route = createFileRoute("/_authenticated/admin/recipes")({
   head: () => ({ meta: [{ title: "Recipes - Admin" }] }),
@@ -24,6 +34,7 @@ type Recipe = {
   image_url: string | null;
   published: boolean;
   sort_order: number;
+  author_id: string | null;
 };
 
 const TAG_FILTERS = ["All", "Breakfast", "Post-workout", "Lunch", "Dinner", "Snack"] as const;
@@ -55,6 +66,7 @@ async function uploadRecipeImage(file: File): Promise<string> {
 
 function RecipesAdminPage() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [authors, setAuthors] = useState<AuthorOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<TagFilter>("All");
   const [form, setForm] = useState({
@@ -63,19 +75,24 @@ function RecipesAdminPage() {
     excerpt: "",
     body: "",
     image_url: "",
+    author_id: "" as string,
   });
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
-    const { data, error } = await supabase
-      .from("recipes")
-      .select("*")
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: false });
+    const [{ data, error }, { data: authorData }] = await Promise.all([
+      supabase
+        .from("recipes")
+        .select("*")
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false }),
+      (supabase as any).from("authors").select("id, name").order("name"),
+    ]);
     if (error) toast.error(error.message);
     setRecipes((data as Recipe[]) ?? []);
+    setAuthors((authorData as AuthorOption[]) ?? []);
     setLoading(false);
   };
 
@@ -113,19 +130,20 @@ function RecipesAdminPage() {
     setSubmitting(true);
     const slugBase = slugify(form.title);
     const slug = `${slugBase}-${Math.random().toString(36).slice(2, 6)}`;
-    const { error } = await supabase.from("recipes").insert({
+    const { error } = await (supabase as any).from("recipes").insert({
       slug,
       title: form.title.trim(),
       tag: form.tag.trim(),
       excerpt: form.excerpt.trim(),
       body: form.body.trim(),
       image_url: form.image_url.trim() || null,
+      author_id: form.author_id || null,
       sort_order: recipes.length,
     });
     setSubmitting(false);
     if (error) return toast.error(error.message);
     toast.success("Recipe added");
-    setForm({ title: "", tag: "", excerpt: "", body: "", image_url: "" });
+    setForm({ title: "", tag: "", excerpt: "", body: "", image_url: "", author_id: "" });
     load();
   };
 
@@ -153,6 +171,9 @@ function RecipesAdminPage() {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" asChild>
               <Link to="/admin/articles">Articles</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/admin/authors">Authors</Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
               <Link to="/admin">← Orders</Link>
@@ -215,6 +236,28 @@ function RecipesAdminPage() {
                 placeholder="Breakfast"
               />
             </div>
+          </div>
+          <div>
+            <Label htmlFor="r-author">Author</Label>
+            <Select
+              value={form.author_id || NO_AUTHOR}
+              onValueChange={(v) => setForm({ ...form, author_id: v === NO_AUTHOR ? "" : v })}
+            >
+              <SelectTrigger id="r-author">
+                <SelectValue placeholder="Select an author (optional)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NO_AUTHOR}>No author</SelectItem>
+                {authors.map((a) => (
+                  <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {authors.length === 0 && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                No authors yet — <Link to="/admin/authors" className="underline">add one</Link> to attribute this recipe.
+              </p>
+            )}
           </div>
           <div>
             <Label htmlFor="r-excerpt">Short highlight</Label>
@@ -324,6 +367,7 @@ function RecipesAdminPage() {
               <RecipeRow
                 key={r.id}
                 recipe={r}
+                authors={authors}
                 onUpdate={update}
                 onRemove={remove}
                 onReplaceImage={handleReplaceImage}
@@ -338,11 +382,13 @@ function RecipesAdminPage() {
 
 function RecipeRow({
   recipe: r,
+  authors,
   onUpdate,
   onRemove,
   onReplaceImage,
 }: {
   recipe: Recipe;
+  authors: AuthorOption[];
   onUpdate: (id: string, patch: Partial<Recipe>) => Promise<unknown>;
   onRemove: (r: Recipe) => Promise<unknown>;
   onReplaceImage: (id: string, file: File) => Promise<void>;
@@ -424,7 +470,21 @@ function RecipeRow({
               onUpdate(r.id, { body: e.target.value })
             }
           />
-          
+          <Select
+            value={r.author_id ?? NO_AUTHOR}
+            onValueChange={(v) => onUpdate(r.id, { author_id: v === NO_AUTHOR ? null : v })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Author" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={NO_AUTHOR}>No author</SelectItem>
+              {authors.map((a) => (
+                <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Switch

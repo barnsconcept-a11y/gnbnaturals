@@ -8,6 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Trash2, Upload } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type AuthorOption = { id: string; name: string };
+const NO_AUTHOR = "__none__";
 
 export const Route = createFileRoute("/_authenticated/admin/articles")({
   head: () => ({ meta: [{ title: "Articles - Admin" }] }),
@@ -24,6 +34,7 @@ type Article = {
   image_url: string | null;
   published: boolean;
   sort_order: number;
+  author_id: string | null;
 };
 
 const CATEGORY_FILTERS = ["All", "Nutrition", "Training", "Recovery", "Habits", "Mindset"] as const;
@@ -50,6 +61,7 @@ async function uploadArticleImage(file: File): Promise<string> {
 
 function ArticlesAdminPage() {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [authors, setAuthors] = useState<AuthorOption[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<CategoryFilter>("All");
   const [form, setForm] = useState({
@@ -58,19 +70,24 @@ function ArticlesAdminPage() {
     excerpt: "",
     body: "",
     image_url: "",
+    author_id: "" as string,
   });
   const [submitting, setSubmitting] = useState(false);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const load = async () => {
-    const { data, error } = await (supabase as any)
-      .from("articles")
-      .select("*")
-      .order("sort_order", { ascending: true })
-      .order("created_at", { ascending: false });
+    const [{ data, error }, { data: authorData }] = await Promise.all([
+      (supabase as any)
+        .from("articles")
+        .select("*")
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false }),
+      (supabase as any).from("authors").select("id, name").order("name"),
+    ]);
     if (error) toast.error(error.message);
     setArticles((data as Article[]) ?? []);
+    setAuthors((authorData as AuthorOption[]) ?? []);
     setLoading(false);
   };
 
@@ -115,12 +132,13 @@ function ArticlesAdminPage() {
       excerpt: form.excerpt.trim(),
       body: form.body.trim(),
       image_url: form.image_url.trim() || null,
+      author_id: form.author_id || null,
       sort_order: articles.length,
     });
     setSubmitting(false);
     if (error) return toast.error(error.message);
     toast.success("Article added");
-    setForm({ title: "", category: "", excerpt: "", body: "", image_url: "" });
+    setForm({ title: "", category: "", excerpt: "", body: "", image_url: "", author_id: "" });
     load();
   };
 
@@ -148,6 +166,9 @@ function ArticlesAdminPage() {
           <div className="flex gap-2">
             <Button variant="outline" size="sm" asChild>
               <Link to="/admin/recipes">Recipes</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
+              <Link to="/admin/authors">Authors</Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
               <Link to="/admin">← Orders</Link>
@@ -211,6 +232,28 @@ function ArticlesAdminPage() {
                 placeholder="Nutrition"
               />
             </div>
+          </div>
+          <div>
+            <Label htmlFor="a-author">Author</Label>
+            <Select
+              value={form.author_id || NO_AUTHOR}
+              onValueChange={(v) => setForm({ ...form, author_id: v === NO_AUTHOR ? "" : v })}
+            >
+              <SelectTrigger id="a-author">
+                <SelectValue placeholder="Select an author (optional)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NO_AUTHOR}>No author</SelectItem>
+                {authors.map((a) => (
+                  <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {authors.length === 0 && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                No authors yet — <Link to="/admin/authors" className="underline">add one</Link> to attribute this article.
+              </p>
+            )}
           </div>
           <div>
             <Label htmlFor="a-excerpt">Short highlight</Label>
@@ -292,6 +335,7 @@ function ArticlesAdminPage() {
               <ArticleRow
                 key={r.id}
                 article={r}
+                authors={authors}
                 onUpdate={update}
                 onRemove={remove}
                 onReplaceImage={handleReplaceImage}
@@ -306,11 +350,13 @@ function ArticlesAdminPage() {
 
 function ArticleRow({
   article: r,
+  authors,
   onUpdate,
   onRemove,
   onReplaceImage,
 }: {
   article: Article;
+  authors: AuthorOption[];
   onUpdate: (id: string, patch: Partial<Article>) => Promise<unknown>;
   onRemove: (r: Article) => Promise<unknown>;
   onReplaceImage: (id: string, file: File) => Promise<void>;
@@ -380,6 +426,20 @@ function ArticleRow({
             placeholder="Full article"
             onBlur={(e) => e.target.value !== r.body && onUpdate(r.id, { body: e.target.value })}
           />
+          <Select
+            value={r.author_id ?? NO_AUTHOR}
+            onValueChange={(v) => onUpdate(r.id, { author_id: v === NO_AUTHOR ? null : v })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Author" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={NO_AUTHOR}>No author</SelectItem>
+              {authors.map((a) => (
+                <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Switch

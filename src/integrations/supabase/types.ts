@@ -34,6 +34,7 @@ export type Database = {
       }
       articles: {
         Row: {
+          author_id: string | null
           body: string
           category: string
           created_at: string
@@ -47,6 +48,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          author_id?: string | null
           body?: string
           category?: string
           created_at?: string
@@ -60,6 +62,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          author_id?: string | null
           body?: string
           category?: string
           created_at?: string
@@ -71,6 +74,65 @@ export type Database = {
           sort_order?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "articles_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "authors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      authors: {
+        Row: {
+          avatar_url: string | null
+          bio: string
+          created_at: string
+          facebook_url: string | null
+          id: string
+          instagram_url: string | null
+          linkedin_url: string | null
+          name: string
+          slug: string
+          tiktok_url: string | null
+          twitter_url: string | null
+          updated_at: string
+          website_url: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string
+          created_at?: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          name: string
+          slug: string
+          tiktok_url?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          website_url?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string
+          created_at?: string
+          facebook_url?: string | null
+          id?: string
+          instagram_url?: string | null
+          linkedin_url?: string | null
+          name?: string
+          slug?: string
+          tiktok_url?: string | null
+          twitter_url?: string | null
+          updated_at?: string
+          website_url?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }
@@ -317,6 +379,7 @@ export type Database = {
       }
       recipes: {
         Row: {
+          author_id: string | null
           body: string
           created_at: string
           excerpt: string
@@ -330,6 +393,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          author_id?: string | null
           body?: string
           created_at?: string
           excerpt?: string
@@ -343,6 +407,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          author_id?: string | null
           body?: string
           created_at?: string
           excerpt?: string
@@ -355,7 +420,15 @@ export type Database = {
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "recipes_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "authors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       suppressed_emails: {
         Row: {

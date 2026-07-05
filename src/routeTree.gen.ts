@@ -23,6 +23,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedAdminRecipesRouteImport } from './routes/_authenticated/admin.recipes'
 import { Route as AuthenticatedAdminGymsRouteImport } from './routes/_authenticated/admin.gyms'
+import { Route as AuthenticatedAdminAuthorsRouteImport } from './routes/_authenticated/admin.authors'
 import { Route as AuthenticatedAdminArticlesRouteImport } from './routes/_authenticated/admin.articles'
 import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
@@ -101,6 +102,12 @@ const AuthenticatedAdminGymsRoute = AuthenticatedAdminGymsRouteImport.update({
   path: '/admin/gyms',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminAuthorsRoute =
+  AuthenticatedAdminAuthorsRouteImport.update({
+    id: '/admin/authors',
+    path: '/admin/authors',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedAdminArticlesRoute =
   AuthenticatedAdminArticlesRouteImport.update({
     id: '/admin/articles',
@@ -147,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/admin/authors': typeof AuthenticatedAdminAuthorsRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/admin/recipes': typeof AuthenticatedAdminRecipesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -168,6 +176,7 @@ export interface FileRoutesByTo {
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/admin/authors': typeof AuthenticatedAdminAuthorsRoute
   '/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/admin/recipes': typeof AuthenticatedAdminRecipesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -191,6 +200,7 @@ export interface FileRoutesById {
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
+  '/_authenticated/admin/authors': typeof AuthenticatedAdminAuthorsRoute
   '/_authenticated/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/_authenticated/admin/recipes': typeof AuthenticatedAdminRecipesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -214,6 +224,7 @@ export interface FileRouteTypes {
     | '/recipes/$slug'
     | '/track/$orderId'
     | '/admin/articles'
+    | '/admin/authors'
     | '/admin/gyms'
     | '/admin/recipes'
     | '/admin/users'
@@ -235,6 +246,7 @@ export interface FileRouteTypes {
     | '/recipes/$slug'
     | '/track/$orderId'
     | '/admin/articles'
+    | '/admin/authors'
     | '/admin/gyms'
     | '/admin/recipes'
     | '/admin/users'
@@ -257,6 +269,7 @@ export interface FileRouteTypes {
     | '/recipes/$slug'
     | '/track/$orderId'
     | '/_authenticated/admin/articles'
+    | '/_authenticated/admin/authors'
     | '/_authenticated/admin/gyms'
     | '/_authenticated/admin/recipes'
     | '/_authenticated/admin/users'
@@ -385,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminGymsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/authors': {
+      id: '/_authenticated/admin/authors'
+      path: '/admin/authors'
+      fullPath: '/admin/authors'
+      preLoaderRoute: typeof AuthenticatedAdminAuthorsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/admin/articles': {
       id: '/_authenticated/admin/articles'
       path: '/admin/articles'
@@ -433,6 +453,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedChangePasswordRoute: typeof AuthenticatedChangePasswordRoute
   AuthenticatedAdminArticlesRoute: typeof AuthenticatedAdminArticlesRoute
+  AuthenticatedAdminAuthorsRoute: typeof AuthenticatedAdminAuthorsRoute
   AuthenticatedAdminGymsRoute: typeof AuthenticatedAdminGymsRoute
   AuthenticatedAdminRecipesRoute: typeof AuthenticatedAdminRecipesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -443,6 +464,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedChangePasswordRoute: AuthenticatedChangePasswordRoute,
   AuthenticatedAdminArticlesRoute: AuthenticatedAdminArticlesRoute,
+  AuthenticatedAdminAuthorsRoute: AuthenticatedAdminAuthorsRoute,
   AuthenticatedAdminGymsRoute: AuthenticatedAdminGymsRoute,
   AuthenticatedAdminRecipesRoute: AuthenticatedAdminRecipesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,

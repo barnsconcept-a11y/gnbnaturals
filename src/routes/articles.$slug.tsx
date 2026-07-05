@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { AuthorCard, type Author } from "@/components/AuthorCard";
 
 type Article = {
   slug: string;
@@ -11,6 +12,7 @@ type Article = {
   body: string;
   image_url: string | null;
   created_at?: string | null;
+  author: Author | null;
 };
 
 export const Route = createFileRoute("/articles/$slug")({
@@ -60,7 +62,9 @@ function ArticlePage() {
       setLoading(true);
       const { data } = await (supabase as any)
         .from("articles")
-        .select("slug, category, title, excerpt, body, image_url, created_at")
+        .select(
+          "slug, category, title, excerpt, body, image_url, created_at, author:authors(id, name, bio, avatar_url, website_url, twitter_url, instagram_url, facebook_url, youtube_url, linkedin_url, tiktok_url)"
+        )
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
@@ -124,6 +128,8 @@ function ArticlePage() {
       )}
 
       <div className="article-meta mt-6">
+        {article.author && <span>By {article.author.name}</span>}
+        {article.author && (dateStr || true) && <span className="dot" />}
         {dateStr && <span>{dateStr}</span>}
         {dateStr && <span className="dot" />}
         <span>{readingTime} min read</span>
@@ -157,6 +163,8 @@ function ArticlePage() {
       </div>
 
       <div className="article-endmark mt-16">■</div>
+
+      {article.author && <AuthorCard author={article.author} className="mt-10" />}
     </article>
   );
 }

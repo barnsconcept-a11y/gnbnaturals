@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { AuthorCard, type Author } from "@/components/AuthorCard";
 
 type Recipe = {
   slug: string;
@@ -10,6 +11,7 @@ type Recipe = {
   excerpt: string;
   body: string;
   image_url: string | null;
+  author: Author | null;
 };
 
 export const Route = createFileRoute("/recipes/$slug")({
@@ -57,9 +59,11 @@ function RecipePage() {
     let cancelled = false;
     (async () => {
       setLoading(true);
-      const { data } = await supabase
+      const { data } = await (supabase as any)
         .from("recipes")
-        .select("slug, tag, title, excerpt, body, image_url")
+        .select(
+          "slug, tag, title, excerpt, body, image_url, author:authors(id, name, bio, avatar_url, website_url, twitter_url, instagram_url, facebook_url, youtube_url, linkedin_url, tiktok_url)"
+        )
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
@@ -120,6 +124,10 @@ function RecipePage() {
         {recipe.title}
       </h1>
 
+      {recipe.author && (
+        <p className="mt-3 text-sm text-muted-foreground">By {recipe.author.name}</p>
+      )}
+
       {recipe.excerpt && (
         <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
           {recipe.excerpt}
@@ -129,6 +137,8 @@ function RecipePage() {
       <div className="mt-6 whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
         {recipe.body}
       </div>
+
+      {recipe.author && <AuthorCard author={recipe.author} className="mt-10" />}
     </article>
   );
 }
