@@ -1000,7 +1000,7 @@ function FinalCTA() {
               size="lg"
               className="h-12 rounded-full bg-primary-foreground px-7 text-base text-primary hover:bg-primary-foreground/90"
             >
-              <a href="#stacks">Order Medium Pack <ArrowRight className="h-4 w-4" /></a>
+              <a href="#stacks">Order Your Pack Today <ArrowRight className="h-4 w-4" /></a>
             </Button>
           </div>
         </div>
