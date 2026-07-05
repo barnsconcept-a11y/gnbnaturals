@@ -85,6 +85,7 @@ function AdminDashboard() {
   const [email, setEmail] = useState<string>("");
   const [ownerGymNames, setOwnerGymNames] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [ownerGyms, setOwnerGyms] = useState<OwnerGym[]>([]);
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [payouts, setPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState(true);
