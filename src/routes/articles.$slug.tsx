@@ -62,7 +62,9 @@ function ArticlePage() {
       setLoading(true);
       const { data } = await (supabase as any)
         .from("articles")
-        .select("slug, category, title, excerpt, body, image_url, created_at")
+        .select(
+          "slug, category, title, excerpt, body, image_url, created_at, author:authors(id, name, bio, avatar_url, website_url, twitter_url, instagram_url, facebook_url, youtube_url, linkedin_url, tiktok_url)"
+        )
         .eq("slug", slug)
         .eq("published", true)
         .maybeSingle();
