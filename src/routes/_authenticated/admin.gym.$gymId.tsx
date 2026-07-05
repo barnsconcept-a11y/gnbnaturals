@@ -15,6 +15,7 @@ import {
 } from "@/lib/admin-users.functions";
 import { geocodeAddress } from "@/lib/geocode.functions";
 import { MapPicker } from "@/components/MapPicker";
+import { GymDiscountsSection } from "@/components/GymDiscountsSection";
 import {
   Trash2,
   UserPlus,
