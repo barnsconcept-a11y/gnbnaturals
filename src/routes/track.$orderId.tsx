@@ -23,13 +23,13 @@ export const Route = createFileRoute("/track/$orderId")({
 type TrackedOrder = {
   id: string;
   customer_name: string;
-  customer_phone: string;
   pickup_station: string;
   total_amount: number;
   total_crates: number;
   status: string;
   created_at: string;
 };
+
 
 const STEPS = [
   { key: "pending_review", label: "Order received", desc: "We're verifying your payment" },
