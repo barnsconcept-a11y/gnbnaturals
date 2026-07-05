@@ -16,7 +16,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, Trash2 } from "lucide-react";
 import {
   ORDER_STATUSES,
   formatGhs,
@@ -301,6 +301,25 @@ function AdminDashboard() {
     }
   };
 
+  const deleteOrder = async (o: Order) => {
+    if (
+      !window.confirm(
+        `Permanently delete order from ${o.customer_name} (${formatGhs(Number(o.total_amount))})?\n\nThis cannot be undone.`,
+      )
+    )
+      return;
+    if (o.proof_path) {
+      await supabase.storage.from("payment-proofs").remove([o.proof_path]);
+    }
+    const { error } = await supabase.from("orders").delete().eq("id", o.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setOrders((prev) => prev.filter((x) => x.id !== o.id));
+    toast.success("Order deleted");
+  };
+
   const viewProof = async (path: string) => {
     const { data, error } = await supabase.storage
       .from("payment-proofs")
@@ -569,6 +588,18 @@ function AdminDashboard() {
                   </Button>
                 )}
               </div>
+              {isAdmin && (
+                <div className="mt-2">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => deleteOrder(o)}
+                    className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" /> Delete order
+                  </Button>
+                </div>
+              )}
               <div className="mt-2">
                 <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
                   <SelectTrigger className="h-9">
@@ -688,6 +719,15 @@ function AdminDashboard() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => deleteOrder(o)}
+                        className="mt-2 inline-flex items-center gap-1 text-xs text-destructive hover:underline"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" /> Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
