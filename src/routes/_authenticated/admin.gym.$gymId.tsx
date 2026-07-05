@@ -13,9 +13,10 @@ import {
   removeGymOwner,
   createGymUser,
 } from "@/lib/admin-users.functions";
-import { geocodeAddress } from "@/lib/geocode.functions";
+import { geocodeAddress, reverseGeocode } from "@/lib/geocode.functions";
 import { MapPicker } from "@/components/MapPicker";
 import { GymDiscountsSection } from "@/components/GymDiscountsSection";
+import { LockableField } from "@/components/LockableField";
 import {
   Trash2,
   UserPlus,
