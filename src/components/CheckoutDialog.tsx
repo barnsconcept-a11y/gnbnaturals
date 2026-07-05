@@ -239,12 +239,17 @@ export function CheckoutDialog({
         ) : (
           <form onSubmit={handleSubmit} className="max-h-[70vh] overflow-y-auto">
             <div className="space-y-5 px-6 py-5">
-              {/* MoMo card */}
-              <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4">
-                <div className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wider text-primary">
-                  <Smartphone className="h-4 w-4" /> Step 1 · Send {formatGHS(totalPrice)}
+              {/* Step 1 — Payment */}
+              <div className="overflow-hidden rounded-2xl border border-primary/30 bg-primary/5">
+                <div className="flex items-center gap-2 bg-primary/10 px-4 py-2.5">
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
+                    1
+                  </span>
+                  <span className="text-sm font-semibold uppercase tracking-wider text-primary">
+                    Send {formatGHS(totalPrice)}
+                  </span>
                 </div>
-                <div className="mt-3 space-y-1.5 text-base">
+                <div className="space-y-1.5 p-4 text-base">
                   <div className="flex justify-between gap-3">
                     <span className="text-muted-foreground">Network</span>
                     <span className="font-medium">{MOMO_NETWORK}</span>
@@ -266,80 +271,96 @@ export function CheckoutDialog({
                 </div>
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-1.5">
-                  <Label htmlFor="co-name">Your name</Label>
-                  <Input
-                    id="co-name"
-                    required
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                    placeholder="Full name"
-                  />
+              {/* Your details */}
+              <div className="space-y-3">
+                <div className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+                  Your details
                 </div>
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="co-name">Your name</Label>
+                    <Input
+                      id="co-name"
+                      required
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      placeholder="Full name"
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="co-phone">Phone</Label>
+                    <Input
+                      id="co-phone"
+                      required
+                      inputMode="tel"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="02XX XXX XXXX"
+                    />
+                  </div>
+                </div>
+
                 <div className="space-y-1.5">
-                  <Label htmlFor="co-phone">Phone</Label>
+                  <Label htmlFor="co-email">Email (optional)</Label>
                   <Input
-                    id="co-phone"
-                    required
-                    inputMode="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="02XX XXX XXXX"
+                    id="co-email"
+                    type="email"
+                    inputMode="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="you@example.com"
                   />
+                  <p className="text-sm text-muted-foreground">
+                    We'll send order updates here once email is enabled.
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-1.5">
-                <Label htmlFor="co-email">Email (optional)</Label>
-                <Input
-                  id="co-email"
-                  type="email"
-                  inputMode="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="you@example.com"
-                />
-                <p className="text-sm text-muted-foreground">
-                  We'll send order updates here once email is enabled.
-                </p>
-              </div>
-
-              <div className="space-y-1.5">
-                <Label>Step 2 · Upload payment screenshot</Label>
-                <button
-                  type="button"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-background px-4 py-3 text-left text-base transition-colors hover:bg-secondary/50"
-                >
-                  <div className="grid h-10 w-10 place-items-center rounded-lg bg-secondary text-muted-foreground">
-                    <Upload className="h-5 w-5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    {file ? (
-                      <>
-                        <div className="truncate font-medium">{file.name}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {(file.size / 1024).toFixed(0)} KB · tap to change
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="font-medium">Tap to attach screenshot</div>
-                        <div className="text-sm text-muted-foreground">
-                          JPG or PNG of your MoMo confirmation
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </button>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="sr-only"
-                  onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                />
+              {/* Step 2 — Upload */}
+              <div className="overflow-hidden rounded-2xl border border-accent/30 bg-accent/5">
+                <div className="flex items-center gap-2 bg-accent/10 px-4 py-2.5">
+                  <span className="grid h-6 w-6 place-items-center rounded-full bg-accent text-xs font-bold text-accent-foreground">
+                    2
+                  </span>
+                  <span className="text-sm font-semibold uppercase tracking-wider text-accent-foreground">
+                    Upload payment screenshot
+                  </span>
+                </div>
+                <div className="p-4">
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="flex w-full cursor-pointer items-center gap-3 rounded-xl border border-dashed border-border bg-background px-4 py-3 text-left text-base transition-colors hover:bg-secondary/50"
+                  >
+                    <div className="grid h-10 w-10 place-items-center rounded-lg bg-secondary text-muted-foreground">
+                      <Upload className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      {file ? (
+                        <>
+                          <div className="truncate font-medium">{file.name}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {(file.size / 1024).toFixed(0)} KB · tap to change
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="font-medium">Tap to attach screenshot</div>
+                          <div className="text-sm text-muted-foreground">
+                            JPG or PNG of your MoMo confirmation
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </button>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    className="sr-only"
+                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                  />
+                </div>
               </div>
 
               <div className="space-y-1.5">
@@ -359,7 +380,8 @@ export function CheckoutDialog({
                 {totalCrates} crate{totalCrates !== 1 ? "s" : ""} ·{" "}
                 <span className="font-semibold text-foreground">{formatGHS(totalPrice)}</span>
                 <div className="mt-1">
-                  Expected pickup: <span className="font-semibold text-foreground">{expectedPickupLabel()}</span> - order by Tue 11:59pm for Thu, later for Mon.
+                  Expected pickup: <span className="font-semibold text-foreground">{expectedPickupLabel()}</span>{" "}
+                  - order by Tue 11:59pm for Thu, later for Mon.
                 </div>
               </div>
             </div>
