@@ -423,6 +423,20 @@ function ArticleRow({
             placeholder="Full article"
             onBlur={(e) => e.target.value !== r.body && onUpdate(r.id, { body: e.target.value })}
           />
+          <Select
+            value={r.author_id ?? NO_AUTHOR}
+            onValueChange={(v) => onUpdate(r.id, { author_id: v === NO_AUTHOR ? null : v })}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Author" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value={NO_AUTHOR}>No author</SelectItem>
+              {authors.map((a) => (
+                <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Switch
