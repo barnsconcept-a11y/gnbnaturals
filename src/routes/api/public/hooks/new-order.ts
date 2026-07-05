@@ -252,6 +252,7 @@ export const Route = createFileRoute('/api/public/hooks/new-order')({
               template_name: job.templateName,
               recipient_email: job.to,
               status: 'pending',
+              metadata: { order_id: order.id },
             })
 
             const { error: enqueueError } = await admin.rpc('enqueue_email', {
