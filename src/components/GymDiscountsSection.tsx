@@ -44,11 +44,21 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
       setRows(
         DEFAULT_STACKS.map((s) => {
           const d: any = byId.get(s.id);
+          const crate = d?.crate_price != null ? Number(d.crate_price) : null;
+          const pct =
+            d?.discount_percent != null ? Number(d.discount_percent) : null;
+          // Derive the missing side so both fields always show a value
+          let crateStr = crate != null ? fmt(crate) : "";
+          let pctStr = pct != null ? fmt(pct) : "";
+          if (crate != null && pct == null && s.cratePrice > 0) {
+            pctStr = fmt((1 - crate / s.cratePrice) * 100);
+          } else if (pct != null && crate == null) {
+            crateStr = fmt(s.cratePrice * (1 - pct / 100));
+          }
           return {
             stack_id: s.id,
-            crate_price: d?.crate_price != null ? String(d.crate_price) : "",
-            discount_percent:
-              d?.discount_percent != null ? String(d.discount_percent) : "",
+            crate_price: crateStr,
+            discount_percent: pctStr,
           };
         }),
       );
