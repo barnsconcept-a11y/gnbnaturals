@@ -175,6 +175,15 @@ function Hero() {
 
       {/* Subtle bottom gradient to soften the transition into the next section */}
       <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
+
+      {/* Order now button at bottom-left of the hero */}
+      <div className="absolute bottom-4 left-4 z-20 md:bottom-8 md:left-8">
+        <Button asChild size="lg" className="rounded-full px-5 shadow-elevated md:px-6">
+          <Link to="/order">
+            Order now <ArrowRight className="h-4 w-4" />
+          </Link>
+        </Button>
+      </div>
     </section>
   );
 }
