@@ -61,6 +61,7 @@ function GymDetailPage() {
   const removeOwner = useServerFn(removeGymOwner);
   const createUser = useServerFn(createGymUser);
   const doGeocode = useServerFn(geocodeAddress);
+  const doReverseGeocode = useServerFn(reverseGeocode);
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
