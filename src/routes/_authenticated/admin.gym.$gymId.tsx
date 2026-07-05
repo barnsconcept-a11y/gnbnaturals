@@ -24,6 +24,8 @@ import {
   Upload,
   MapPin,
   Search,
+  Pencil,
+  Check,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/gym/$gymId")({
