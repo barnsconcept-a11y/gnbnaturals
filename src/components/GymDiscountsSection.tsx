@@ -9,7 +9,6 @@ import { Percent, Save } from "lucide-react";
 type Row = {
   stack_id: string;
   crate_price: string;
-  stack_price: string;
   discount_percent: string;
 };
 
@@ -17,7 +16,6 @@ const empty = (): Row[] =>
   DEFAULT_STACKS.map((s) => ({
     stack_id: s.id,
     crate_price: "",
-    stack_price: "",
     discount_percent: "",
   }));
 
@@ -42,7 +40,6 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
           return {
             stack_id: s.id,
             crate_price: d?.crate_price != null ? String(d.crate_price) : "",
-            stack_price: d?.stack_price != null ? String(d.stack_price) : "",
             discount_percent:
               d?.discount_percent != null ? String(d.discount_percent) : "",
           };
@@ -65,11 +62,10 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
     try {
       for (const r of rows) {
         const crate = r.crate_price.trim() === "" ? null : Number(r.crate_price);
-        const stack = r.stack_price.trim() === "" ? null : Number(r.stack_price);
         const pct =
           r.discount_percent.trim() === "" ? null : Number(r.discount_percent);
 
-        const allEmpty = crate == null && stack == null && pct == null;
+        const allEmpty = crate == null && pct == null;
 
         if (allEmpty) {
           const { error } = await supabase
@@ -86,7 +82,6 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
                 gym_id: gymId,
                 stack_id: r.stack_id,
                 crate_price: crate,
-                stack_price: stack,
                 discount_percent: pct,
               },
               { onConflict: "gym_id,stack_id" },
