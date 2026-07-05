@@ -60,6 +60,7 @@ function OrderPageInner() {
 
   const [open, setOpen] = useState(false);
   const [initial, setInitial] = useState<string | undefined>("performance");
+  const [discounts, setDiscounts] = useState<GymDiscountRow[] | null>(null);
 
   // Auto-fill pickup from QR code slug
   useEffect(() => {
@@ -68,6 +69,28 @@ function OrderPageInner() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefilledStation]);
+
+  // Fetch per-gym discounts when a station is prefilled (from QR scan)
+  useEffect(() => {
+    if (!prefilledStation) {
+      setDiscounts(null);
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .rpc("get_gym_discounts_by_name", { _name: prefilledStation })
+      .then(({ data }) => {
+        if (!cancelled) setDiscounts((data as GymDiscountRow[]) ?? []);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [prefilledStation]);
+
+  const builderStacks: BuilderStack[] = useMemo(
+    () => applyDiscounts(baseStacks as any, discounts) as BuilderStack[],
+    [discounts],
+  );
 
   const startWith = (id: string) => {
     setInitial(id);
