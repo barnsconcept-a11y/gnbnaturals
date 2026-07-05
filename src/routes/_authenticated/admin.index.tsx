@@ -377,7 +377,27 @@ function AdminDashboard() {
                   : "Gym owner"}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4">
+            {!isAdmin && ownerGyms.length > 0 && (
+              <div className="flex items-center gap-3 rounded-full border border-border bg-background px-3 py-1.5">
+                {ownerGyms.map((g) => (
+                  <div key={g.id} className="flex items-center gap-2">
+                    {g.imageUrl ? (
+                      <img
+                        src={g.imageUrl}
+                        alt={g.name}
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="grid h-8 w-8 place-items-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
+                        {g.name[0]}
+                      </div>
+                    )}
+                    <span className="text-sm font-medium text-foreground">{g.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             {isAdmin && (
               <>
                 <Button variant="outline" size="sm" asChild>
