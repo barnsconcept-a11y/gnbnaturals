@@ -87,6 +87,7 @@ export function CheckoutDialog({
       const { data: inserted, error: insErr } = await supabase
         .from("orders")
         .insert({
+          id: (crypto as any).randomUUID(),
           customer_name: name.trim(),
           customer_phone: phone.trim(),
           customer_email: email.trim() || null,
