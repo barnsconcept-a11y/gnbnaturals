@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
@@ -8,6 +8,8 @@ import { OrderBuilder, type BuilderStack } from "@/components/OrderBuilder";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { gymSlug, usePickupLocations } from "@/lib/pickup";
+import { DEFAULT_STACKS, applyDiscounts, type GymDiscountRow } from "@/lib/stacks";
+import { supabase } from "@/integrations/supabase/client";
 
 const searchSchema = z.object({
   gym: fallback(z.string().optional(), undefined),
@@ -33,11 +35,12 @@ export const Route = createFileRoute("/order")({
   }),
 });
 
-const builderStacks: BuilderStack[] = [
-  { id: "starter", name: "Small", cratePrice: 60, stackPrice: 230 },
-  { id: "performance", name: "Medium", cratePrice: 65, stackPrice: 250 },
-  { id: "elite", name: "Jumbo", cratePrice: 75, stackPrice: 290 },
-];
+const baseStacks: BuilderStack[] = DEFAULT_STACKS.map((s) => ({
+  id: s.id,
+  name: s.name,
+  cratePrice: s.cratePrice,
+  stackPrice: s.stackPrice,
+}));
 
 function OrderPage() {
   return (
