@@ -219,6 +219,9 @@ function Hero() {
               alt="G&amp;B Naturals portrait - white egg on dark stone"
               width={1024}
               height={1535}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
               className="aspect-[2/3] w-full object-cover animate-hero-zoom"
             />
           </div>
