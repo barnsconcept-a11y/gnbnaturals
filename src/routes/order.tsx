@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { zodValidator, fallback } from "@tanstack/zod-adapter";
@@ -8,6 +8,8 @@ import { OrderBuilder, type BuilderStack } from "@/components/OrderBuilder";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { gymSlug, usePickupLocations } from "@/lib/pickup";
+import { DEFAULT_STACKS, applyDiscounts, type GymDiscountRow } from "@/lib/stacks";
+import { supabase } from "@/integrations/supabase/client";
 
 const searchSchema = z.object({
   gym: fallback(z.string().optional(), undefined),
@@ -33,11 +35,12 @@ export const Route = createFileRoute("/order")({
   }),
 });
 
-const builderStacks: BuilderStack[] = [
-  { id: "starter", name: "Small", cratePrice: 60, stackPrice: 230 },
-  { id: "performance", name: "Medium", cratePrice: 65, stackPrice: 250 },
-  { id: "elite", name: "Jumbo", cratePrice: 75, stackPrice: 290 },
-];
+const baseStacks: BuilderStack[] = DEFAULT_STACKS.map((s) => ({
+  id: s.id,
+  name: s.name,
+  cratePrice: s.cratePrice,
+  stackPrice: s.stackPrice,
+}));
 
 function OrderPage() {
   return (
@@ -57,6 +60,7 @@ function OrderPageInner() {
 
   const [open, setOpen] = useState(false);
   const [initial, setInitial] = useState<string | undefined>("performance");
+  const [discounts, setDiscounts] = useState<GymDiscountRow[] | null>(null);
 
   // Auto-fill pickup from QR code slug
   useEffect(() => {
@@ -65,6 +69,28 @@ function OrderPageInner() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prefilledStation]);
+
+  // Fetch per-gym discounts when a station is prefilled (from QR scan)
+  useEffect(() => {
+    if (!prefilledStation) {
+      setDiscounts(null);
+      return;
+    }
+    let cancelled = false;
+    supabase
+      .rpc("get_gym_discounts_by_name", { _name: prefilledStation })
+      .then(({ data }) => {
+        if (!cancelled) setDiscounts((data as GymDiscountRow[]) ?? []);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [prefilledStation]);
+
+  const builderStacks: BuilderStack[] = useMemo(
+    () => applyDiscounts(baseStacks as any, discounts) as BuilderStack[],
+    [discounts],
+  );
 
   const startWith = (id: string) => {
     setInitial(id);
@@ -103,6 +129,13 @@ function OrderPageInner() {
             <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-2 text-sm font-medium text-foreground">
               <MapPin className="h-4 w-4 text-primary" />
               Picking up at <span className="font-semibold">{prefilledStation}</span>
+            </div>
+          )}
+
+          {discounts && discounts.length > 0 && (
+            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-semibold text-foreground">
+              <Sparkles className="h-3 w-3 text-primary" />
+              Special pricing unlocked for this gym
             </div>
           )}
 

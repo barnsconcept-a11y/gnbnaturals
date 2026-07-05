@@ -15,6 +15,7 @@ import {
 } from "@/lib/admin-users.functions";
 import { geocodeAddress } from "@/lib/geocode.functions";
 import { MapPicker } from "@/components/MapPicker";
+import { GymDiscountsSection } from "@/components/GymDiscountsSection";
 import {
   Trash2,
   UserPlus,
@@ -395,6 +396,8 @@ function GymDetailPage() {
             </Button>
           </div>
         </form>
+
+        <GymDiscountsSection gymId={gymId} />
 
         <section className="space-y-3 rounded-xl border border-border bg-card p-4 md:p-5">
           <div>
