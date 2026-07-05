@@ -168,6 +168,9 @@ function ArticlesAdminPage() {
               <Link to="/admin/recipes">Recipes</Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
+              <Link to="/admin/authors">Authors</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
               <Link to="/admin">← Orders</Link>
             </Button>
           </div>
