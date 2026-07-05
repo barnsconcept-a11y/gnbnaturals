@@ -118,7 +118,7 @@ export function CheckoutDialog({
       fetch("/api/public/hooks/new-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId: inserted!.id }),
+        body: JSON.stringify({ orderId }),
       }).catch((e) => console.warn("notify hook failed", e));
       toast.success("Order received - we'll confirm shortly");
     } catch (err) {
