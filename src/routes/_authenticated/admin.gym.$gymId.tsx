@@ -304,56 +304,81 @@ function GymDetailPage() {
             </div>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-[1fr_160px]">
-            <div>
-              <Label htmlFor="g-name">Name</Label>
-              <Input
-                id="g-name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
-            <div>
-              <Label htmlFor="g-rate">GH₵ / crate</Label>
-              <Input
-                id="g-rate"
-                type="number"
-                step="0.01"
-                value={rate}
-                onChange={(e) => setRate(e.target.value)}
-              />
-            </div>
+          <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
+            <LockableField>
+              {(locked) => (
+                <>
+                  <Label htmlFor="g-name">Name</Label>
+                  <Input
+                    id="g-name"
+                    value={name}
+                    disabled={locked}
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </>
+              )}
+            </LockableField>
+            <LockableField>
+              {(locked) => (
+                <>
+                  <Label htmlFor="g-rate">GH₵ / crate</Label>
+                  <Input
+                    id="g-rate"
+                    type="number"
+                    step="0.01"
+                    disabled={locked}
+                    value={rate}
+                    onChange={(e) => setRate(e.target.value)}
+                  />
+                </>
+              )}
+            </LockableField>
           </div>
 
           {/* Address + Map */}
           <div className="space-y-2">
-            <Label htmlFor="g-address">Address</Label>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <Textarea
-                id="g-address"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                rows={2}
-                placeholder="e.g. 12 Ring Road, Accra"
-                className="flex-1"
-              />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={onGeocode}
-                disabled={geocoding}
-                className="sm:self-start"
-              >
-                <Search className="mr-1 h-4 w-4" />
-                {geocoding ? "Locating…" : "Find on map"}
-              </Button>
-            </div>
+            <LockableField>
+              {(locked) => (
+                <>
+                  <Label htmlFor="g-address">Address</Label>
+                  <div className="flex flex-col gap-2 sm:flex-row">
+                    <Textarea
+                      id="g-address"
+                      value={address}
+                      disabled={locked}
+                      onChange={(e) => setAddress(e.target.value)}
+                      rows={2}
+                      placeholder="e.g. 12 Ring Road, Accra"
+                      className="flex-1"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={onGeocode}
+                      disabled={geocoding || locked}
+                      className="sm:self-start"
+                    >
+                      <Search className="mr-1 h-4 w-4" />
+                      {geocoding ? "Locating…" : "Find on map"}
+                    </Button>
+                  </div>
+                </>
+              )}
+            </LockableField>
             <MapPicker
               lat={lat}
               lng={lng}
-              onChange={(la, ln) => {
+              onChange={async (la, ln) => {
                 setLat(la);
                 setLng(ln);
+                try {
+                  const r = await doReverseGeocode({
+                    data: { lat: la, lng: ln },
+                  });
+                  if (r.formatted_address) setAddress(r.formatted_address);
+                } catch {
+                  /* silent – pin still saved */
+                }
               }}
             />
             <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
@@ -361,7 +386,8 @@ function GymDetailPage() {
               {lat != null && lng != null ? (
                 <span>
                   Pin at {lat.toFixed(5)}, {lng.toFixed(5)}. Click map or drag
-                  marker to adjust.
+                  marker to adjust — address updates automatically. Press
+                  “Save changes” to store it.
                 </span>
               ) : (
                 <span>
@@ -371,6 +397,7 @@ function GymDetailPage() {
               )}
             </div>
           </div>
+
 
           <div className="flex items-center gap-3">
             <Button
