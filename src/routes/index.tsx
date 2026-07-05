@@ -179,7 +179,7 @@ function Hero() {
           loading="eager"
           fetchPriority="high"
           decoding="async"
-          className="h-full w-full object-cover"
+          className="h-full w-full object-cover object-left md:object-center"
         />
       </div>
 
