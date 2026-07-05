@@ -18,7 +18,6 @@ import {
   
   Mail,
   Sparkles,
-  Flame,
   Leaf,
 } from "lucide-react";
 import { CartProvider, useCart, formatGHS } from "@/lib/cart";
