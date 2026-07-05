@@ -231,6 +231,28 @@ function ArticlesAdminPage() {
             </div>
           </div>
           <div>
+            <Label htmlFor="a-author">Author</Label>
+            <Select
+              value={form.author_id || NO_AUTHOR}
+              onValueChange={(v) => setForm({ ...form, author_id: v === NO_AUTHOR ? "" : v })}
+            >
+              <SelectTrigger id="a-author">
+                <SelectValue placeholder="Select an author (optional)" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NO_AUTHOR}>No author</SelectItem>
+                {authors.map((a) => (
+                  <SelectItem key={a.id} value={a.id}>{a.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            {authors.length === 0 && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                No authors yet — <Link to="/admin/authors" className="underline">add one</Link> to attribute this article.
+              </p>
+            )}
+          </div>
+          <div>
             <Label htmlFor="a-excerpt">Short highlight</Label>
             <Textarea
               id="a-excerpt"
