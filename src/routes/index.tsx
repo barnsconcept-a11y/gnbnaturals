@@ -27,12 +27,12 @@ import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 const heroImg = "/assets/egg-on-stone-portrait.png";
 const gnbLogo = "/assets/gnb-logo-new.png";
+const foodFresh = "/assets/eggs-in-shaker.png";
 import productOpen from "@/assets/product-open.png";
 import foodSunny from "@/assets/food-sunny.jpg";
 import foodOmelet from "@/assets/food-omelet.jpg";
 import foodEggs from "@/assets/food-eggs.jpg";
 import foodBowl from "@/assets/food-bowl.jpg";
-import foodFresh from "@/assets/why-eggs.png";
 import stepChoose from "@/assets/step-choose.jpg";
 import stepReserve from "@/assets/step-reserve.jpg";
 import stepPickup from "@/assets/step-pickup.jpg";
@@ -572,11 +572,11 @@ function WhyEggs() {
               <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
                 <img
                   src={foodFresh}
-                  alt="Fresh brown eggs on soft cream linen, natural daylight"
+                  alt="White eggs in a black shaker bottle - clean portable protein"
                   loading="lazy"
-                  width={1536}
-                  height={864}
-                  className="aspect-[16/9] w-full object-contain bg-cream"
+                  width={1024}
+                  height={1536}
+                  className="aspect-[2/3] w-full object-cover bg-cream"
                 />
               </div>
             </div>
