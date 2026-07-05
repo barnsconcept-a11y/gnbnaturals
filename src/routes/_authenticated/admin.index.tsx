@@ -60,7 +60,9 @@ type Order = {
   notes: string | null;
 };
 
-type Gym = { id: string; name: string; commission_per_crate: number };
+type Gym = { id: string; name: string; commission_per_crate: number; image_url?: string | null };
+
+type OwnerGym = { id: string; name: string; imageUrl: string | null };
 
 type Payout = {
   id: string;
@@ -83,6 +85,7 @@ function AdminDashboard() {
   const [email, setEmail] = useState<string>("");
   const [ownerGymNames, setOwnerGymNames] = useState<string[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [ownerGyms, setOwnerGyms] = useState<OwnerGym[]>([]);
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [payouts, setPayouts] = useState<Payout[]>([]);
   const [loading, setLoading] = useState(true);
@@ -118,6 +121,23 @@ function AdminDashboard() {
       setGyms(gymRows);
       setPayouts(((payoutsData ?? []) as unknown) as Payout[]);
       setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
+      if (!admin) {
+        const resolved = await Promise.all(
+          gymRows.map(async (g) => {
+            let imageUrl: string | null = null;
+            if (g.image_url) {
+              const { data: signed } = await supabase.storage
+                .from("gym-images")
+                .createSignedUrl(g.image_url, 60 * 60);
+              imageUrl = signed?.signedUrl ?? null;
+            }
+            return { id: g.id, name: g.name, imageUrl };
+          }),
+        );
+        setOwnerGyms(resolved);
+      } else {
+        setOwnerGyms([]);
+      }
       if (admin) {
         const { data: setting } = await supabase
           .from("app_settings")
@@ -357,7 +377,27 @@ function AdminDashboard() {
                   : "Gym owner"}
             </p>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap items-center gap-2 md:gap-4">
+            {!isAdmin && ownerGyms.length > 0 && (
+              <div className="flex items-center gap-3 rounded-full border border-border bg-background px-3 py-1.5">
+                {ownerGyms.map((g) => (
+                  <div key={g.id} className="flex items-center gap-2">
+                    {g.imageUrl ? (
+                      <img
+                        src={g.imageUrl}
+                        alt={g.name}
+                        className="h-8 w-8 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="grid h-8 w-8 place-items-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
+                        {g.name[0]}
+                      </div>
+                    )}
+                    <span className="text-sm font-medium text-foreground">{g.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
             {isAdmin && (
               <>
                 <Button variant="outline" size="sm" asChild>
