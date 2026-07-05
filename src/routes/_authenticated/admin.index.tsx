@@ -301,6 +301,25 @@ function AdminDashboard() {
     }
   };
 
+  const deleteOrder = async (o: Order) => {
+    if (
+      !window.confirm(
+        `Permanently delete order from ${o.customer_name} (${formatGhs(Number(o.total_amount))})?\n\nThis cannot be undone.`,
+      )
+    )
+      return;
+    if (o.proof_path) {
+      await supabase.storage.from("payment-proofs").remove([o.proof_path]);
+    }
+    const { error } = await supabase.from("orders").delete().eq("id", o.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setOrders((prev) => prev.filter((x) => x.id !== o.id));
+    toast.success("Order deleted");
+  };
+
   const viewProof = async (path: string) => {
     const { data, error } = await supabase.storage
       .from("payment-proofs")
