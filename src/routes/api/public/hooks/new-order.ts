@@ -43,6 +43,18 @@ export const Route = createFileRoute('/api/public/hooks/new-order')({
             return Response.json({ error: 'order not found' }, { status: 404 })
           }
 
+          // Dedup guard: if we've already enqueued notifications for this order, skip.
+          // Prevents unauthenticated repeated calls from spamming admins/gym owners.
+          const { data: existingLog } = await admin
+            .from('email_send_log')
+            .select('id')
+            .in('template_name', ['new-order', 'order-confirmation'])
+            .contains('metadata', { order_id: orderId })
+            .limit(1)
+          if (existingLog && existingLog.length > 0) {
+            return Response.json({ skipped: 'already notified for this order' })
+          }
+
           const pickupDate = expectedPickupLabel(order.created_at)
 
           // Build admin notification jobs
@@ -240,6 +252,7 @@ export const Route = createFileRoute('/api/public/hooks/new-order')({
               template_name: job.templateName,
               recipient_email: job.to,
               status: 'pending',
+              metadata: { order_id: order.id },
             })
 
             const { error: enqueueError } = await admin.rpc('enqueue_email', {
