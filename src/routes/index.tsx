@@ -525,7 +525,7 @@ function Stacks() {
           </p>
         </div>
 
-        <div className="mt-14 grid items-stretch gap-6 lg:grid-cols-3 lg:gap-8">
+        <div className="mt-14 grid items-stretch gap-8 pt-4 lg:grid-cols-3 lg:gap-8 lg:pt-8">
           {stacks.map((s) => (
             <StackCard
               key={s.name}
