@@ -13,7 +13,7 @@ import {
 } from "@/lib/admin-users.functions";
 import { Trash2, UserPlus, ArrowLeft } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/admin/gyms/$gymId")({
+export const Route = createFileRoute("/_authenticated/admin/gym/$gymId")({
   head: () => ({ meta: [{ title: "Gym profile - Admin" }] }),
   component: GymDetailPage,
 });
