@@ -157,3 +157,91 @@ export const deleteGymUser = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+async function assertAdmin(userClient: any, userId: string) {
+  const { data: roles } = await userClient
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId)
+    .eq("role", "admin");
+  if (!roles || roles.length === 0) throw new Error("Admins only");
+}
+
+export const getGymDetail = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) => z.object({ gym_id: z.string().uuid() }).parse(input))
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: gym, error: gymErr } = await supabaseAdmin
+      .from("gyms")
+      .select("*")
+      .eq("id", data.gym_id)
+      .single();
+    if (gymErr) throw new Error(gymErr.message);
+
+    const { data: links, error: linkErr } = await supabaseAdmin
+      .from("gym_owners")
+      .select("user_id")
+      .eq("gym_id", data.gym_id);
+    if (linkErr) throw new Error(linkErr.message);
+
+    const owners = await Promise.all(
+      (links ?? []).map(async (l: { user_id: string }) => {
+        const { data: u } = await supabaseAdmin.auth.admin.getUserById(l.user_id);
+        return {
+          user_id: l.user_id,
+          email: u?.user?.email ?? "",
+          created_at: u?.user?.created_at ?? null,
+          last_sign_in_at: u?.user?.last_sign_in_at ?? null,
+        };
+      }),
+    );
+
+    return { gym, owners };
+  });
+
+export const updateGym = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        gym_id: z.string().uuid(),
+        name: z.string().min(1).max(200),
+        commission_per_crate: z.number().min(0),
+        active: z.boolean(),
+      })
+      .parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("gyms")
+      .update({
+        name: data.name,
+        commission_per_crate: data.commission_per_crate,
+        active: data.active,
+      })
+      .eq("id", data.gym_id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
+export const removeGymOwner = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z.object({ gym_id: z.string().uuid(), user_id: z.string().uuid() }).parse(input),
+  )
+  .handler(async ({ data, context }) => {
+    await assertAdmin(context.supabase, context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin
+      .from("gym_owners")
+      .delete()
+      .eq("gym_id", data.gym_id)
+      .eq("user_id", data.user_id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
