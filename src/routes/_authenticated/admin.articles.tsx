@@ -34,6 +34,7 @@ type Article = {
   image_url: string | null;
   published: boolean;
   sort_order: number;
+  author_id: string | null;
 };
 
 const CATEGORY_FILTERS = ["All", "Nutrition", "Training", "Recovery", "Habits", "Mindset"] as const;
