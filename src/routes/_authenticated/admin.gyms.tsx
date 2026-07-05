@@ -252,7 +252,7 @@ function GymsPage() {
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <Link
-                    to="/admin/gyms/$gymId"
+                    to="/admin/gym/$gymId"
                     params={{ gymId: g.id }}
                     className="font-medium hover:underline"
                   >
