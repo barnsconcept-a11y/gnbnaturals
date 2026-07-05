@@ -988,7 +988,7 @@ function FinalCTA() {
       <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] bg-primary px-6 py-20 text-center text-primary-foreground shadow-elevated md:px-12 md:py-28">
         <div className="absolute inset-0 -z-0 opacity-[0.08] bg-[radial-gradient(circle_at_20%_20%,oklch(1_0_0)_1px,transparent_1.5px)] [background-size:24px_24px]" />
         <div className="relative">
-          <h2 className="text-balance text-4xl font-bold tracking-tight md:text-6xl">
+          <h2 className="text-balance text-4xl font-bold tracking-tight text-primary-foreground md:text-6xl">
             Stop overthinking your protein.
           </h2>
           <p className="mx-auto mt-5 max-w-xl text-balance text-lg text-primary-foreground/80">
