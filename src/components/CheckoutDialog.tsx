@@ -30,7 +30,9 @@ export function CheckoutDialog({
 }) {
   const { items, totalPrice, totalCrates, pickup, clear, close } = useCart();
   // Snapshot totals so the success screen stays populated after we clear the cart
-  const [summary, setSummary] = useState<{ crates: number; price: number; orderId: string } | null>(null);
+  const [summary, setSummary] = useState<{ crates: number; price: number; orderId: string } | null>(
+    null,
+  );
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
@@ -155,77 +157,92 @@ export function CheckoutDialog({
               </div>
               <p className="text-lg font-semibold">Thanks, {name || "champ"}!</p>
               <p className="text-base text-muted-foreground">
-                Your order for {summary?.crates ?? totalCrates} crate{(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} ({formatGHS(summary?.price ?? totalPrice)}) is being reviewed.
+                Your order for {summary?.crates ?? totalCrates} crate
+                {(summary?.crates ?? totalCrates) !== 1 ? "s" : ""} (
+                {formatGHS(summary?.price ?? totalPrice)}) is being reviewed.
               </p>
               <div className="mt-2 w-full rounded-xl border-2 border-primary/30 bg-primary/10 px-4 py-3 text-center">
-                <div className="text-sm font-semibold uppercase tracking-wider text-primary">Expected pickup day</div>
-                <div className="mt-1 text-xl font-bold text-foreground">{expectedPickupLabel()}</div>
+                <div className="text-sm font-semibold uppercase tracking-wider text-primary">
+                  Expected pickup day
+                </div>
+                <div className="mt-1 text-xl font-bold text-foreground">
+                  {expectedPickupLabel()}
+                </div>
                 <div className="mt-1.5 text-base text-muted-foreground">
                   We deliver Thu &amp; Mon. Orders by Tue 11:59pm → Thu; later → Mon.
                 </div>
               </div>
             </div>
 
-            {summary?.orderId && (() => {
-              const trackUrl = `${window.location.origin}/track/${summary.orderId}`;
-              const shortId = summary.orderId.slice(0, 8).toUpperCase();
-              const waMsg = `Hi! I just placed order #${shortId} (${name}). Here's my tracking link: ${trackUrl}`;
-              return (
-                <>
-                  <div className="rounded-xl border border-border bg-secondary/30 p-3">
-                    <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-                      Your tracking link
+            {summary?.orderId &&
+              (() => {
+                const trackUrl = `${window.location.origin}/track/${summary.orderId}`;
+                const shortId = summary.orderId.slice(0, 8).toUpperCase();
+                const waMsg = `Hi! I just placed order #${shortId} (${name}). Here's my tracking link: ${trackUrl}`;
+                return (
+                  <>
+                    <div className="rounded-xl border border-border bg-secondary/30 p-3">
+                      <div className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                        Your tracking link
+                      </div>
+                      <div className="mt-1 flex items-center gap-2">
+                        <code className="min-w-0 flex-1 truncate rounded-md bg-background px-2 py-1.5 text-sm">
+                          /track/{shortId}…
+                        </code>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={async () => {
+                            try {
+                              await navigator.clipboard.writeText(trackUrl);
+                              setLinkCopied(true);
+                              toast.success("Link copied");
+                            } catch {
+                              toast.error("Copy failed");
+                            }
+                          }}
+                        >
+                          {linkCopied ? (
+                            <CheckCircle2 className="h-4 w-4" />
+                          ) : (
+                            <LinkIcon className="h-4 w-4" />
+                          )}
+                          {linkCopied ? "Copied" : "Copy"}
+                        </Button>
+                      </div>
+                      <p className="mt-2 text-sm text-muted-foreground">
+                        Bookmark this page - it updates as your order progresses.
+                      </p>
                     </div>
-                    <div className="mt-1 flex items-center gap-2">
-                      <code className="min-w-0 flex-1 truncate rounded-md bg-background px-2 py-1.5 text-sm">
-                        /track/{shortId}…
-                      </code>
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        onClick={async () => {
-                          try {
-                            await navigator.clipboard.writeText(trackUrl);
-                            setLinkCopied(true);
-                            toast.success("Link copied");
-                          } catch {
-                            toast.error("Copy failed");
-                          }
-                        }}
+
+                    <Button
+                      asChild
+                      size="lg"
+                      className="h-12 w-full rounded-full bg-[#25D366] text-white shadow-elevated hover:bg-[#1ebe57]"
+                    >
+                      <a href={whatsappLink(waMsg)} target="_blank" rel="noopener noreferrer">
+                        <MessageCircle className="h-5 w-5" /> Message us on WhatsApp
+                      </a>
+                    </Button>
+
+                    <Button
+                      asChild
+                      variant="outline"
+                      size="lg"
+                      className="h-12 w-full rounded-full"
+                    >
+                      <a
+                        href={`/track/${summary.orderId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
                       >
-                        {linkCopied ? <CheckCircle2 className="h-4 w-4" /> : <LinkIcon className="h-4 w-4" />}
-                        {linkCopied ? "Copied" : "Copy"}
-                      </Button>
-                    </div>
-                    <p className="mt-2 text-sm text-muted-foreground">
-                      Bookmark this page - it updates as your order progresses.
-                    </p>
-                  </div>
-
-                  <Button
-                    asChild
-                    size="lg"
-                    className="h-12 w-full rounded-full bg-[#25D366] text-white shadow-elevated hover:bg-[#1ebe57]"
-                  >
-                    <a href={whatsappLink(waMsg)} target="_blank" rel="noopener noreferrer">
-                      <MessageCircle className="h-5 w-5" /> Message us on WhatsApp
-                    </a>
-                  </Button>
-
-                  <Button
-                    asChild
-                    variant="outline"
-                    size="lg"
-                    className="h-12 w-full rounded-full"
-                  >
-                    <a href={`/track/${summary.orderId}`} target="_blank" rel="noopener noreferrer">
-                      Open tracking page
-                    </a>
-                  </Button>
-                </>
-              );
-            })()}
+                        Open tracking page
+                      </a>
+                    </Button>
+                  </>
+                );
+              })()}
 
             <Button
               variant="ghost"
@@ -380,8 +397,9 @@ export function CheckoutDialog({
                 {totalCrates} crate{totalCrates !== 1 ? "s" : ""} ·{" "}
                 <span className="font-semibold text-foreground">{formatGHS(totalPrice)}</span>
                 <div className="mt-1">
-                  Expected pickup: <span className="font-semibold text-foreground">{expectedPickupLabel()}</span>{" "}
-                  - order by Tue 11:59pm for Thu, later for Mon.
+                  Expected pickup:{" "}
+                  <span className="font-semibold text-foreground">{expectedPickupLabel()}</span> -
+                  order by Tue 11:59pm for Thu, later for Mon.
                 </div>
               </div>
             </div>
