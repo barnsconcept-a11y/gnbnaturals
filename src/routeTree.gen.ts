@@ -28,7 +28,7 @@ import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lova
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as ApiPublicHooksNewOrderRouteImport } from './routes/api/public/hooks/new-order'
-import { Route as AuthenticatedAdminGymsGymIdRouteImport } from './routes/_authenticated/admin.gyms.$gymId'
+import { Route as AuthenticatedAdminGymGymIdRouteImport } from './routes/_authenticated/admin.gym.$gymId'
 
 const OrderRoute = OrderRouteImport.update({
   id: '/order',
@@ -130,11 +130,11 @@ const ApiPublicHooksNewOrderRoute = ApiPublicHooksNewOrderRouteImport.update({
   path: '/api/public/hooks/new-order',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedAdminGymsGymIdRoute =
-  AuthenticatedAdminGymsGymIdRouteImport.update({
-    id: '/$gymId',
-    path: '/$gymId',
-    getParentRoute: () => AuthenticatedAdminGymsRoute,
+const AuthenticatedAdminGymGymIdRoute =
+  AuthenticatedAdminGymGymIdRouteImport.update({
+    id: '/admin/gym/$gymId',
+    path: '/admin/gym/$gymId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -147,12 +147,12 @@ export interface FileRoutesByFullPath {
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
-  '/admin/gyms': typeof AuthenticatedAdminGymsRouteWithChildren
+  '/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/admin/recipes': typeof AuthenticatedAdminRecipesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
-  '/admin/gyms/$gymId': typeof AuthenticatedAdminGymsGymIdRoute
+  '/admin/gym/$gymId': typeof AuthenticatedAdminGymGymIdRoute
   '/api/public/hooks/new-order': typeof ApiPublicHooksNewOrderRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -168,12 +168,12 @@ export interface FileRoutesByTo {
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/admin/articles': typeof AuthenticatedAdminArticlesRoute
-  '/admin/gyms': typeof AuthenticatedAdminGymsRouteWithChildren
+  '/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/admin/recipes': typeof AuthenticatedAdminRecipesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
-  '/admin/gyms/$gymId': typeof AuthenticatedAdminGymsGymIdRoute
+  '/admin/gym/$gymId': typeof AuthenticatedAdminGymGymIdRoute
   '/api/public/hooks/new-order': typeof ApiPublicHooksNewOrderRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -191,12 +191,12 @@ export interface FileRoutesById {
   '/recipes/$slug': typeof RecipesSlugRoute
   '/track/$orderId': typeof TrackOrderIdRoute
   '/_authenticated/admin/articles': typeof AuthenticatedAdminArticlesRoute
-  '/_authenticated/admin/gyms': typeof AuthenticatedAdminGymsRouteWithChildren
+  '/_authenticated/admin/gyms': typeof AuthenticatedAdminGymsRoute
   '/_authenticated/admin/recipes': typeof AuthenticatedAdminRecipesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
-  '/_authenticated/admin/gyms/$gymId': typeof AuthenticatedAdminGymsGymIdRoute
+  '/_authenticated/admin/gym/$gymId': typeof AuthenticatedAdminGymGymIdRoute
   '/api/public/hooks/new-order': typeof ApiPublicHooksNewOrderRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
@@ -219,7 +219,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/lovable/email/suppression'
     | '/admin/'
-    | '/admin/gyms/$gymId'
+    | '/admin/gym/$gymId'
     | '/api/public/hooks/new-order'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
@@ -240,7 +240,7 @@ export interface FileRouteTypes {
     | '/admin/users'
     | '/lovable/email/suppression'
     | '/admin'
-    | '/admin/gyms/$gymId'
+    | '/admin/gym/$gymId'
     | '/api/public/hooks/new-order'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
@@ -262,7 +262,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/users'
     | '/lovable/email/suppression'
     | '/_authenticated/admin/'
-    | '/_authenticated/admin/gyms/$gymId'
+    | '/_authenticated/admin/gym/$gymId'
     | '/api/public/hooks/new-order'
     | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
@@ -420,46 +420,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksNewOrderRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/admin/gyms/$gymId': {
-      id: '/_authenticated/admin/gyms/$gymId'
-      path: '/$gymId'
-      fullPath: '/admin/gyms/$gymId'
-      preLoaderRoute: typeof AuthenticatedAdminGymsGymIdRouteImport
-      parentRoute: typeof AuthenticatedAdminGymsRoute
+    '/_authenticated/admin/gym/$gymId': {
+      id: '/_authenticated/admin/gym/$gymId'
+      path: '/admin/gym/$gymId'
+      fullPath: '/admin/gym/$gymId'
+      preLoaderRoute: typeof AuthenticatedAdminGymGymIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
-interface AuthenticatedAdminGymsRouteChildren {
-  AuthenticatedAdminGymsGymIdRoute: typeof AuthenticatedAdminGymsGymIdRoute
-}
-
-const AuthenticatedAdminGymsRouteChildren: AuthenticatedAdminGymsRouteChildren =
-  {
-    AuthenticatedAdminGymsGymIdRoute: AuthenticatedAdminGymsGymIdRoute,
-  }
-
-const AuthenticatedAdminGymsRouteWithChildren =
-  AuthenticatedAdminGymsRoute._addFileChildren(
-    AuthenticatedAdminGymsRouteChildren,
-  )
-
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedChangePasswordRoute: typeof AuthenticatedChangePasswordRoute
   AuthenticatedAdminArticlesRoute: typeof AuthenticatedAdminArticlesRoute
-  AuthenticatedAdminGymsRoute: typeof AuthenticatedAdminGymsRouteWithChildren
+  AuthenticatedAdminGymsRoute: typeof AuthenticatedAdminGymsRoute
   AuthenticatedAdminRecipesRoute: typeof AuthenticatedAdminRecipesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminGymGymIdRoute: typeof AuthenticatedAdminGymGymIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedChangePasswordRoute: AuthenticatedChangePasswordRoute,
   AuthenticatedAdminArticlesRoute: AuthenticatedAdminArticlesRoute,
-  AuthenticatedAdminGymsRoute: AuthenticatedAdminGymsRouteWithChildren,
+  AuthenticatedAdminGymsRoute: AuthenticatedAdminGymsRoute,
   AuthenticatedAdminRecipesRoute: AuthenticatedAdminRecipesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminGymGymIdRoute: AuthenticatedAdminGymGymIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
