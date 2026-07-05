@@ -977,6 +977,13 @@ function Footer() {
 }
 
 function Landing() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash === "#stacks") {
+      navigate({ to: "/order", replace: true });
+    }
+  }, [navigate]);
+
   return (
     <CartProvider>
       <div className="min-h-screen bg-background text-foreground">
