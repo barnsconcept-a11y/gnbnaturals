@@ -128,6 +128,8 @@ function ArticlePage() {
       )}
 
       <div className="article-meta mt-6">
+        {article.author && <span>By {article.author.name}</span>}
+        {article.author && (dateStr || true) && <span className="dot" />}
         {dateStr && <span>{dateStr}</span>}
         {dateStr && <span className="dot" />}
         <span>{readingTime} min read</span>
