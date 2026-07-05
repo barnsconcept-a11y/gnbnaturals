@@ -13,7 +13,9 @@ type OrderSearch = { gym?: string };
 
 export const Route = createFileRoute("/order")({
   component: OrderPage,
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (search: Record<string, unknown>): OrderSearch => ({
+    gym: typeof search.gym === "string" ? search.gym : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Place Your Order - G&B Naturals" },
