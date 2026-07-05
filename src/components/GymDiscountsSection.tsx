@@ -105,9 +105,8 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
       <div>
         <h2 className="font-semibold">Per-stack discounts</h2>
         <p className="text-xs text-muted-foreground">
-          Set a percentage off the default, or override the crate / 4-crate
-          stack price. Leave blank to charge the default. Overrides win over
-          percentages.
+          Set a percentage off the default, or override the crate price. Leave
+          blank to charge the default. Overrides win over percentages.
         </p>
       </div>
 
@@ -159,19 +158,6 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
                       value={r.crate_price}
                       onChange={(e) =>
                         update(r.stack_id, { crate_price: e.target.value })
-                      }
-                    />
-                  </td>
-                  <td className="py-2">
-                    <Input
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder={String(def.stackPrice)}
-                      className="h-9"
-                      value={r.stack_price}
-                      onChange={(e) =>
-                        update(r.stack_id, { stack_price: e.target.value })
                       }
                     />
                   </td>
