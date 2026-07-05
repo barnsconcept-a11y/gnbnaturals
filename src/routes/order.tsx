@@ -132,6 +132,13 @@ function OrderPageInner() {
             </div>
           )}
 
+          {discounts && discounts.length > 0 && (
+            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-3 py-1 text-xs font-semibold text-foreground">
+              <Sparkles className="h-3 w-3 text-primary" />
+              Special pricing unlocked for this gym
+            </div>
+          )}
+
           <div className="mt-6 flex justify-center">
             <Button
               size="lg"
