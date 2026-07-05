@@ -103,11 +103,15 @@ export function OrderBuilder({
     if (isLast) {
       commitToCart();
       onOpenChange(false);
+      // add() opens the cart sheet by default; close it so the checkout dialog
+      // isn't hidden behind the sheet's aria-hidden overlay
+      closeCart();
       setCheckoutOpen(true);
       return;
     }
     setStep((s) => s + 1);
   };
+
 
 
   return (
