@@ -26,6 +26,7 @@ import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 const heroImg = "/assets/egg-on-stone-portrait.webp";
+const heroBackgroundImg = "/assets/hero-background.webp"; // upload your hero image here
 const gnbLogo = "/assets/gnb-logo-new.png";
 const foodFresh = "/assets/eggs-in-shaker.webp";
 import productOpen from "@/assets/product-open.webp";
