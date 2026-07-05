@@ -17,16 +17,7 @@ import { geocodeAddress, reverseGeocode } from "@/lib/geocode.functions";
 import { MapPicker } from "@/components/MapPicker";
 import { GymDiscountsSection } from "@/components/GymDiscountsSection";
 import { LockableField } from "@/components/LockableField";
-import {
-  Trash2,
-  UserPlus,
-  ArrowLeft,
-  Upload,
-  MapPin,
-  Search,
-  Pencil,
-  Check,
-} from "lucide-react";
+import { Trash2, UserPlus, ArrowLeft, Upload, MapPin, Search, Pencil, Check } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/gym/$gymId")({
   head: () => ({ meta: [{ title: "Gym profile - Admin" }] }),
@@ -271,11 +262,7 @@ function GymDetailPage() {
             <div className="relative aspect-square w-full overflow-hidden rounded-lg border border-border bg-muted">
               {imageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={imageUrl}
-                  alt={name}
-                  className="h-full w-full object-cover"
-                />
+                <img src={imageUrl} alt={name} className="h-full w-full object-cover" />
               ) : (
                 <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
                   No image
@@ -402,8 +389,7 @@ function GymDetailPage() {
                       const r = await doReverseGeocode({
                         data: { lat: la, lng: ln },
                       });
-                      if (r.formatted_address)
-                        setAddress(r.formatted_address);
+                      if (r.formatted_address) setAddress(r.formatted_address);
                     } catch {
                       /* silent – pin still saved */
                     }
@@ -425,11 +411,7 @@ function GymDetailPage() {
                 className="mt-2 h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
                 onClick={() => setMapUnlocked((v) => !v)}
               >
-                {mapUnlocked ? (
-                  <Check className="h-4 w-4" />
-                ) : (
-                  <Pencil className="h-4 w-4" />
-                )}
+                {mapUnlocked ? <Check className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
               </Button>
             </div>
 
@@ -444,15 +426,11 @@ function GymDetailPage() {
                 </span>
               ) : (
                 <span>
-                  Unlock the map, click to drop a pin, or type an address and
-                  press “Find on map”.
+                  Unlock the map, click to drop a pin, or type an address and press “Find on map”.
                 </span>
               )}
             </div>
           </div>
-
-
-
 
           <div className="flex items-center gap-3">
             <Button
@@ -463,19 +441,13 @@ function GymDetailPage() {
             >
               {active ? "Active" : "Inactive"}
             </Button>
-            <span className="text-xs text-muted-foreground">
-              Click to toggle. Save to apply.
-            </span>
+            <span className="text-xs text-muted-foreground">Click to toggle. Save to apply.</span>
           </div>
           <div className="flex gap-2">
             <Button type="submit" disabled={saving}>
               {saving ? "Saving…" : "Save changes"}
             </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              onClick={() => navigate({ to: "/admin/gyms" })}
-            >
+            <Button type="button" variant="ghost" onClick={() => navigate({ to: "/admin/gyms" })}>
               Cancel
             </Button>
           </div>
@@ -492,9 +464,7 @@ function GymDetailPage() {
           </div>
 
           {owners.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              No owner logins yet.
-            </p>
+            <p className="text-sm text-muted-foreground">No owner logins yet.</p>
           ) : (
             <ul className="divide-y divide-border rounded-lg border border-border">
               {owners.map((o) => (
@@ -556,14 +526,10 @@ function StatCard({
   return (
     <div
       className={`rounded-xl border p-4 ${
-        highlight
-          ? "border-primary/40 bg-primary/5"
-          : "border-border bg-card"
+        highlight ? "border-primary/40 bg-primary/5" : "border-border bg-card"
       }`}
     >
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">
-        {label}
-      </p>
+      <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
       <p className="mt-1 text-xl font-semibold">{value}</p>
       {sub && <p className="mt-0.5 text-xs text-muted-foreground">{sub}</p>}
     </div>
