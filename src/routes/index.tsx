@@ -187,7 +187,7 @@ function Hero() {
       </div>
 
       {/* Hero image placeholder marker */}
-      <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-2xl border-2 border-dashed border-white/80 bg-primary/90 px-5 py-3 text-center shadow-elevated">
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 rounded-2xl border-2 border-dashed border-white/80 bg-primary/90 px-5 py-3 text-center shadow-elevated">
         <div className="text-xs font-semibold text-white">Hero image space</div>
         <div className="text-[10px] text-white/80">Replace: public/assets/hero-background.webp</div>
         <div className="text-[10px] text-white/80">1920 × 1280 px</div>
