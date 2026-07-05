@@ -719,6 +719,15 @@ function AdminDashboard() {
                         ))}
                       </SelectContent>
                     </Select>
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        onClick={() => deleteOrder(o)}
+                        className="mt-2 inline-flex items-center gap-1 text-xs text-destructive hover:underline"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" /> Delete
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
