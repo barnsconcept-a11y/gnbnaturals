@@ -364,6 +364,7 @@ function RecipesAdminPage() {
               <RecipeRow
                 key={r.id}
                 recipe={r}
+                authors={authors}
                 onUpdate={update}
                 onRemove={remove}
                 onReplaceImage={handleReplaceImage}
@@ -378,11 +379,13 @@ function RecipesAdminPage() {
 
 function RecipeRow({
   recipe: r,
+  authors,
   onUpdate,
   onRemove,
   onReplaceImage,
 }: {
   recipe: Recipe;
+  authors: AuthorOption[];
   onUpdate: (id: string, patch: Partial<Recipe>) => Promise<unknown>;
   onRemove: (r: Recipe) => Promise<unknown>;
   onReplaceImage: (id: string, file: File) => Promise<void>;
