@@ -118,8 +118,7 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
               <th className="pb-2 pr-3">Stack</th>
               <th className="pb-2 pr-3">Default</th>
               <th className="pb-2 pr-3">Discount %</th>
-              <th className="pb-2 pr-3">Crate GH₵</th>
-              <th className="pb-2">4-crate GH₵</th>
+              <th className="pb-2">Crate GH₵</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
