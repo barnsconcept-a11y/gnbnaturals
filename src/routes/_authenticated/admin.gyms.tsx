@@ -37,14 +37,12 @@ function GymsPage() {
   const createUser = useServerFn(createGymUser);
   const [gyms, setGyms] = useState<Gym[]>([]);
   const [ownerCounts, setOwnerCounts] = useState<Record<string, number>>({});
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
   const [name, setName] = useState("");
   const [rate, setRate] = useState("");
   const [ownerEmail, setOwnerEmail] = useState("");
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [assignFor, setAssignFor] = useState<string | null>(null);
-  const [assignEmail, setAssignEmail] = useState("");
-  const [assignSubmitting, setAssignSubmitting] = useState(false);
   const [invited, setInvited] = useState<Invited | null>(null);
 
   const load = async () => {
