@@ -38,6 +38,7 @@ import stepPickup from "@/assets/step-pickup.jpg";
 import stackStarter from "@/assets/stack-starter.jpg";
 import stackPerformance from "@/assets/stack-performance.jpg";
 import stackElite from "@/assets/stack-elite.jpg";
+import smallestAdvantage from "@/assets/smallest-advantage.png.asset.json";
 import eggsPan from "@/assets/eggs-pan.jpg";
 
 export const Route = createFileRoute("/")({
@@ -877,37 +878,11 @@ const testimonials = [
 function Testimonials() {
   return (
     <section className="border-t border-border">
-      <div className="mx-auto max-w-6xl px-5 py-20 md:py-28">
-        <div className="max-w-2xl">
-          <p className="text-sm font-medium uppercase tracking-widest text-primary">Community</p>
-          <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight md:text-5xl">
-            Built with fitness communities.
-          </h2>
-        </div>
-
-        <div className="mt-12 grid gap-5 md:grid-cols-3">
-          {testimonials.map((t) => (
-            <figure
-              key={t.name}
-              className="flex flex-col rounded-3xl border border-border bg-card p-6 shadow-card"
-            >
-              <Dumbbell className="h-5 w-5 text-primary" />
-              <blockquote className="mt-4 text-lg font-medium leading-snug text-foreground">
-                &ldquo;{t.quote}&rdquo;
-              </blockquote>
-              <figcaption className="mt-6 flex items-center gap-3 border-t border-border pt-4">
-                <div className="grid h-10 w-10 place-items-center rounded-full bg-kraft text-kraft-foreground text-sm font-bold">
-                  {t.name[0]}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold">{t.name}</div>
-                  <div className="text-xs text-muted-foreground">{t.role}</div>
-                </div>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </div>
+      <img
+        src={smallestAdvantage.url}
+        alt="The smallest advantage. The biggest results."
+        className="block h-auto w-full"
+      />
     </section>
   );
 }
