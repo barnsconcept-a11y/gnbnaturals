@@ -1,0 +1,1 @@
+CREATE POLICY "Admins delete orders" ON public.orders FOR DELETE USING (private.has_role(auth.uid(), 'admin'::app_role));
