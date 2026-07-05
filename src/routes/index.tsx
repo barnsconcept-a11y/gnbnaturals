@@ -888,7 +888,7 @@ function Testimonials() {
   return (
     <section className="border-t border-border">
       <img
-        src={smallestAdvantage.url}
+        src="/smallest-advantage.png"
         alt="The smallest advantage. The biggest results."
         className="block h-auto w-full"
       />
