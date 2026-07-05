@@ -102,11 +102,13 @@ export function OrderBuilder({
     if (!canAdvance) return;
     if (isLast) {
       commitToCart();
+      onOpenChange(false);
       setCheckoutOpen(true);
       return;
     }
     setStep((s) => s + 1);
   };
+
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
