@@ -124,6 +124,10 @@ function RecipePage() {
         {recipe.title}
       </h1>
 
+      {recipe.author && (
+        <p className="mt-3 text-sm text-muted-foreground">By {recipe.author.name}</p>
+      )}
+
       {recipe.excerpt && (
         <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
           {recipe.excerpt}
@@ -133,6 +137,8 @@ function RecipePage() {
       <div className="mt-6 whitespace-pre-wrap text-base leading-relaxed text-foreground/90">
         {recipe.body}
       </div>
+
+      {recipe.author && <AuthorCard author={recipe.author} className="mt-10" />}
     </article>
   );
 }
