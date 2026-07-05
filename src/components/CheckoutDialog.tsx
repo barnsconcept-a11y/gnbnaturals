@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Copy, CheckCircle2, Upload, Loader2, Smartphone, MessageCircle, Link as LinkIcon } from "lucide-react";
+import { Copy, CheckCircle2, Upload, Loader2, MessageCircle, Link as LinkIcon } from "lucide-react";
 import {
   Dialog,
   DialogContent,
