@@ -8,6 +8,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Trash2, Upload } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+type AuthorOption = { id: string; name: string };
+const NO_AUTHOR = "__none__";
 
 export const Route = createFileRoute("/_authenticated/admin/recipes")({
   head: () => ({ meta: [{ title: "Recipes - Admin" }] }),
