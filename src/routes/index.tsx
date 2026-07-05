@@ -169,11 +169,11 @@ function Nav() {
 function Hero() {
   return (
     <section className="relative min-h-[600px] overflow-hidden lg:min-h-[760px]">
-      {/* Full-width hero image background */}
+      {/* Full-width hero image background — replaces placeholder text + product image */}
       <div className="absolute inset-0 -z-20">
         <img
           src={heroBackgroundImg}
-          alt="G&amp;B Naturals hero background"
+          alt="G&B Naturals - One choice. Every day. Consistency is power. Affordable daily protein."
           width={1920}
           height={1280}
           loading="eager"
@@ -181,103 +181,10 @@ function Hero() {
           decoding="async"
           className="h-full w-full object-cover"
         />
-        {/* Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/40" />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/30" />
       </div>
 
-      {/* Hero image placeholder marker */}
-      <div className="pointer-events-none absolute left-4 top-4 z-10 rounded-2xl border-2 border-dashed border-white/80 bg-primary/90 px-5 py-3 text-center shadow-elevated">
-        <div className="text-xs font-semibold text-white">Hero image space</div>
-        <div className="text-[10px] text-white/80">Replace: public/assets/hero-background.webp</div>
-        <div className="text-[10px] text-white/80">1920 × 1280 px</div>
-      </div>
-
-      <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 pb-16 pt-8 lg:grid-cols-2 lg:gap-10 md:px-5 md:pb-24 md:pt-20">
-        <div className="order-2 lg:order-1">
-          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground shadow-card backdrop-blur-sm animate-hero-rise">
-            <Leaf className="h-3 w-3 text-primary" />
-            Natural Protein · Real Results
-          </div>
-          <h1 className="mt-4 text-balance text-[2.25rem] font-bold leading-[1.05] tracking-tight md:text-6xl lg:text-7xl animate-hero-rise" style={{ animationDelay: "0.1s" }}>
-            G&amp;B Naturals, Affordable daily protein{" "}
-            <span className="relative inline-block text-primary">
-              <span className="relative z-10">made simple.</span>
-              <span aria-hidden className="absolute inset-x-0 bottom-1 -z-0 h-3 rounded-full bg-accent/60 animate-hero-rise" style={{ animationDelay: "0.6s" }} />
-            </span>
-          </h1>
-          <p className="mt-4 max-w-xl text-balance text-base text-muted-foreground md:mt-6 md:text-lg animate-hero-rise" style={{ animationDelay: "0.2s" }}>
-            Fresh <BrandMark className="text-primary text-[1.05em]" /> Naturals eggs reserved weekly
-            and ready for pickup through your local fitness community. Clean fuel for real training.
-          </p>
-
-          <ul className="mt-5 grid gap-2 text-sm md:mt-7 md:gap-2.5">
-            {[
-              "Affordable daily protein",
-              "Easier breakfast & meal prep",
-              "Less dependence on expensive supplements",
-              "Weekly pickup ready for you",
-              "Built for consistent nutrition habits",
-            ].map((b, i) => (
-              <li key={b} className="flex items-center gap-3 animate-hero-rise" style={{ animationDelay: `${300 + i * 80}ms` }}>
-                <span className="grid h-5 w-5 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
-                  <Check className="h-3 w-3" strokeWidth={3} />
-                </span>
-                <span className="text-foreground/90">{b}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center md:mt-9 animate-hero-rise" style={{ animationDelay: "0.7s" }}>
-            <Button asChild size="lg" className="h-12 w-full rounded-full px-6 text-base shadow-elevated transition-transform hover:scale-[1.03] sm:w-auto">
-              <a href="#stacks">Order Medium Pack <ArrowRight className="h-4 w-4" /></a>
-            </Button>
-            <Button asChild size="lg" variant="outline" className="h-12 w-full rounded-full px-6 text-base sm:w-auto">
-              <a href="#stacks">See Protein Packs</a>
-            </Button>
-          </div>
-        </div>
-
-        {/* Right side decorative product image */}
-        <div className="relative order-1 lg:order-2 animate-hero-rise" style={{ animationDelay: "0.3s" }}>
-          <div className="absolute -inset-6 -z-10 rounded-[2rem] bg-kraft-paper opacity-70 blur-2xl animate-hero-blob" />
-          <div className="absolute -inset-10 -z-10 rounded-full bg-primary/10 blur-3xl animate-hero-blob" style={{ animationDelay: "1.5s" }} />
-          <div className="hero-shine relative overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
-            <img
-              src={heroImg}
-              alt="G&amp;B Naturals portrait - white egg on dark stone"
-              width={1024}
-              height={1535}
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              className="aspect-[2/3] w-full object-cover animate-hero-zoom"
-            />
-          </div>
-          <div className="absolute -bottom-5 -left-5 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block animate-hero-float">
-            <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/10 text-primary">
-                <Flame className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">One habit. One month.</div>
-                <div className="text-sm font-semibold">4 eggs a day, covered.</div>
-              </div>
-            </div>
-          </div>
-          <div className="absolute -right-4 -top-4 hidden rounded-2xl border border-border bg-card p-4 shadow-elevated md:block animate-hero-float" style={{ animationDelay: "1.2s" }}>
-            <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-kraft text-kraft-foreground">
-                <Leaf className="h-5 w-5" />
-              </div>
-              <div>
-                <div className="text-xs text-muted-foreground">From</div>
-                <div className="text-sm font-semibold">GHS 60 / crate</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Optional subtle bottom gradient to soften the transition into the next section */}
+      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
     </section>
   );
 }
