@@ -25,8 +25,7 @@ import { CartProvider, useCart, formatGHS } from "@/lib/cart";
 import { CartButton } from "@/components/CartButton";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-const heroImg = "/assets/egg-on-stone-portrait.webp";
-const heroBackgroundImg = "/assets/hero-background.webp"; // replace with your uploaded hero image
+const heroBackgroundImg = "/assets/hero-background.webp";
 const gnbLogo = "/assets/gnb-logo-new.png";
 const foodFresh = "/assets/eggs-in-shaker.webp";
 import productOpen from "@/assets/product-open.webp";
@@ -65,13 +64,6 @@ export const Route = createFileRoute("/")({
   }),
 });
 
-function BrandMark({ className = "" }: { className?: string }) {
-  return (
-    <span className={["font-brand leading-none tracking-tight", className].join(" ")} style={{ fontFamily: "var(--font-brand)" }}>
-      G<span className="italic font-medium opacity-90">&amp;</span>B
-    </span>
-  );
-}
 
 function Logo({ compact = false, plain = false }: { compact?: boolean; plain?: boolean }) {
   if (plain) {
