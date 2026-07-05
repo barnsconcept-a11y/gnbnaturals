@@ -214,7 +214,24 @@ function GymDetailPage() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 md:px-6 md:py-4">
-          <h1 className="text-base font-semibold md:text-lg">Gym profile</h1>
+          <div className="flex items-center gap-3">
+            {imageUrl ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src={imageUrl}
+                alt={name}
+                className="h-10 w-10 rounded-lg border border-border bg-muted object-cover"
+              />
+            ) : (
+              <div className="grid h-10 w-10 place-items-center rounded-lg border border-border bg-muted text-muted-foreground">
+                <MapPin className="h-5 w-5" />
+              </div>
+            )}
+            <div>
+              <h1 className="text-base font-semibold md:text-lg">{name}</h1>
+              <p className="text-xs text-muted-foreground">Gym profile</p>
+            </div>
+          </div>
           <Button variant="outline" size="sm" asChild>
             <Link to="/admin/gyms">
               <ArrowLeft className="mr-1 h-4 w-4" /> All gyms
