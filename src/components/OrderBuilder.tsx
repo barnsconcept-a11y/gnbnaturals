@@ -111,7 +111,8 @@ export function OrderBuilder({
 
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[92vh] gap-0 overflow-hidden p-0 sm:max-w-md">
         <DialogHeader className="border-b border-border px-5 pb-3 pt-5">
           <div className="flex items-center justify-between gap-3">
@@ -348,16 +349,15 @@ export function OrderBuilder({
           Save to cart and keep shopping
         </button>
       </DialogContent>
+      </Dialog>
       <CheckoutDialog
         open={checkoutOpen}
-        onOpenChange={(v) => {
-          setCheckoutOpen(v);
-          if (!v) onOpenChange(false);
-        }}
+        onOpenChange={setCheckoutOpen}
       />
-    </Dialog>
+    </>
   );
 }
+
 
 function StepDots({ total, current }: { total: number; current: number }) {
   return (
