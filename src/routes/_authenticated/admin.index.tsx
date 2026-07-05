@@ -121,7 +121,6 @@ function AdminDashboard() {
       setGyms(gymRows);
       setPayouts(((payoutsData ?? []) as unknown) as Payout[]);
       setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
-      setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
       if (!admin) {
         const resolved = await Promise.all(
           gymRows.map(async (g) => {
