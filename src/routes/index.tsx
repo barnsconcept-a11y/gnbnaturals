@@ -572,11 +572,11 @@ function WhyEggs() {
               <div className="overflow-hidden rounded-3xl border border-border bg-card shadow-elevated">
                 <img
                   src={foodFresh}
-                  alt="Fresh brown eggs on soft cream linen, natural daylight"
+                  alt="White eggs in a black shaker bottle - clean portable protein"
                   loading="lazy"
-                  width={1536}
-                  height={864}
-                  className="aspect-[16/9] w-full object-contain bg-cream"
+                  width={1024}
+                  height={1536}
+                  className="aspect-[2/3] w-full object-cover bg-cream"
                 />
               </div>
             </div>
