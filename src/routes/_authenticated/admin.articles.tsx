@@ -332,6 +332,7 @@ function ArticlesAdminPage() {
               <ArticleRow
                 key={r.id}
                 article={r}
+                authors={authors}
                 onUpdate={update}
                 onRemove={remove}
                 onReplaceImage={handleReplaceImage}
