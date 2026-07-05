@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StackRouteImport } from './routes/stack'
 import { Route as OrderRouteImport } from './routes/order'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -31,6 +32,11 @@ import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/e
 import { Route as ApiPublicHooksNewOrderRouteImport } from './routes/api/public/hooks/new-order'
 import { Route as AuthenticatedAdminGymGymIdRouteImport } from './routes/_authenticated/admin.gym.$gymId'
 
+const StackRoute = StackRouteImport.update({
+  id: '/stack',
+  path: '/stack',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OrderRoute = OrderRouteImport.update({
   id: '/order',
   path: '/order',
@@ -148,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
+  '/stack': typeof StackRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -170,6 +177,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
+  '/stack': typeof StackRoute
   '/change-password': typeof AuthenticatedChangePasswordRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/order': typeof OrderRoute
+  '/stack': typeof StackRoute
   '/_authenticated/change-password': typeof AuthenticatedChangePasswordRoute
   '/articles/$slug': typeof ArticlesSlugRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/order'
+    | '/stack'
     | '/change-password'
     | '/articles/$slug'
     | '/email/unsubscribe'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/order'
+    | '/stack'
     | '/change-password'
     | '/articles/$slug'
     | '/email/unsubscribe'
@@ -263,6 +274,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/order'
+    | '/stack'
     | '/_authenticated/change-password'
     | '/articles/$slug'
     | '/email/unsubscribe'
@@ -287,6 +299,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   OrderRoute: typeof OrderRoute
+  StackRoute: typeof StackRoute
   ArticlesSlugRoute: typeof ArticlesSlugRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   RecipesSlugRoute: typeof RecipesSlugRoute
@@ -300,6 +313,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/stack': {
+      id: '/stack'
+      path: '/stack'
+      fullPath: '/stack'
+      preLoaderRoute: typeof StackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/order': {
       id: '/order'
       path: '/order'
@@ -480,6 +500,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   OrderRoute: OrderRoute,
+  StackRoute: StackRoute,
   ArticlesSlugRoute: ArticlesSlugRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   RecipesSlugRoute: RecipesSlugRoute,
