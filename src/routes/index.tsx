@@ -60,7 +60,7 @@ export const Route = createFileRoute("/")({
       },
     ],
     links: [
-      { rel: "preload", as: "image", href: "/assets/egg-on-stone-portrait.webp", fetchpriority: "high" },
+      { rel: "preload", as: "image", href: "/assets/hero-background.webp", fetchpriority: "high" },
     ],
   }),
 });
