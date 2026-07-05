@@ -187,12 +187,10 @@ function Hero() {
       </div>
 
       {/* Hero image placeholder marker */}
-      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
-        <div className="rounded-2xl border-2 border-dashed border-white/80 bg-primary/90 px-7 py-5 text-center shadow-elevated">
-          <div className="text-sm font-semibold text-white">Hero image space</div>
-          <div className="mt-1 text-xs text-white/80">Replace: public/assets/hero-background.webp</div>
-          <div className="text-xs text-white/80">1920 × 1280 px</div>
-        </div>
+      <div className="pointer-events-none absolute right-4 top-4 z-10 rounded-2xl border-2 border-dashed border-white/80 bg-primary/90 px-5 py-3 text-center shadow-elevated">
+        <div className="text-xs font-semibold text-white">Hero image space</div>
+        <div className="text-[10px] text-white/80">Replace: public/assets/hero-background.webp</div>
+        <div className="text-[10px] text-white/80">1920 × 1280 px</div>
       </div>
 
       <div className="relative mx-auto grid max-w-6xl items-center gap-8 px-4 pb-16 pt-8 lg:grid-cols-2 lg:gap-10 md:px-5 md:pb-24 md:pt-20">
