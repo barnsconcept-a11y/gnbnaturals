@@ -378,26 +378,6 @@ function AdminDashboard() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2 md:gap-4">
-            {!isAdmin && ownerGyms.length > 0 && (
-              <div className="flex items-center gap-3 rounded-full border border-border bg-background px-3 py-1.5">
-                {ownerGyms.map((g) => (
-                  <div key={g.id} className="flex items-center gap-2">
-                    {g.imageUrl ? (
-                      <img
-                        src={g.imageUrl}
-                        alt={g.name}
-                        className="h-8 w-8 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="grid h-8 w-8 place-items-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
-                        {g.name[0]}
-                      </div>
-                    )}
-                    <span className="text-sm font-medium text-foreground">{g.name}</span>
-                  </div>
-                ))}
-              </div>
-            )}
             {isAdmin && (
               <>
                 <Button variant="outline" size="sm" asChild>
@@ -425,6 +405,30 @@ function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-7xl space-y-5 px-4 py-5 md:space-y-6 md:px-6 md:py-8">
+        {!isAdmin && ownerGyms.length > 0 && (
+          <section className="flex flex-wrap items-center gap-3">
+            {ownerGyms.map((g) => (
+              <div
+                key={g.id}
+                className="flex items-center gap-3 rounded-full border border-border bg-card px-3 py-1.5 shadow-card"
+              >
+                {g.imageUrl ? (
+                  <img
+                    src={g.imageUrl}
+                    alt={g.name}
+                    className="h-10 w-10 rounded-full object-cover"
+                  />
+                ) : (
+                  <div className="grid h-10 w-10 place-items-center rounded-full bg-muted text-sm font-semibold text-muted-foreground">
+                    {g.name[0]}
+                  </div>
+                )}
+                <span className="text-base font-semibold text-foreground">{g.name}</span>
+              </div>
+            ))}
+          </section>
+        )}
+
         <section className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
           <StatCard label="Orders" value={String(stats.count)} />
           <StatCard label="Crates" value={String(stats.crates)} />
