@@ -142,9 +142,9 @@ function TrackPage() {
             return (
               <li
                 key={s.key}
-                className={`flex gap-3 rounded-xl border p-3 ${
+                className={`flex gap-3 rounded-xl border p-3 transition-all ${
                   active
-                    ? "border-primary bg-primary/5"
+                    ? "border-primary bg-primary/10 shadow-[0_0_0_3px_hsl(var(--primary)/0.15),0_8px_24px_-6px_hsl(var(--primary)/0.45)] ring-2 ring-primary/40 scale-[1.02]"
                     : done
                       ? "border-border bg-card"
                       : "border-border bg-card/50 opacity-60"
@@ -155,7 +155,7 @@ function TrackPage() {
                     done
                       ? "bg-primary text-primary-foreground"
                       : active
-                        ? "bg-primary/20 text-primary"
+                        ? "bg-primary text-primary-foreground animate-pulse"
                         : "bg-secondary text-muted-foreground"
                   }`}
                 >
@@ -167,6 +167,7 @@ function TrackPage() {
                     <Package className="h-4 w-4" />
                   )}
                 </div>
+
                 <div>
                   <div className="text-sm font-semibold">{s.label}</div>
                   <div className="text-xs text-muted-foreground">{s.desc}</div>
