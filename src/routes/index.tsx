@@ -58,6 +58,9 @@ export const Route = createFileRoute("/")({
           "Modern protein convenience for fitness communities. Reserve weekly, pick up locally, stay consistent.",
       },
     ],
+    links: [
+      { rel: "preload", as: "image", href: "/assets/egg-on-stone-portrait.webp", fetchpriority: "high" },
+    ],
   }),
 });
 
