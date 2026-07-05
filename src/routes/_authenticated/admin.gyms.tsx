@@ -218,106 +218,66 @@ function GymsPage() {
         </form>
 
         <div className="space-y-3">
-          {gyms.map((g) => (
-            <div
-              key={g.id}
-              className="rounded-xl border border-border bg-card p-4"
-            >
-              <div className="flex flex-wrap items-start justify-between gap-3">
+          {gyms.map((g) => {
+            const img = imageUrls[g.id];
+            const owners = ownerCounts[g.id] ?? 0;
+            return (
+              <Link
+                key={g.id}
+                to="/admin/gym/$gymId"
+                params={{ gymId: g.id }}
+                className="group flex items-center gap-4 rounded-xl border border-border bg-card p-3 transition-colors hover:border-primary/40 hover:bg-muted/40"
+              >
+                <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-border bg-muted">
+                  {img ? (
+                    <img
+                      src={img}
+                      alt={g.name}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex h-full w-full items-center justify-center text-[10px] uppercase tracking-wide text-muted-foreground">
+                      No photo
+                    </div>
+                  )}
+                </div>
+
                 <div className="min-w-0 flex-1">
-                  <Link
-                    to="/admin/gym/$gymId"
-                    params={{ gymId: g.id }}
-                    className="font-medium hover:underline"
-                  >
+                  <p className="truncate font-medium group-hover:underline">
                     {g.name}
-                  </Link>
+                  </p>
                   <p className="text-xs text-muted-foreground">
                     {formatGhs(Number(g.commission_per_crate))} per crate
-                    {(ownerCounts[g.id] ?? 0) > 0
-                      ? ` · ${ownerCounts[g.id]} owner${ownerCounts[g.id] === 1 ? "" : "s"}`
+                    {owners > 0
+                      ? ` · ${owners} owner${owners === 1 ? "" : "s"}`
                       : ""}
+                    {" · "}
+                    {g.active ? "Active" : "Inactive"}
                   </p>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2">
-                  <div className="flex items-center gap-1">
-                    <Label className="text-xs text-muted-foreground">
-                      GH₵
-                    </Label>
-                    <Input
-                      type="number"
-                      step="0.01"
-                      defaultValue={Number(g.commission_per_crate)}
-                      className="h-8 w-20"
-                      onBlur={(e) => updateRate(g.id, e.target.value)}
-                    />
-                  </div>
-                  <Button
-                    size="sm"
-                    variant={g.active ? "outline" : "secondary"}
-                    onClick={() => toggleActive(g)}
-                  >
-                    {g.active ? "Active" : "Inactive"}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() =>
-                      assignFor === g.id ? setAssignFor(null) : openAssign(g.id)
-                    }
-                  >
-                    {assignFor === g.id ? (
-                      <X className="h-4 w-4" />
-                    ) : (ownerCounts[g.id] ?? 0) > 0 ? (
-                      <>
-                        <UserPlus className="mr-1 h-4 w-4" />
-                        Add another login ({ownerCounts[g.id]})
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className="mr-1 h-4 w-4" />
-                        Add login
-                      </>
-                    )}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="ghost"
-                    className="text-destructive hover:text-destructive"
-                    onClick={() => removeGym(g)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {assignFor === g.id && (
-                <div className="mt-3 grid gap-2 rounded-lg border border-dashed border-border bg-muted/30 p-3 sm:grid-cols-[1fr_auto]">
-                  <Input
-                    type="email"
-                    placeholder="owner@example.com"
-                    value={assignEmail}
-                    onChange={(e) => setAssignEmail(e.target.value)}
-                    autoComplete="off"
-                  />
-                  <Button
-                    size="sm"
-                    disabled={assignSubmitting}
-                    onClick={() => submitAssign(g)}
-                  >
-                    {assignSubmitting ? "Creating…" : "Create login"}
-                  </Button>
-                </div>
-              )}
-            </div>
-          ))}
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="text-destructive hover:text-destructive"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    removeGym(g);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </Link>
+            );
+          })}
           {gyms.length === 0 && (
             <p className="text-center text-sm text-muted-foreground">
               No gyms yet. Add your first one above.
             </p>
           )}
         </div>
+
       </main>
 
       <Dialog open={!!invited} onOpenChange={(o) => !o && setInvited(null)}>
