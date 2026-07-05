@@ -184,13 +184,14 @@ function Hero() {
         {/* Overlay for text readability */}
         <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/80 to-background/40" />
         <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-background/30" />
-        {/* Hero image placeholder marker */}
-        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="rounded-2xl border-2 border-dashed border-white/80 bg-primary/90 px-7 py-5 text-center shadow-elevated">
-            <div className="text-sm font-semibold text-white">Hero image space</div>
-            <div className="mt-1 text-xs text-white/80">Replace: public/assets/hero-background.webp</div>
-            <div className="text-xs text-white/80">1920 × 1280 px</div>
-          </div>
+      </div>
+
+      {/* Hero image placeholder marker */}
+      <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center">
+        <div className="rounded-2xl border-2 border-dashed border-white/80 bg-primary/90 px-7 py-5 text-center shadow-elevated">
+          <div className="text-sm font-semibold text-white">Hero image space</div>
+          <div className="mt-1 text-xs text-white/80">Replace: public/assets/hero-background.webp</div>
+          <div className="text-xs text-white/80">1920 × 1280 px</div>
         </div>
       </div>
 
