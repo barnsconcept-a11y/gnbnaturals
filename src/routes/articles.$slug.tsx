@@ -163,6 +163,8 @@ function ArticlePage() {
       </div>
 
       <div className="article-endmark mt-16">■</div>
+
+      {article.author && <AuthorCard author={article.author} className="mt-10" />}
     </article>
   );
 }
