@@ -588,6 +588,18 @@ function AdminDashboard() {
                   </Button>
                 )}
               </div>
+              {isAdmin && (
+                <div className="mt-2">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => deleteOrder(o)}
+                    className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                  >
+                    <Trash2 className="h-4 w-4" /> Delete order
+                  </Button>
+                </div>
+              )}
               <div className="mt-2">
                 <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
                   <SelectTrigger className="h-9">
