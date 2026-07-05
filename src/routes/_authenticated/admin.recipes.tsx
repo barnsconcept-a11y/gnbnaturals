@@ -34,7 +34,6 @@ type Recipe = {
   image_url: string | null;
   published: boolean;
   sort_order: number;
-  sort_order: number;
   author_id: string | null;
 };
 
