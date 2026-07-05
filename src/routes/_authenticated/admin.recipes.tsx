@@ -173,6 +173,9 @@ function RecipesAdminPage() {
               <Link to="/admin/articles">Articles</Link>
             </Button>
             <Button variant="outline" size="sm" asChild>
+              <Link to="/admin/authors">Authors</Link>
+            </Button>
+            <Button variant="outline" size="sm" asChild>
               <Link to="/admin">← Orders</Link>
             </Button>
           </div>
