@@ -299,6 +299,50 @@ export type Database = {
           },
         ]
       }
+      gym_stack_discounts: {
+        Row: {
+          crate_price: number | null
+          created_at: string
+          discount_percent: number | null
+          gym_id: string
+          id: string
+          notes: string | null
+          stack_id: string
+          stack_price: number | null
+          updated_at: string
+        }
+        Insert: {
+          crate_price?: number | null
+          created_at?: string
+          discount_percent?: number | null
+          gym_id: string
+          id?: string
+          notes?: string | null
+          stack_id: string
+          stack_price?: number | null
+          updated_at?: string
+        }
+        Update: {
+          crate_price?: number | null
+          created_at?: string
+          discount_percent?: number | null
+          gym_id?: string
+          id?: string
+          notes?: string | null
+          stack_id?: string
+          stack_price?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gym_stack_discounts_gym_id_fkey"
+            columns: ["gym_id"]
+            isOneToOne: false
+            referencedRelation: "gyms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       gyms: {
         Row: {
           active: boolean
@@ -500,6 +544,15 @@ export type Database = {
       enqueue_email: {
         Args: { payload: Json; queue_name: string }
         Returns: number
+      }
+      get_gym_discounts_by_name: {
+        Args: { _name: string }
+        Returns: {
+          crate_price: number
+          discount_percent: number
+          stack_id: string
+          stack_price: number
+        }[]
       }
       get_order_status: {
         Args: { order_id: string }
