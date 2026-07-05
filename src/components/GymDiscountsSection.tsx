@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { DEFAULT_STACKS } from "@/lib/stacks";
-import { Percent, Save } from "lucide-react";
+import { Percent, Save, Pencil, Check } from "lucide-react";
 
 type Row = {
   stack_id: string;
@@ -19,8 +19,15 @@ const empty = (): Row[] =>
     discount_percent: "",
   }));
 
+const fmt = (n: number) => {
+  if (!Number.isFinite(n)) return "";
+  const rounded = Math.round(n * 100) / 100;
+  return rounded % 1 === 0 ? String(rounded) : rounded.toFixed(2);
+};
+
 export function GymDiscountsSection({ gymId }: { gymId: string }) {
   const [rows, setRows] = useState<Row[]>(empty());
+  const [unlocked, setUnlocked] = useState<Record<string, boolean>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -45,6 +52,7 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
           };
         }),
       );
+      setUnlocked({});
     }
     setLoading(false);
   };
@@ -56,6 +64,36 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
 
   const update = (id: string, patch: Partial<Row>) =>
     setRows((r) => r.map((x) => (x.stack_id === id ? { ...x, ...patch } : x)));
+
+  const onPercentChange = (id: string, value: string) => {
+    const def = DEFAULT_STACKS.find((s) => s.id === id)!;
+    if (value.trim() === "") {
+      update(id, { discount_percent: "", crate_price: "" });
+      return;
+    }
+    const pct = Number(value);
+    if (!Number.isFinite(pct)) {
+      update(id, { discount_percent: value });
+      return;
+    }
+    const price = def.cratePrice * (1 - pct / 100);
+    update(id, { discount_percent: value, crate_price: fmt(price) });
+  };
+
+  const onPriceChange = (id: string, value: string) => {
+    const def = DEFAULT_STACKS.find((s) => s.id === id)!;
+    if (value.trim() === "") {
+      update(id, { crate_price: "", discount_percent: "" });
+      return;
+    }
+    const price = Number(value);
+    if (!Number.isFinite(price) || def.cratePrice <= 0) {
+      update(id, { crate_price: value });
+      return;
+    }
+    const pct = (1 - price / def.cratePrice) * 100;
+    update(id, { crate_price: value, discount_percent: fmt(pct) });
+  };
 
   const onSave = async () => {
     setSaving(true);
@@ -105,24 +143,28 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
       <div>
         <h2 className="font-semibold">Per-stack discounts</h2>
         <p className="text-xs text-muted-foreground">
-          Set a percentage off the default, or override the crate price. Leave
-          blank to charge the default. Overrides win over percentages.
+          Enter a discount percentage OR override the crate price — the other
+          field updates automatically. Leave blank to charge the default. Click
+          the pencil to edit a row.
         </p>
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[560px] text-sm">
+        <table className="w-full min-w-[620px] text-sm">
           <thead>
             <tr className="text-left text-xs uppercase tracking-wide text-muted-foreground">
               <th className="pb-2 pr-3">Stack</th>
               <th className="pb-2 pr-3">Default</th>
               <th className="pb-2 pr-3">Discount %</th>
-              <th className="pb-2">Crate GH₵</th>
+              <th className="pb-2 pr-3">Crate GH₵</th>
+              <th className="pb-2 w-10"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {rows.map((r) => {
               const def = DEFAULT_STACKS.find((s) => s.id === r.stack_id)!;
+              const isUnlocked = !!unlocked[r.stack_id];
+              const locked = !isUnlocked;
               return (
                 <tr key={r.stack_id}>
                   <td className="py-2 pr-3 font-medium">{def.name}</td>
@@ -138,11 +180,10 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
                         max="100"
                         placeholder="—"
                         className="h-9 pr-7"
+                        disabled={locked}
                         value={r.discount_percent}
                         onChange={(e) =>
-                          update(r.stack_id, {
-                            discount_percent: e.target.value,
-                          })
+                          onPercentChange(r.stack_id, e.target.value)
                         }
                       />
                       <Percent className="pointer-events-none absolute right-2 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
@@ -155,11 +196,33 @@ export function GymDiscountsSection({ gymId }: { gymId: string }) {
                       min="0"
                       placeholder={String(def.cratePrice)}
                       className="h-9"
+                      disabled={locked}
                       value={r.crate_price}
                       onChange={(e) =>
-                        update(r.stack_id, { crate_price: e.target.value })
+                        onPriceChange(r.stack_id, e.target.value)
                       }
                     />
+                  </td>
+                  <td className="py-2">
+                    <Button
+                      type="button"
+                      size="icon"
+                      variant="ghost"
+                      aria-label={locked ? "Edit row" : "Lock row"}
+                      className="h-9 w-9 text-muted-foreground hover:text-foreground"
+                      onClick={() =>
+                        setUnlocked((u) => ({
+                          ...u,
+                          [r.stack_id]: !u[r.stack_id],
+                        }))
+                      }
+                    >
+                      {locked ? (
+                        <Pencil className="h-4 w-4" />
+                      ) : (
+                        <Check className="h-4 w-4" />
+                      )}
+                    </Button>
                   </td>
                 </tr>
               );

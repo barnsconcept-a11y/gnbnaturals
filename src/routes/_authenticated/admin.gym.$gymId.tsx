@@ -24,6 +24,8 @@ import {
   Upload,
   MapPin,
   Search,
+  Pencil,
+  Check,
 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/gym/$gymId")({
@@ -80,6 +82,8 @@ function GymDetailPage() {
   const [newEmail, setNewEmail] = useState("");
   const [addingOwner, setAddingOwner] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
+  const [lockSignal, setLockSignal] = useState(0);
+  const [mapUnlocked, setMapUnlocked] = useState(false);
 
   const load = async () => {
     try {
@@ -162,6 +166,8 @@ function GymDetailPage() {
         },
       });
       toast.success("Saved");
+      setLockSignal((v) => v + 1);
+      setMapUnlocked(false);
       load();
     } catch (e: any) {
       toast.error(e.message ?? "Save failed");
@@ -305,7 +311,7 @@ function GymDetailPage() {
           </div>
 
           <div className="grid gap-3 sm:grid-cols-[1fr_180px]">
-            <LockableField>
+            <LockableField lockSignal={lockSignal}>
               {(locked) => (
                 <>
                   <Label htmlFor="g-name">Name</Label>
@@ -318,7 +324,7 @@ function GymDetailPage() {
                 </>
               )}
             </LockableField>
-            <LockableField>
+            <LockableField lockSignal={lockSignal}>
               {(locked) => (
                 <>
                   <Label htmlFor="g-rate">GH₵ / crate</Label>
@@ -337,7 +343,7 @@ function GymDetailPage() {
 
           {/* Address + Map */}
           <div className="space-y-2">
-            <LockableField>
+            <LockableField lockSignal={lockSignal}>
               {(locked) => (
                 <>
                   <Label htmlFor="g-address">Address</Label>
@@ -365,38 +371,70 @@ function GymDetailPage() {
                 </>
               )}
             </LockableField>
-            <MapPicker
-              lat={lat}
-              lng={lng}
-              onChange={async (la, ln) => {
-                setLat(la);
-                setLng(ln);
-                try {
-                  const r = await doReverseGeocode({
-                    data: { lat: la, lng: ln },
-                  });
-                  if (r.formatted_address) setAddress(r.formatted_address);
-                } catch {
-                  /* silent – pin still saved */
-                }
-              }}
-            />
+
+            <div className="flex items-start gap-2">
+              <div className="relative flex-1 min-w-0">
+                <MapPicker
+                  lat={lat}
+                  lng={lng}
+                  onChange={async (la, ln) => {
+                    if (!mapUnlocked) return;
+                    setLat(la);
+                    setLng(ln);
+                    try {
+                      const r = await doReverseGeocode({
+                        data: { lat: la, lng: ln },
+                      });
+                      if (r.formatted_address)
+                        setAddress(r.formatted_address);
+                    } catch {
+                      /* silent – pin still saved */
+                    }
+                  }}
+                />
+                {!mapUnlocked && (
+                  <div className="pointer-events-auto absolute inset-0 flex items-center justify-center rounded-lg bg-background/40 backdrop-blur-[1px]">
+                    <span className="rounded-full bg-background/90 px-3 py-1 text-xs font-medium text-muted-foreground shadow">
+                      Locked — click the pencil to edit the pin
+                    </span>
+                  </div>
+                )}
+              </div>
+              <Button
+                type="button"
+                size="icon"
+                variant="ghost"
+                aria-label={mapUnlocked ? "Lock map" : "Edit map"}
+                className="mt-2 h-9 w-9 shrink-0 text-muted-foreground hover:text-foreground"
+                onClick={() => setMapUnlocked((v) => !v)}
+              >
+                {mapUnlocked ? (
+                  <Check className="h-4 w-4" />
+                ) : (
+                  <Pencil className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+
             <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
               <MapPin className="h-3.5 w-3.5" />
               {lat != null && lng != null ? (
                 <span>
-                  Pin at {lat.toFixed(5)}, {lng.toFixed(5)}. Click map or drag
-                  marker to adjust — address updates automatically. Press
-                  “Save changes” to store it.
+                  Pin at {lat.toFixed(5)}, {lng.toFixed(5)}.
+                  {mapUnlocked
+                    ? " Click the map or drag the marker to adjust — address updates automatically. Press “Save changes” to store it."
+                    : " Locked. Unlock the map with the pencil to move the pin."}
                 </span>
               ) : (
                 <span>
-                  Click the map to drop a pin, or type an address and press
-                  “Find on map”.
+                  Unlock the map, click to drop a pin, or type an address and
+                  press “Find on map”.
                 </span>
               )}
             </div>
           </div>
+
+
 
 
           <div className="flex items-center gap-3">
