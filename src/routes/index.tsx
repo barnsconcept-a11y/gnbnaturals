@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { OrderBuilder } from "@/components/OrderBuilder";
 import {
   ArrowRight,
@@ -977,6 +977,13 @@ function Footer() {
 }
 
 function Landing() {
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash === "#stacks") {
+      navigate({ to: "/order", replace: true });
+    }
+  }, [navigate]);
+
   return (
     <CartProvider>
       <div className="min-h-screen bg-background text-foreground">
