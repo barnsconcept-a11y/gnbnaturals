@@ -422,21 +422,21 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
   return (
     <div
       className={[
-        "relative flex flex-col overflow-hidden rounded-3xl border p-7 transition-all",
+        "relative flex flex-col rounded-3xl border p-7 transition-all",
         featured
-          ? "border-primary/20 bg-primary text-primary-foreground shadow-elevated lg:-my-6 lg:scale-[1.04]"
+          ? "z-10 border-primary/20 bg-primary text-primary-foreground shadow-elevated lg:-my-6 lg:scale-[1.04]"
           : "border-border bg-card shadow-card hover:-translate-y-1 hover:shadow-elevated",
       ].join(" ")}
     >
       {featured && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-          <span className="inline-flex items-center gap-1 rounded-full bg-kraft px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-kraft-foreground shadow-soft">
+        <div className="pointer-events-none absolute -top-3.5 left-1/2 z-20 -translate-x-1/2 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1 rounded-full bg-kraft px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-widest text-kraft-foreground shadow-elevated ring-2 ring-background">
             <Sparkles className="h-3 w-3" /> Most Popular
           </span>
         </div>
       )}
 
-      <div className="-mx-7 -mt-7 mb-6 overflow-hidden">
+      <div className="-mx-7 -mt-7 mb-6 overflow-hidden rounded-t-3xl">
         <img
           src={s.img}
           alt={s.imgAlt}
@@ -444,6 +444,7 @@ function StackCard({ s, onOrder }: { s: Stack; onOrder: (id: string) => void }) 
           className="h-40 w-full object-cover transition-transform duration-700 hover:scale-105"
         />
       </div>
+
 
       <h3 className={["text-xl font-bold tracking-tight", featured ? "text-primary-foreground" : "text-foreground"].join(" ")}>{s.name}</h3>
       <p className={["mt-1.5 text-sm", featured ? "text-primary-foreground/75" : "text-muted-foreground"].join(" ")}>
@@ -524,7 +525,7 @@ function Stacks() {
           </p>
         </div>
 
-        <div className="mt-14 grid items-stretch gap-6 lg:grid-cols-3 lg:gap-8">
+        <div className="mt-14 grid items-stretch gap-8 pt-4 lg:grid-cols-3 lg:gap-8 lg:pt-8">
           {stacks.map((s) => (
             <StackCard
               key={s.name}
