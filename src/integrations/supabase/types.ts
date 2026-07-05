@@ -416,6 +416,18 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      get_order_status: {
+        Args: { order_id: string }
+        Returns: {
+          created_at: string
+          customer_name: string
+          id: string
+          pickup_station: string
+          status: string
+          total_amount: number
+          total_crates: number
+        }[]
+      }
       get_pickup_locations: {
         Args: never
         Returns: {
@@ -423,14 +435,6 @@ export type Database = {
           name: string
         }[]
       }
-      has_role: {
-        Args: {
-          _role: Database["public"]["Enums"]["app_role"]
-          _user_id: string
-        }
-        Returns: boolean
-      }
-      is_gym_owner_of: { Args: { _station: string }; Returns: boolean }
       move_to_dlq: {
         Args: {
           dlq_name: string
