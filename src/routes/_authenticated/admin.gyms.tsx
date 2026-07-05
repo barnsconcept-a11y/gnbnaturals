@@ -53,12 +53,31 @@ function GymsPage() {
       ]);
     if (error) toast.error(error.message);
     if (ownersErr) toast.error(ownersErr.message);
-    setGyms((data as Gym[]) ?? []);
+    const list = ((data as Gym[]) ?? []);
+    setGyms(list);
     const counts: Record<string, number> = {};
     for (const o of (owners ?? []) as { gym_id: string }[]) {
       counts[o.gym_id] = (counts[o.gym_id] ?? 0) + 1;
     }
     setOwnerCounts(counts);
+
+    // Batch sign image URLs (private bucket)
+    const withImages = list.filter((g) => !!g.image_url);
+    if (withImages.length > 0) {
+      const results = await Promise.all(
+        withImages.map(async (g) => {
+          const { data: signed } = await supabase.storage
+            .from("gym-images")
+            .createSignedUrl(g.image_url as string, 60 * 60);
+          return [g.id, signed?.signedUrl ?? ""] as const;
+        }),
+      );
+      const map: Record<string, string> = {};
+      for (const [id, url] of results) if (url) map[id] = url;
+      setImageUrls(map);
+    } else {
+      setImageUrls({});
+    }
     setLoading(false);
   };
 
