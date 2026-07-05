@@ -28,6 +28,7 @@ type Gym = {
   name: string;
   commission_per_crate: number;
   active: boolean;
+  image_url: string | null;
 };
 
 type Invited = { email: string; gymName: string };
