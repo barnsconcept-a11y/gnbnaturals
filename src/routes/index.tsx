@@ -170,7 +170,7 @@ function Hero() {
   return (
     <section className="relative min-h-[600px] overflow-hidden lg:min-h-[760px]">
       {/* Full-width hero image background — replaces placeholder text + product image */}
-      <div className="absolute inset-0 -z-20">
+      <div className="absolute inset-0">
         <img
           src={heroBackgroundImg}
           alt="G&B Naturals - One choice. Every day. Consistency is power. Affordable daily protein."
@@ -183,8 +183,8 @@ function Hero() {
         />
       </div>
 
-      {/* Optional subtle bottom gradient to soften the transition into the next section */}
-      <div className="absolute inset-0 -z-10 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
+      {/* Subtle bottom gradient to soften the transition into the next section */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
     </section>
   );
 }
