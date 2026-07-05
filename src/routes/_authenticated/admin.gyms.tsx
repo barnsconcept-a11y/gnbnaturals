@@ -251,11 +251,21 @@ function GymsPage() {
             >
               <div className="flex flex-wrap items-start justify-between gap-3">
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium">{g.name}</p>
+                  <Link
+                    to="/admin/gyms/$gymId"
+                    params={{ gymId: g.id }}
+                    className="font-medium hover:underline"
+                  >
+                    {g.name}
+                  </Link>
                   <p className="text-xs text-muted-foreground">
                     {formatGhs(Number(g.commission_per_crate))} per crate
+                    {(ownerCounts[g.id] ?? 0) > 0
+                      ? ` · ${ownerCounts[g.id]} owner${ownerCounts[g.id] === 1 ? "" : "s"}`
+                      : ""}
                   </p>
                 </div>
+
                 <div className="flex flex-wrap items-center gap-2">
                   <div className="flex items-center gap-1">
                     <Label className="text-xs text-muted-foreground">
