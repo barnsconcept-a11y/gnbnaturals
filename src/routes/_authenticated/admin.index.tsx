@@ -121,6 +121,24 @@ function AdminDashboard() {
       setGyms(gymRows);
       setPayouts(((payoutsData ?? []) as unknown) as Payout[]);
       setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
+      setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
+      if (!admin) {
+        const resolved = await Promise.all(
+          gymRows.map(async (g) => {
+            let imageUrl: string | null = null;
+            if (g.image_url) {
+              const { data: signed } = await supabase.storage
+                .from("gym-images")
+                .createSignedUrl(g.image_url, 60 * 60);
+              imageUrl = signed?.signedUrl ?? null;
+            }
+            return { id: g.id, name: g.name, imageUrl };
+          }),
+        );
+        setOwnerGyms(resolved);
+      } else {
+        setOwnerGyms([]);
+      }
       if (admin) {
         const { data: setting } = await supabase
           .from("app_settings")
