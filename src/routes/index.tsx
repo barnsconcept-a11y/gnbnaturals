@@ -888,12 +888,14 @@ const testimonials = [
 
 function Testimonials() {
   return (
-    <section className="border-t border-border">
-      <img
-        src="/smallest-advantage.png"
-        alt="The smallest advantage. The biggest results."
-        className="block h-auto w-full"
-      />
+    <section className="border-t border-border px-4 py-4 md:px-5 md:py-5">
+      <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem]">
+        <img
+          src="/smallest-advantage.png"
+          alt="The smallest advantage. The biggest results."
+          className="block h-auto w-full"
+        />
+      </div>
     </section>
   );
 }
