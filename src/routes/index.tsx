@@ -160,29 +160,31 @@ function Nav() {
 
 function Hero() {
   return (
-    <section className="relative w-full overflow-hidden md:aspect-[3/2] md:min-h-[600px]">
-      {/* On mobile: show the full image (no crop). On desktop: fill the 3:2 hero area. */}
-      <img
-        src={heroBackgroundImg}
-        alt="G&B Naturals - One choice. Every day. Consistency is power. Affordable daily protein."
-        width={1920}
-        height={1280}
-        loading="eager"
-        fetchPriority="high"
-        decoding="async"
-        className="block h-auto w-full md:absolute md:inset-0 md:h-full md:w-full md:object-cover md:object-center"
-      />
+    <section className="px-4 pt-4 md:px-5 md:pt-5">
+      <div className="relative mx-auto max-w-6xl overflow-hidden rounded-[2rem] md:aspect-[3/2] md:min-h-[600px]">
+        {/* On mobile: show the full image (no crop). On desktop: fill the 3:2 hero area. */}
+        <img
+          src={heroBackgroundImg}
+          alt="G&B Naturals - One choice. Every day. Consistency is power. Affordable daily protein."
+          width={1920}
+          height={1280}
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
+          className="block h-auto w-full md:absolute md:inset-0 md:h-full md:w-full md:object-cover md:object-center"
+        />
 
-      {/* Subtle bottom gradient to soften the transition into the next section */}
-      <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
+        {/* Subtle bottom gradient to soften the transition into the next section */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/20 via-transparent to-transparent" />
 
-      {/* Order now button at bottom-left of the hero */}
-      <div className="absolute bottom-4 left-4 z-20 md:bottom-8 md:left-8">
-        <Button asChild size="lg" className="rounded-full px-5 shadow-elevated md:px-6">
-          <Link to="/order">
-            Order now <ArrowRight className="h-4 w-4" />
-          </Link>
-        </Button>
+        {/* Order now button at bottom-left of the hero */}
+        <div className="absolute bottom-4 left-4 z-20 md:bottom-8 md:left-8">
+          <Button asChild size="lg" className="rounded-full px-5 shadow-elevated md:px-6">
+            <Link to="/order">
+              Order now <ArrowRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
       </div>
     </section>
   );
