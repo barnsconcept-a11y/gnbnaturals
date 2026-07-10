@@ -1,0 +1,1 @@
+GRANT EXECUTE ON FUNCTION public.get_order_status(uuid) TO anon, authenticated;
