@@ -110,16 +110,22 @@ export function CheckoutDialog({
       });
       if (insErr) throw insErr;
 
+      // Fire notification BEFORE closing the dialog. `keepalive` lets the
+      // request survive if the user navigates away immediately after.
+      try {
+        await fetch("/api/public/hooks/new-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId }),
+          keepalive: true,
+        });
+      } catch (e) {
+        console.warn("notify hook failed", e);
+      }
       setSummary({ crates: totalCrates, price: totalPrice, orderId });
       setDone(true);
       clear();
       close();
-      // Fire-and-forget admin notification email
-      fetch("/api/public/hooks/new-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ orderId }),
-      }).catch((e) => console.warn("notify hook failed", e));
       toast.success("Order received - we'll confirm shortly");
     } catch (err) {
       console.error(err);
