@@ -262,6 +262,15 @@ function AdminDashboard() {
     return Array.from(map.values()).sort((a, b) => b.revenue - a.revenue);
   }, [orders, gyms]);
 
+  const salesRows = useMemo(
+    () =>
+      gymFilter === "all"
+        ? salesByGym
+        : salesByGym.filter((g) => g.name === gymFilter),
+    [salesByGym, gymFilter],
+  );
+
+
   const markPaid = async (
     gymId: string,
     year: number,
