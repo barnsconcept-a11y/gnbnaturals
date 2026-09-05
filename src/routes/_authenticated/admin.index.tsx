@@ -481,7 +481,7 @@ function AdminDashboard() {
           </section>
         )}
 
-        {isAdmin && salesByGym.length > 0 && (
+        {isAdmin && salesRows.length > 0 && (
           <section className="rounded-xl border border-border bg-card p-4">
             <h2 className="mb-3 text-sm font-semibold text-foreground">Sales by gym</h2>
             <div className="overflow-x-auto">
@@ -496,7 +496,7 @@ function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {salesByGym.map((g) => (
+                  {salesRows.map((g) => (
                     <tr key={g.name} className="border-b border-border/50 last:border-0">
                       <td className="py-2 pr-3 font-medium text-foreground">{g.name}</td>
                       <td className="py-2 pr-3 text-right tabular-nums">{g.orders}</td>
@@ -508,16 +508,16 @@ function AdminDashboard() {
                   <tr className="font-semibold">
                     <td className="py-2 pr-3">Total</td>
                     <td className="py-2 pr-3 text-right tabular-nums">
-                      {salesByGym.reduce((s, g) => s + g.orders, 0)}
+                      {salesRows.reduce((s, g) => s + g.orders, 0)}
                     </td>
                     <td className="py-2 pr-3 text-right tabular-nums">
-                      {salesByGym.reduce((s, g) => s + g.crates, 0)}
+                      {salesRows.reduce((s, g) => s + g.crates, 0)}
                     </td>
                     <td className="py-2 pr-3 text-right tabular-nums">
-                      {formatGhs(salesByGym.reduce((s, g) => s + g.revenue, 0))}
+                      {formatGhs(salesRows.reduce((s, g) => s + g.revenue, 0))}
                     </td>
                     <td className="py-2 text-right tabular-nums">
-                      {formatGhs(salesByGym.reduce((s, g) => s + g.commission, 0))}
+                      {formatGhs(salesRows.reduce((s, g) => s + g.commission, 0))}
                     </td>
                   </tr>
                 </tbody>
