@@ -246,6 +246,25 @@ function AdminDashboard() {
     });
   }, [orders, gyms, payouts, gymFilter]);
 
+  // Per-gym sales summary for admins — total sales, crates, commission.
+  const salesByGym = useMemo(() => {
+    const map = new Map<string, { name: string; orders: number; crates: number; revenue: number; commission: number }>();
+    for (const g of gyms) {
+      map.set(g.name, { name: g.name, orders: 0, crates: 0, revenue: 0, commission: 0 });
+    }
+    for (const o of orders) {
+      if (o.status === "cancelled" || o.status === "refunded") continue;
+      const row = map.get(o.pickup_station) ?? { name: o.pickup_station, orders: 0, crates: 0, revenue: 0, commission: 0 };
+      row.orders += 1;
+      row.crates += o.total_crates;
+      row.revenue += Number(o.total_amount);
+      const g = gyms.find((g) => g.name === o.pickup_station);
+      if (g) row.commission += o.total_crates * Number(g.commission_per_crate);
+      map.set(o.pickup_station, row);
+    }
+    return Array.from(map.values()).sort((a, b) => b.revenue - a.revenue);
+  }, [orders, gyms]);
+
   const markPaid = async (
     gymId: string,
     year: number,
@@ -453,6 +472,51 @@ function AdminDashboard() {
                 monthly.reduce((sum, r) => sum + (r.payout ? 0 : r.amountOwed), 0),
               )}
             />
+          </section>
+        )}
+
+        {isAdmin && salesByGym.length > 0 && (
+          <section className="rounded-xl border border-border bg-card p-4">
+            <h2 className="mb-3 text-sm font-semibold text-foreground">Sales by gym</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-border text-left text-xs uppercase tracking-wide text-muted-foreground">
+                    <th className="py-2 pr-3 font-medium">Gym</th>
+                    <th className="py-2 pr-3 font-medium text-right">Orders</th>
+                    <th className="py-2 pr-3 font-medium text-right">Crates</th>
+                    <th className="py-2 pr-3 font-medium text-right">Total sales</th>
+                    <th className="py-2 font-medium text-right">Commission owed</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {salesByGym.map((g) => (
+                    <tr key={g.name} className="border-b border-border/50 last:border-0">
+                      <td className="py-2 pr-3 font-medium text-foreground">{g.name}</td>
+                      <td className="py-2 pr-3 text-right tabular-nums">{g.orders}</td>
+                      <td className="py-2 pr-3 text-right tabular-nums">{g.crates}</td>
+                      <td className="py-2 pr-3 text-right tabular-nums">{formatGhs(g.revenue)}</td>
+                      <td className="py-2 text-right tabular-nums">{formatGhs(g.commission)}</td>
+                    </tr>
+                  ))}
+                  <tr className="font-semibold">
+                    <td className="py-2 pr-3">Total</td>
+                    <td className="py-2 pr-3 text-right tabular-nums">
+                      {salesByGym.reduce((s, g) => s + g.orders, 0)}
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular-nums">
+                      {salesByGym.reduce((s, g) => s + g.crates, 0)}
+                    </td>
+                    <td className="py-2 pr-3 text-right tabular-nums">
+                      {formatGhs(salesByGym.reduce((s, g) => s + g.revenue, 0))}
+                    </td>
+                    <td className="py-2 text-right tabular-nums">
+                      {formatGhs(salesByGym.reduce((s, g) => s + g.commission, 0))}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </section>
         )}
 
