@@ -514,6 +514,7 @@ function AdminDashboard() {
                       <td className="py-2 text-right tabular-nums">{formatGhs(g.commission)}</td>
                     </tr>
                   ))}
+                  {salesRows.length > 1 && (
                   <tr className="font-semibold">
                     <td className="py-2 pr-3">Total</td>
                     <td className="py-2 pr-3 text-right tabular-nums">
@@ -529,6 +530,8 @@ function AdminDashboard() {
                       {formatGhs(salesRows.reduce((s, g) => s + g.commission, 0))}
                     </td>
                   </tr>
+                  )}
+
                 </tbody>
               </table>
             </div>
