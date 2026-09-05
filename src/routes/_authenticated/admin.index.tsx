@@ -121,23 +121,20 @@ function AdminDashboard() {
       setGyms(gymRows);
       setPayouts(((payoutsData ?? []) as unknown) as Payout[]);
       setOwnerGymNames(admin ? [] : gymRows.map((g) => g.name));
-      if (!admin) {
-        const resolved = await Promise.all(
-          gymRows.map(async (g) => {
-            let imageUrl: string | null = null;
-            if (g.image_url) {
-              const { data: signed } = await supabase.storage
-                .from("gym-images")
-                .createSignedUrl(g.image_url, 60 * 60);
-              imageUrl = signed?.signedUrl ?? null;
-            }
-            return { id: g.id, name: g.name, imageUrl };
-          }),
-        );
-        setOwnerGyms(resolved);
-      } else {
-        setOwnerGyms([]);
-      }
+      const resolved = await Promise.all(
+        gymRows.map(async (g) => {
+          let imageUrl: string | null = null;
+          if (g.image_url) {
+            const { data: signed } = await supabase.storage
+              .from("gym-images")
+              .createSignedUrl(g.image_url, 60 * 60);
+            imageUrl = signed?.signedUrl ?? null;
+          }
+          return { id: g.id, name: g.name, imageUrl };
+        }),
+      );
+      setOwnerGyms(resolved);
+
       if (admin) {
         const { data: setting } = await supabase
           .from("app_settings")
@@ -264,6 +261,15 @@ function AdminDashboard() {
     }
     return Array.from(map.values()).sort((a, b) => b.revenue - a.revenue);
   }, [orders, gyms]);
+
+  const salesRows = useMemo(
+    () =>
+      gymFilter === "all"
+        ? salesByGym
+        : salesByGym.filter((g) => g.name === gymFilter),
+    [salesByGym, gymFilter],
+  );
+
 
   const markPaid = async (
     gymId: string,
@@ -424,9 +430,18 @@ function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-7xl space-y-5 px-4 py-5 md:space-y-6 md:px-6 md:py-8">
-        {!isAdmin && ownerGyms.length > 0 && (
+        {(isAdmin
+          ? gymFilter !== "all"
+            ? ownerGyms.filter((g) => g.name === gymFilter)
+            : []
+          : ownerGyms
+        ).length > 0 && (
           <section className="flex flex-wrap items-center gap-3">
-            {ownerGyms.map((g) => (
+            {(isAdmin
+              ? ownerGyms.filter((g) => g.name === gymFilter)
+              : ownerGyms
+            ).map((g) => (
+
               <div
                 key={g.id}
                 className="flex items-center gap-3 rounded-full border border-border bg-card px-3 py-1.5 shadow-card"
@@ -475,7 +490,7 @@ function AdminDashboard() {
           </section>
         )}
 
-        {isAdmin && salesByGym.length > 0 && (
+        {isAdmin && salesRows.length > 0 && (
           <section className="rounded-xl border border-border bg-card p-4">
             <h2 className="mb-3 text-sm font-semibold text-foreground">Sales by gym</h2>
             <div className="overflow-x-auto">
@@ -490,7 +505,7 @@ function AdminDashboard() {
                   </tr>
                 </thead>
                 <tbody>
-                  {salesByGym.map((g) => (
+                  {salesRows.map((g) => (
                     <tr key={g.name} className="border-b border-border/50 last:border-0">
                       <td className="py-2 pr-3 font-medium text-foreground">{g.name}</td>
                       <td className="py-2 pr-3 text-right tabular-nums">{g.orders}</td>
@@ -499,21 +514,24 @@ function AdminDashboard() {
                       <td className="py-2 text-right tabular-nums">{formatGhs(g.commission)}</td>
                     </tr>
                   ))}
+                  {salesRows.length > 1 && (
                   <tr className="font-semibold">
                     <td className="py-2 pr-3">Total</td>
                     <td className="py-2 pr-3 text-right tabular-nums">
-                      {salesByGym.reduce((s, g) => s + g.orders, 0)}
+                      {salesRows.reduce((s, g) => s + g.orders, 0)}
                     </td>
                     <td className="py-2 pr-3 text-right tabular-nums">
-                      {salesByGym.reduce((s, g) => s + g.crates, 0)}
+                      {salesRows.reduce((s, g) => s + g.crates, 0)}
                     </td>
                     <td className="py-2 pr-3 text-right tabular-nums">
-                      {formatGhs(salesByGym.reduce((s, g) => s + g.revenue, 0))}
+                      {formatGhs(salesRows.reduce((s, g) => s + g.revenue, 0))}
                     </td>
                     <td className="py-2 text-right tabular-nums">
-                      {formatGhs(salesByGym.reduce((s, g) => s + g.commission, 0))}
+                      {formatGhs(salesRows.reduce((s, g) => s + g.commission, 0))}
                     </td>
                   </tr>
+                  )}
+
                 </tbody>
               </table>
             </div>
