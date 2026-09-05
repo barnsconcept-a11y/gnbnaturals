@@ -23,7 +23,10 @@ type Order = {
   total_crates: number;
   proof_path: string;
   status: string;
+  is_paid: boolean;
+  unpaid_note: string | null;
 };
+
 
 export function GymOrdersSection({ gymName }: { gymName: string }) {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -90,15 +93,24 @@ export function GymOrdersSection({ gymName }: { gymName: string }) {
                     {o.customer_phone}
                   </a>
                 </div>
-                <span
-                  className={`shrink-0 rounded-full px-2 py-0.5 text-xs ${statusClass(o.status)}`}
-                >
-                  {statusLabel(o.status)}
-                </span>
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <span className={`rounded-full px-2 py-0.5 text-xs ${statusClass(o.status)}`}>
+                    {statusLabel(o.status)}
+                  </span>
+                  {!o.is_paid && (
+                    <span className="rounded-full border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs text-destructive">
+                      Unpaid
+                    </span>
+                  )}
+                </div>
               </div>
+              {!o.is_paid && o.unpaid_note && (
+                <div className="mt-1 text-xs text-destructive">{o.unpaid_note}</div>
+              )}
               <div className="mt-1 text-xs text-muted-foreground">
                 {new Date(o.created_at).toLocaleString()}
               </div>
+
               <div className="mt-2 space-y-0.5 text-sm text-muted-foreground">
                 {(o.items ?? []).map((it, i) => (
                   <div key={i}>

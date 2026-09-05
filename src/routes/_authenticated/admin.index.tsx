@@ -58,7 +58,10 @@ type Order = {
   proof_path: string;
   status: string;
   notes: string | null;
+  is_paid: boolean;
+  unpaid_note: string | null;
 };
+
 
 type Gym = { id: string; name: string; commission_per_crate: number; image_url?: string | null };
 
@@ -321,8 +324,36 @@ function AdminDashboard() {
   };
 
 
+  const togglePaid = async (o: Order) => {
+    const nextPaid = !o.is_paid;
+    let note: string | null = o.unpaid_note ?? null;
+    if (!nextPaid) {
+      const input = window.prompt(
+        "Why is this order unpaid? (optional note the gym will see)",
+        o.unpaid_note ?? "",
+      );
+      if (input === null) return;
+      note = input.trim() || null;
+    } else {
+      note = null;
+    }
+    const { error } = await supabase
+      .from("orders")
+      .update({ is_paid: nextPaid, unpaid_note: note })
+      .eq("id", o.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setOrders((prev) =>
+      prev.map((x) => (x.id === o.id ? { ...x, is_paid: nextPaid, unpaid_note: note } : x)),
+    );
+    toast.success(nextPaid ? "Marked as paid" : "Marked as unpaid");
+  };
+
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase
+
       .from("orders")
       .update({ status })
       .eq("id", id);
@@ -468,7 +499,16 @@ function AdminDashboard() {
           <StatCard label="Crates" value={String(stats.crates)} />
           {isAdmin && <StatCard label="Revenue" value={formatGhs(stats.revenue)} />}
           <StatCard label="Commission" value={formatGhs(stats.commission)} />
+          <StatCard
+            label="Unpaid orders"
+            value={formatGhs(
+              filtered
+                .filter((o) => !o.is_paid)
+                .reduce((s, o) => s + Number(o.total_amount ?? 0), 0),
+            )}
+          />
         </section>
+
 
         {monthly.length > 0 && (
           <section className="grid grid-cols-2 gap-3 md:gap-4">
@@ -679,10 +719,21 @@ function AdminDashboard() {
                     {o.customer_phone}
                   </a>
                 </div>
-                <div className={`shrink-0 rounded-full px-2 py-0.5 text-xs ${statusClass(o.status)}`}>
-                  {statusLabel(o.status)}
+                <div className="flex shrink-0 flex-col items-end gap-1">
+                  <div className={`rounded-full px-2 py-0.5 text-xs ${statusClass(o.status)}`}>
+                    {statusLabel(o.status)}
+                  </div>
+                  {!o.is_paid && (
+                    <div className="rounded-full border border-destructive/30 bg-destructive/10 px-2 py-0.5 text-xs text-destructive">
+                      Unpaid
+                    </div>
+                  )}
                 </div>
               </div>
+              {!o.is_paid && o.unpaid_note && (
+                <div className="mt-2 text-xs text-destructive">{o.unpaid_note}</div>
+              )}
+
               <div className="mt-2 text-xs text-muted-foreground">
                 {new Date(o.created_at).toLocaleString()} · {o.pickup_station}
               </div>
@@ -715,17 +766,21 @@ function AdminDashboard() {
                 )}
               </div>
               {isAdmin && (
-                <div className="mt-2">
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <Button size="sm" variant="outline" onClick={() => togglePaid(o)}>
+                    {o.is_paid ? "Mark unpaid" : "Mark paid"}
+                  </Button>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => deleteOrder(o)}
-                    className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" /> Delete order
                   </Button>
                 </div>
               )}
+
               <div className="mt-2">
                 <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
                   <SelectTrigger className="h-9">
@@ -826,6 +881,12 @@ function AdminDashboard() {
                     >
                       {statusLabel(o.status)}
                     </div>
+                    {!o.is_paid && (
+                      <div className="mb-2 rounded-md border border-destructive/30 bg-destructive/10 px-2 py-1 text-xs text-destructive">
+                        Unpaid{o.unpaid_note ? ` · ${o.unpaid_note}` : ""}
+                      </div>
+                    )}
+
                     <Select
                       value={o.status}
                       onValueChange={(v) => updateStatus(o.id, v)}
@@ -846,14 +907,24 @@ function AdminDashboard() {
                       </SelectContent>
                     </Select>
                     {isAdmin && (
-                      <button
-                        type="button"
-                        onClick={() => deleteOrder(o)}
-                        className="mt-2 inline-flex items-center gap-1 text-xs text-destructive hover:underline"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" /> Delete
-                      </button>
+                      <div className="mt-2 flex flex-col items-start gap-1">
+                        <button
+                          type="button"
+                          onClick={() => togglePaid(o)}
+                          className="text-xs text-muted-foreground hover:underline"
+                        >
+                          {o.is_paid ? "Mark unpaid" : "Mark paid"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteOrder(o)}
+                          className="inline-flex items-center gap-1 text-xs text-destructive hover:underline"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> Delete
+                        </button>
+                      </div>
                     )}
+
                   </td>
                 </tr>
               ))}
