@@ -324,8 +324,36 @@ function AdminDashboard() {
   };
 
 
+  const togglePaid = async (o: Order) => {
+    const nextPaid = !o.is_paid;
+    let note: string | null = o.unpaid_note ?? null;
+    if (!nextPaid) {
+      const input = window.prompt(
+        "Why is this order unpaid? (optional note the gym will see)",
+        o.unpaid_note ?? "",
+      );
+      if (input === null) return;
+      note = input.trim() || null;
+    } else {
+      note = null;
+    }
+    const { error } = await supabase
+      .from("orders")
+      .update({ is_paid: nextPaid, unpaid_note: note })
+      .eq("id", o.id);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setOrders((prev) =>
+      prev.map((x) => (x.id === o.id ? { ...x, is_paid: nextPaid, unpaid_note: note } : x)),
+    );
+    toast.success(nextPaid ? "Marked as paid" : "Marked as unpaid");
+  };
+
   const updateStatus = async (id: string, status: string) => {
     const { error } = await supabase
+
       .from("orders")
       .update({ status })
       .eq("id", id);
