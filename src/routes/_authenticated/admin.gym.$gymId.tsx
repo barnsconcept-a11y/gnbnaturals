@@ -16,6 +16,7 @@ import {
 import { geocodeAddress, reverseGeocode } from "@/lib/geocode.functions";
 import { MapPicker } from "@/components/MapPicker";
 import { GymDiscountsSection } from "@/components/GymDiscountsSection";
+import { GymOrdersSection } from "@/components/GymOrdersSection";
 import { LockableField } from "@/components/LockableField";
 import { Trash2, UserPlus, ArrowLeft, Upload, MapPin, Search, Pencil, Check } from "lucide-react";
 
