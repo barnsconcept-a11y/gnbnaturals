@@ -23,7 +23,10 @@ type Order = {
   total_crates: number;
   proof_path: string;
   status: string;
+  is_paid: boolean;
+  unpaid_note: string | null;
 };
+
 
 export function GymOrdersSection({ gymName }: { gymName: string }) {
   const [orders, setOrders] = useState<Order[]>([]);
