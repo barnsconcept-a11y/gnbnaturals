@@ -757,17 +757,21 @@ function AdminDashboard() {
                 )}
               </div>
               {isAdmin && (
-                <div className="mt-2">
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  <Button size="sm" variant="outline" onClick={() => togglePaid(o)}>
+                    {o.is_paid ? "Mark unpaid" : "Mark paid"}
+                  </Button>
                   <Button
                     size="sm"
                     variant="ghost"
                     onClick={() => deleteOrder(o)}
-                    className="w-full text-destructive hover:bg-destructive/10 hover:text-destructive"
+                    className="text-destructive hover:bg-destructive/10 hover:text-destructive"
                   >
                     <Trash2 className="h-4 w-4" /> Delete order
                   </Button>
                 </div>
               )}
+
               <div className="mt-2">
                 <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
                   <SelectTrigger className="h-9">
