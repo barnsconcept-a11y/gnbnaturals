@@ -857,6 +857,12 @@ function AdminDashboard() {
                     >
                       {statusLabel(o.status)}
                     </div>
+                    {!o.is_paid && (
+                      <div className="mb-2 rounded-md border border-destructive/30 bg-destructive/10 px-2 py-1 text-xs text-destructive">
+                        Unpaid{o.unpaid_note ? ` · ${o.unpaid_note}` : ""}
+                      </div>
+                    )}
+
                     <Select
                       value={o.status}
                       onValueChange={(v) => updateStatus(o.id, v)}
