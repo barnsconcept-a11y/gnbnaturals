@@ -883,14 +883,24 @@ function AdminDashboard() {
                       </SelectContent>
                     </Select>
                     {isAdmin && (
-                      <button
-                        type="button"
-                        onClick={() => deleteOrder(o)}
-                        className="mt-2 inline-flex items-center gap-1 text-xs text-destructive hover:underline"
-                      >
-                        <Trash2 className="h-3.5 w-3.5" /> Delete
-                      </button>
+                      <div className="mt-2 flex flex-col items-start gap-1">
+                        <button
+                          type="button"
+                          onClick={() => togglePaid(o)}
+                          className="text-xs text-muted-foreground hover:underline"
+                        >
+                          {o.is_paid ? "Mark unpaid" : "Mark paid"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => deleteOrder(o)}
+                          className="inline-flex items-center gap-1 text-xs text-destructive hover:underline"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" /> Delete
+                        </button>
+                      </div>
                     )}
+
                   </td>
                 </tr>
               ))}
