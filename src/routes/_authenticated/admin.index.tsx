@@ -421,9 +421,18 @@ function AdminDashboard() {
       </header>
 
       <main className="mx-auto max-w-7xl space-y-5 px-4 py-5 md:space-y-6 md:px-6 md:py-8">
-        {!isAdmin && ownerGyms.length > 0 && (
+        {(isAdmin
+          ? gymFilter !== "all"
+            ? ownerGyms.filter((g) => g.name === gymFilter)
+            : []
+          : ownerGyms
+        ).length > 0 && (
           <section className="flex flex-wrap items-center gap-3">
-            {ownerGyms.map((g) => (
+            {(isAdmin
+              ? ownerGyms.filter((g) => g.name === gymFilter)
+              : ownerGyms
+            ).map((g) => (
+
               <div
                 key={g.id}
                 className="flex items-center gap-3 rounded-full border border-border bg-card px-3 py-1.5 shadow-card"
