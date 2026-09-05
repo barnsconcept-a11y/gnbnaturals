@@ -246,6 +246,25 @@ function AdminDashboard() {
     });
   }, [orders, gyms, payouts, gymFilter]);
 
+  // Per-gym sales summary for admins — total sales, crates, commission.
+  const salesByGym = useMemo(() => {
+    const map = new Map<string, { name: string; orders: number; crates: number; revenue: number; commission: number }>();
+    for (const g of gyms) {
+      map.set(g.name, { name: g.name, orders: 0, crates: 0, revenue: 0, commission: 0 });
+    }
+    for (const o of orders) {
+      if (o.status === "cancelled" || o.status === "refunded") continue;
+      const row = map.get(o.pickup_station) ?? { name: o.pickup_station, orders: 0, crates: 0, revenue: 0, commission: 0 };
+      row.orders += 1;
+      row.crates += o.total_crates;
+      row.revenue += Number(o.total_amount);
+      const g = gyms.find((g) => g.name === o.pickup_station);
+      if (g) row.commission += o.total_crates * Number(g.commission_per_crate);
+      map.set(o.pickup_station, row);
+    }
+    return Array.from(map.values()).sort((a, b) => b.revenue - a.revenue);
+  }, [orders, gyms]);
+
   const markPaid = async (
     gymId: string,
     year: number,
