@@ -455,6 +455,8 @@ function GymDetailPage() {
 
         <GymDiscountsSection gymId={gymId} />
 
+        <GymOrdersSection gymName={name} />
+
         <section className="space-y-3 rounded-xl border border-border bg-card p-4 md:p-5">
           <div>
             <h2 className="font-semibold">Owner logins</h2>
