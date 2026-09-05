@@ -499,7 +499,16 @@ function AdminDashboard() {
           <StatCard label="Crates" value={String(stats.crates)} />
           {isAdmin && <StatCard label="Revenue" value={formatGhs(stats.revenue)} />}
           <StatCard label="Commission" value={formatGhs(stats.commission)} />
+          <StatCard
+            label="Unpaid orders"
+            value={formatGhs(
+              filtered
+                .filter((o) => !o.is_paid)
+                .reduce((s, o) => s + Number(o.total_amount ?? 0), 0),
+            )}
+          />
         </section>
+
 
         {monthly.length > 0 && (
           <section className="grid grid-cols-2 gap-3 md:gap-4">
