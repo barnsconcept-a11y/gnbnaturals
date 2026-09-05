@@ -58,7 +58,10 @@ type Order = {
   proof_path: string;
   status: string;
   notes: string | null;
+  is_paid: boolean;
+  unpaid_note: string | null;
 };
+
 
 type Gym = { id: string; name: string; commission_per_crate: number; image_url?: string | null };
 
