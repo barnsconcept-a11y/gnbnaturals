@@ -390,6 +390,7 @@ export type Database = {
           customer_name: string
           customer_phone: string
           id: string
+          is_paid: boolean
           items: Json
           momo_reference: string | null
           notes: string | null
@@ -398,6 +399,7 @@ export type Database = {
           status: string
           total_amount: number
           total_crates: number
+          unpaid_note: string | null
         }
         Insert: {
           created_at?: string
@@ -406,6 +408,7 @@ export type Database = {
           customer_name: string
           customer_phone: string
           id?: string
+          is_paid?: boolean
           items: Json
           momo_reference?: string | null
           notes?: string | null
@@ -414,6 +417,7 @@ export type Database = {
           status?: string
           total_amount: number
           total_crates?: number
+          unpaid_note?: string | null
         }
         Update: {
           created_at?: string
@@ -422,6 +426,7 @@ export type Database = {
           customer_name?: string
           customer_phone?: string
           id?: string
+          is_paid?: boolean
           items?: Json
           momo_reference?: string | null
           notes?: string | null
@@ -430,6 +435,7 @@ export type Database = {
           status?: string
           total_amount?: number
           total_crates?: number
+          unpaid_note?: string | null
         }
         Relationships: []
       }
